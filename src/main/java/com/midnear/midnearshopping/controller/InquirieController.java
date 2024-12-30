@@ -17,15 +17,23 @@ import java.util.Date;
 public class InquirieController {
     private final InquirieService inquirieService;
 
+//  문의글 하나 띄우기
     @GetMapping("/getInquirie")
     public InquiriesDTO getInquirie(Long inquiryId){
         return inquirieService.selectInquirie(inquiryId);
     }
 
-    @PostMapping("/putInquirieComment")
-    public void putInquirieComment(@RequestBody Inquiry_commentsDTO inquiryCommentsDTO){
+//  문의글 댓글 달기
+    @PostMapping("/postInquirieComment")
+    public void postInquirieComment(@RequestBody Inquiry_commentsDTO inquiryCommentsDTO){
         inquiryCommentsDTO.setReplyDate(new Date());
         inquirieService.insertInquirieComment(inquiryCommentsDTO);
     }
 
+//  문의글 댓글 수정
+    @PutMapping("/putInquirieComment")
+    public void putInquirieComment(@RequestBody Inquiry_commentsDTO inquiryCommentsDTO){
+        inquiryCommentsDTO.setReplyDate(new Date());
+        inquirieService.updateInquiryComment(inquiryCommentsDTO);
+    }
 }

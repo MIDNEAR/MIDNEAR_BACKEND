@@ -27,9 +27,17 @@
     </select>
 
 <!-- 문의 댓글 작성 -->
-    <insert id="insertInquries">
-        insert into inquiry_comments(reply_content,reply_date,reply_modified_date,inquiry_id)
-        values (#{replyContent},#{replyDate},#{replyModifiedDate},#{inquiryId})
+    <insert id="insertInquiryComment">
+        insert into inquiry_comments(reply_content,reply_date,inquiry_id)
+        values (#{replyContent},#{replyDate},#{inquiryId})
     </insert>
 
+<!-- 문의 댓글 수정 -->
+    <update id="updateInquiryComment">
+        update inquiry_comments
+        set
+            reply_content = #{replyContent},
+            reply_date = #{replyDate}
+        where comment_id = #{commentId}
+    </update>
 </mapper>

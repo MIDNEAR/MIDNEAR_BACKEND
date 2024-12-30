@@ -21,5 +21,4 @@ public class InquiriesDTO {
     private Long commentId;
     private String replyContent;
     private Date replyDate;
-    private Date replyModified_date;
 }
