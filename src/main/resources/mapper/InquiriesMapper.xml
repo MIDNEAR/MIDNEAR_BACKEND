@@ -26,7 +26,10 @@
             i.inquiry_id = #{inquiry_id}
     </select>
 
-<!-- 문의 게시글 List 조회 -->
-
+<!-- 문의 댓글 작성 -->
+    <insert id="insertInquries">
+        insert into inquiry_comments(reply_content,reply_date,reply_modified_date,inquiry_id)
+        values (#{replyContent},#{replyDate},#{replyModifiedDate},#{inquiryId})
+    </insert>
 
 </mapper>
