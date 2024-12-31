@@ -14,4 +14,15 @@
         FROM users
         WHERE id = #{id}
     </select>
+    <select id="getMemberById" parameterType="string" resultType="com.midnear.midnearshopping.domain.vo.member.MemberVO">
+        SELECT *
+        FROM users
+        WHERE id = #{id}
+    </select>
+
+    <select id="getMemberByUserId" parameterType="int" resultType="com.midnear.midnearshopping.domain.vo.member.MemberVO">
+        SELECT *
+        FROM users
+        WHERE user_id = #{userId}
+    </select>
 </mapper>

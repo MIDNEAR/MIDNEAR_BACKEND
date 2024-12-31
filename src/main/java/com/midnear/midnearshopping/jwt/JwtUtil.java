@@ -35,6 +35,7 @@ public class JwtUtil {
 
     private String createToken(MemberDto member, long expireTime) {
         Claims claims = Jwts.claims();
+        claims.put("userId", member.getUserId()); //유저아이디 1인걸로 관리자 구분할거래서.. 클레임에 넣었습니다
         claims.put("id", member.getId());
         claims.put("email", member.getEmail());
 
@@ -50,8 +51,11 @@ public class JwtUtil {
                 .compact();
     }
 
-    public Long getUserId(String token) {
-        return parseClaims(token).get("memberId", Long.class);
+    public Integer getUserId(String token) {
+        return parseClaims(token).get("userId", Integer.class);
+    }
+    public String getId(String token) {
+        return parseClaims(token).get("id", String.class);
     }
 
     public boolean validateToken(String token) {
