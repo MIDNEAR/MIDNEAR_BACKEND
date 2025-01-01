@@ -2,7 +2,7 @@ CREATE TABLE `users` (
     `user_id` int NOT NULL AUTO_INCREMENT,
     `name` varchar(20) NULL,
     `id` varchar(20) NULL,
-    `password` varchar(20) NULL,
+    `password` varchar(255) NULL,
     `phone_number` varchar(20) NULL,
     `email` varchar(20) NULL,
     `withdrawn` varchar(20) NULL DEFAULT 'N',
@@ -417,3 +417,4 @@ CREATE TABLE `return_delivery` (
     FOREIGN KEY (`delivery_address_id`) REFERENCES `delivery_address`(`delivery_address_id`)
     );
 select * from return_delivery;
+

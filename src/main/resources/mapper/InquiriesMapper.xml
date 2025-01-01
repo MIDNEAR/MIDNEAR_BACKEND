@@ -3,19 +3,17 @@
 
 <mapper namespace="com.midnear.midnearshopping.mapper.InquiriesMapper">
 <!-- 문의 게시글 조회 -->
-    <select id="selectInquiries" resultType="com.midnear.midnearshopping.domain.dto.InquiriesDTO">
+    <select id="selectInquiries" resultType="com.midnear.midnearshopping.domain.dto.Inquiries.InquiriesDTO">
         select
             i.inquiry_id,
             i.title,
             i.content,
             i.created_at,
-            i.updated_at,
             i.is_private,
             i.view_count,
             c.comment_id,
             c.reply_content,
             c.reply_date,
-            c.reply_modified_date,
             u.user_id,
             u.id
         from

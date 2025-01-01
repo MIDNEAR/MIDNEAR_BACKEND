@@ -1,7 +1,7 @@
 package com.midnear.midnearshopping.service;
 
-import com.midnear.midnearshopping.domain.dto.InquiriesDTO;
-import com.midnear.midnearshopping.domain.dto.Inquiry_commentsDTO;
+import com.midnear.midnearshopping.domain.dto.Inquiries.InquiriesDTO;
+import com.midnear.midnearshopping.domain.dto.Inquiries.Inquiry_commentsDTO;
 import org.springframework.stereotype.Service;
 
 @Service
