@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.midnear.midnearshopping.mapper.Inquiries.InquiriesMapper">
-<!-- 문의 게시글 조회 -->
+<!-- 문의 게시글 -->
     <select id="selectInquiries" resultType="com.midnear.midnearshopping.domain.dto.Inquiries.InquiriesDTO">
         select
             i.inquiry_id,
@@ -39,7 +39,7 @@
         where comment_id = #{commentId}
     </update>
 
-<!--문의 List 띄우기-->
+<!--문의 List 필터링 전체, 최신순-->
     <select id="SelectInquirylist">
         select
             i.inquiry_id,
@@ -51,13 +51,51 @@
             u.id
         from inquiries i
                  left join users u on i.user_id = u.user_id
-        ORDER BY i.created_at DESC
+        order by i.created_at desc
             LIMIT #{pageSize} OFFSET #{offset}
     </select>
 
 
     <select id="count" resultType="int">
         select count(*) from inquiries
+    </select>
+
+<!-- 답글대기, 답글 완료 필터링 -->
+    <select id="SelectReplyInquirylist">
+        select
+        i.inquiry_id,
+        i.title,
+        i.content,
+        i.created_at,
+        i.view_count,
+        i.has_reply,
+        u.id
+        from inquiries i
+        left join users u on i.user_id = u.user_id
+        where 1 = 1
+        <!-- hasReply 값이 '대기중'인 경우 -->
+        <if test="hasReply == '대기중'">
+            and i.has_reply = '대기중'
+        </if>
+        <!-- hasReply 값이 '응답완료'인 경우 -->
+        <if test="hasReply == '완료'">
+            and i.has_reply = '완료'
+        </if>
+         order by i.created_at desc
+        LIMIT #{pageSize} OFFSET #{offset}
+    </select>
+
+    <select id="countReply">
+        select count(*) from inquiries i
+        where 1 = 1
+        <!-- hasReply 값이 '대기중'인 경우 -->
+        <if test="hasReply == '대기중'">
+            and i.has_reply = '대기중'
+        </if>
+        <!-- hasReply 값이 '응답완료'인 경우 -->
+        <if test="hasReply == '완료'">
+            and i.has_reply = '완료'
+        </if>
     </select>
 
 </mapper>

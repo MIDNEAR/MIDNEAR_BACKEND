@@ -35,16 +35,29 @@ public class InquirieServiceImpl implements InquirieService {
         inquiriesMapper.updateInquiryComment(inquiryCommentsDTO);
     }
 
-//  문의 게시글 list 띄우기
+//  문의 게시글 전체 최신순 정렬
     @Override
     public List<InquiriesListDTO> SelectInquirylist(int pageNumber) {
         int offset = (pageNumber - 1) * pageSize;
         return inquiriesMapper.SelectInquirylist(offset, pageSize);
     }
 
-//  문의 게시글 전체 개수
     @Override
     public int count() {
         return inquiriesMapper.count();
     }
+
+//  문의 게시글 답글 완료/대기 필터링
+
+    @Override
+    public List<InquiriesListDTO> SelectReplyInquirylist(int pageNumber, String hasReply) {
+        int offset = (pageNumber - 1) * pageSize;
+        return inquiriesMapper.SelectReplyInquirylist(offset,pageSize,hasReply);
+    }
+
+    @Override
+    public int countReply(String hasReply) {
+        return inquiriesMapper.countReply(hasReply);
+    }
+
 }

@@ -9,6 +9,7 @@ import java.util.List;
 
 @Service
 public interface InquirieService {
+
 //  문의 게시글 하나 띄우기
     InquiriesDTO selectInquirie(Long inquiryId);
 
@@ -18,9 +19,11 @@ public interface InquirieService {
 //  문의 게시글 댓글 수정
     void updateInquiryComment(Inquiry_commentsDTO inquiryCommentsDTO);
 
-//  문의 게시글 List 띄우기
+//  문의 게시글 전체,최신순 필터링
     List<InquiriesListDTO> SelectInquirylist(int pageNumber);
-
-//  문의 게시글 전체 개수
     int count();
+
+//  문의 게시글 답글 완료/대기 필터링
+    List<InquiriesListDTO> SelectReplyInquirylist(int pageNumber,String hasReply);
+    int countReply(String hasReply);
 }

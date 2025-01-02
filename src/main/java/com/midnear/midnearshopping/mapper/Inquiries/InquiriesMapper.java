@@ -20,7 +20,14 @@ public interface InquiriesMapper {
 // 문의 댓글 수정
    void updateInquiryComment(Inquiry_commentsDTO inquiryCommentsDTO);
 
+// 문의 최신순 전체 필터링
+
    List<InquiriesListDTO> SelectInquirylist(@Param("offset") int offset, @Param("pageSize") int pageSize);
 
    int count();
+
+// 문의 답글완료/대기중 필터링
+   List<InquiriesListDTO> SelectReplyInquirylist(@Param("offset") int offset, @Param("pageSize") int pageSize, @Param("hasReply")String hasReply);
+
+   int countReply(@Param("hasReply")String hasReply);
 }
