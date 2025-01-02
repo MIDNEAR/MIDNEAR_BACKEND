@@ -416,6 +416,5 @@ CREATE TABLE `return_delivery` (
     FOREIGN KEY (`return_id`) REFERENCES `returns`(`return_id`),
     FOREIGN KEY (`delivery_address_id`) REFERENCES `delivery_address`(`delivery_address_id`)
     );
-
 select * from return_delivery;
 
