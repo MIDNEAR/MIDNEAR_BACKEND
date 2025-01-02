@@ -1,6 +1,7 @@
 package com.midnear.midnearshopping.controller;
 
 import com.midnear.midnearshopping.domain.dto.Inquiries.InquiriesDTO;
+import com.midnear.midnearshopping.domain.dto.Inquiries.InquiriesListDTO;
 import com.midnear.midnearshopping.domain.dto.Inquiries.Inquiry_commentsDTO;
 import com.midnear.midnearshopping.service.InquirieService;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.sql.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -46,5 +50,27 @@ public class InquirieController {
         inquiryCommentsDTO.setReplyDate(today);
         inquirieService.updateInquiryComment(inquiryCommentsDTO);
         return ResponseEntity.ok("댓글이 성공적으로 수정되었습니다.");
+    }
+//  문의글 List 띄우기
+    @GetMapping("/getInquiryList")
+    public  ResponseEntity<Map<String, Object>> list(@RequestParam(value = "page", defaultValue = "1") int pageNumber) {
+
+//      페이징 번호에 맞는 문의글 List
+        List<InquiriesListDTO> inquiryList = inquirieService.SelectInquirylist(pageNumber);
+
+//      총 게시물 수
+        int totalCount = inquirieService.count();
+
+//      총 페이지 수
+        int totalPages = (int) Math.ceil((double) totalCount / 2);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("inquiries", inquiryList);
+        response.put("currentPage", pageNumber);
+        response.put("totalPages", totalPages);
+        response.put("totalCount", totalCount);
+
+        // 200 OK 응답으로 JSON 반환
+        return ResponseEntity.ok(response);
     }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.midnear.midnearshopping.mapper.InquiriesMapper">
+<mapper namespace="com.midnear.midnearshopping.mapper.Inquiries.InquiriesMapper">
 <!-- 문의 게시글 조회 -->
     <select id="selectInquiries" resultType="com.midnear.midnearshopping.domain.dto.Inquiries.InquiriesDTO">
         select
@@ -38,4 +38,26 @@
             reply_date = #{replyDate}
         where comment_id = #{commentId}
     </update>
+
+<!--문의 List 띄우기-->
+    <select id="SelectInquirylist">
+        select
+            i.inquiry_id,
+            i.title,
+            i.content,
+            i.created_at,
+            i.view_count,
+            i.has_reply,
+            u.id
+        from inquiries i
+                 left join users u on i.user_id = u.user_id
+        ORDER BY i.created_at DESC
+            LIMIT #{pageSize} OFFSET #{offset}
+    </select>
+
+
+    <select id="count" resultType="int">
+        select count(*) from inquiries
+    </select>
+
 </mapper>
