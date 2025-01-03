@@ -3,9 +3,9 @@
 <mapper namespace="com.midnear.midnearshopping.mapper.notice.NoticeMapper">
     <insert id="createNotice" parameterType="com.midnear.midnearshopping.domain.vo.NoticeVo">
         INSERT INTO notices (
-        title, content, created_date, popup_status
+        title, content, created_date
         ) VALUES (
-        #{title}, #{content}, NOW(), #{popupStatus}
+        #{title}, #{content}, NOW()
         )
     </insert>
     <select id="findNoticeById" parameterType="int" resultType="com.midnear.midnearshopping.domain.vo.NoticeVo">
@@ -17,8 +17,7 @@
         SET
             title = #{title},
             content = #{content},
-            created_date = NOW(),
-            popup_status = #{popupStatus}
+            created_date = NOW()
         WHERE notice_id = #{noticeId}
     </update>
     <delete id="deleteNotices" parameterType="java.util.List">

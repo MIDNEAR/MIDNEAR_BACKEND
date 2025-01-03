@@ -19,8 +19,6 @@ public class NoticeDto {
 
     private Date createdDate;
 
-    private Boolean popupStatus;
-
     private Boolean fix;
 
     //NOT NULL이 안 걸려있어서 제목이나 내용이 NULL이 들어갈 수 있는데
@@ -31,7 +29,6 @@ public class NoticeDto {
                 .title(notice.getTitle())
                 .content(notice.getContent())
                 .createdDate(notice.getCreatedDate())
-                .popupStatus(notice.getPopupStatus())
                 .fix(notice.getFix())
                 .build();
     }

@@ -20,8 +20,6 @@ public class NoticeVo {
 
     private Date createdDate;
 
-    private Boolean popupStatus;
-
     private Boolean fix;
 
     public static NoticeVo toEntity(NoticeDto noticeDto) {
@@ -30,7 +28,6 @@ public class NoticeVo {
                 .title(noticeDto.getTitle())
                 .content(noticeDto.getContent())
                 .createdDate(noticeDto.getCreatedDate())
-                .popupStatus(noticeDto.getPopupStatus())
                 .fix(noticeDto.getFix())
                 .build();
     }
