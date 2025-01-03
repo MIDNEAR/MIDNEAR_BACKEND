@@ -41,23 +41,31 @@ public class InquirieServiceImpl implements InquirieService {
         int offset = (pageNumber - 1) * pageSize;
         return inquiriesMapper.SelectInquirylist(offset, pageSize);
     }
-
     @Override
     public int count() {
         return inquiriesMapper.count();
     }
 
 //  문의 게시글 답글 완료/대기 필터링
-
     @Override
     public List<InquiriesListDTO> SelectReplyInquirylist(int pageNumber, String hasReply) {
         int offset = (pageNumber - 1) * pageSize;
         return inquiriesMapper.SelectReplyInquirylist(offset,pageSize,hasReply);
     }
-
     @Override
     public int countReply(String hasReply) {
         return inquiriesMapper.countReply(hasReply);
+    }
+
+//  문의 게시글 검색
+    @Override
+    public List<InquiriesListDTO> WriterSearchInquiries(int pageNumber,String search, String dateFilter, String orderBy,String searchValue) {
+        int offset = (pageNumber - 1) * pageSize;
+        return inquiriesMapper.WriterSearchInquiries(offset,pageSize,search,dateFilter,orderBy,searchValue);
+    }
+    @Override
+    public int countWriter(String search, String dateFilter, String orderBy,String searchValue) {
+        return inquiriesMapper.countWriter(search,dateFilter,orderBy,searchValue);
     }
 
 }

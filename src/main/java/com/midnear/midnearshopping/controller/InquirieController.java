@@ -56,13 +56,13 @@ public class InquirieController {
     @GetMapping("/getInquiryList")
     public  ResponseEntity<Map<String, Object>> list(@RequestParam(value = "page", defaultValue = "1") int pageNumber) {
 
-    //      페이징 번호에 맞는 문의글 List
+        //      페이징 번호에 맞는 문의글 List
         List<InquiriesListDTO> inquiryList = inquirieService.SelectInquirylist(pageNumber);
 
-    //      총 게시물 수
+        //      총 게시물 수
         int totalCount = inquirieService.count();
 
-    //      총 페이지 수
+        //      총 페이지 수
         int totalPages = (int) Math.ceil((double) totalCount / 2);
 
         Map<String, Object> response = new HashMap<>();
@@ -80,13 +80,13 @@ public class InquirieController {
     @GetMapping("/getInquiryReplyList")
     public  ResponseEntity<Map<String, Object>> Inquirylist(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "hasReply")  String hasReply) {
 
-//      페이징 번호에 맞는 문의글 List
+        //      페이징 번호에 맞는 문의글 List
         List<InquiriesListDTO> inquiryList = inquirieService.SelectReplyInquirylist(pageNumber,hasReply);
 
-//      총 게시물 수
+        //      총 게시물 수
         int totalCount = inquirieService.countReply(hasReply);
 
-//      총 페이지 수
+        //      총 페이지 수
         int totalPages = (int) Math.ceil((double) totalCount / 2);
 
         Map<String, Object> response = new HashMap<>();
@@ -98,4 +98,29 @@ public class InquirieController {
         // 200 OK 응답으로 JSON 반환
         return ResponseEntity.ok(response);
     }
+
+//  문의List 사람으로 검색
+    @GetMapping("/getInquiryWriterList")
+    public  ResponseEntity<Map<String, Object>> WriterSearchInquiries(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "search")String search, @RequestParam(value = "dateFilter")  String dateFilter, @RequestParam(value = "orderBy")String orderBy, @RequestParam(value = "searchValue")String searchValue) {
+
+        //      페이징 번호에 맞는 문의글 List
+        List<InquiriesListDTO> inquiryList = inquirieService.WriterSearchInquiries(pageNumber,search,dateFilter,orderBy,searchValue);
+
+        //      총 게시물 수
+        int totalCount = inquirieService.countWriter(search,dateFilter,orderBy,searchValue);
+
+        //      총 페이지 수
+        int totalPages = (int) Math.ceil((double) totalCount / 2);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("inquiries", inquiryList);
+        response.put("currentPage", pageNumber);
+        response.put("totalPages", totalPages);
+        response.put("totalCount", totalCount);
+
+        // 200 OK 응답으로 JSON 반환
+        return ResponseEntity.ok(response);
+    }
+
+
 }

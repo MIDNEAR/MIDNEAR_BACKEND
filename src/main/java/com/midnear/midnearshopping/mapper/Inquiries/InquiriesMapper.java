@@ -21,13 +21,14 @@ public interface InquiriesMapper {
    void updateInquiryComment(Inquiry_commentsDTO inquiryCommentsDTO);
 
 // 문의 최신순 전체 필터링
-
    List<InquiriesListDTO> SelectInquirylist(@Param("offset") int offset, @Param("pageSize") int pageSize);
-
    int count();
 
 // 문의 답글완료/대기중 필터링
    List<InquiriesListDTO> SelectReplyInquirylist(@Param("offset") int offset, @Param("pageSize") int pageSize, @Param("hasReply")String hasReply);
-
    int countReply(@Param("hasReply")String hasReply);
+
+// 문의 게시글 검색
+   List<InquiriesListDTO> WriterSearchInquiries(@Param("offset") int offset, @Param("pageSize") int pageSize, @Param("search")String search,@Param("dateFilter")String dateFilter ,@Param("orderBy")String orderBy,@Param("searchValue")String searchValue);
+   int countWriter(@Param("search")String search,@Param("dateFilter")String dateFilter ,@Param("orderBy")String orderBy,@Param("searchValue")String searchValue);
 }
