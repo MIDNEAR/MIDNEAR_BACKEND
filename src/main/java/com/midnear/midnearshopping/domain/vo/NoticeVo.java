@@ -20,7 +20,7 @@ public class NoticeVo {
 
     private Date createdDate;
 
-    private int popupStatus;
+    private Boolean popupStatus;
 
     private Boolean fix;
 

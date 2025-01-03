@@ -19,7 +19,7 @@ public class NoticeDto {
 
     private Date createdDate;
 
-    private int popupStatus;
+    private Boolean popupStatus;
 
     private Boolean fix;
 
