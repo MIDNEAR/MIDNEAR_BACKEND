@@ -36,8 +36,8 @@ public class NoticeService {
     }
 
     @Transactional
-    public void deleteNotice(List<Integer> deleteList) {
-        noticeMapper.deleteNotice(deleteList);
+    public void deleteNotices(List<Integer> deleteList) {
+        noticeMapper.deleteNotices(deleteList);
     }
 
     public List<NoticeDto> getFixedNoticeList() {
@@ -52,6 +52,22 @@ public class NoticeService {
                 .stream()
                 .map(NoticeDto::toDto)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void fixNotices(List<Integer> fixList) {
+        if (fixList == null || fixList.isEmpty()) {
+            throw new IllegalArgumentException("선택된 공지사항이 없습니다.");
+        }
+        noticeMapper.fixNotices(fixList);
+    }
+
+    @Transactional
+    public void unfixNotices(List<Integer> unfixList) {
+        if (unfixList == null || unfixList.isEmpty()) {
+            throw new IllegalArgumentException("선택된 공지사항이 없습니다.");
+        }
+        noticeMapper.unfixNotices(unfixList);
     }
 
 }

@@ -10,7 +10,10 @@ public interface NoticeMapper {
     void createNotice(NoticeVo noticeVo);
     NoticeVo findNoticeById(int noticeId);
     void updateNotice(NoticeVo noticeVo);
-    void deleteNotice(List<Integer> noticeList);
+    void deleteNotices(List<Integer> noticeList);
     List<NoticeVo> getFixedNotices();
     List<NoticeVo> getNotices();
+    void fixNotices(List<Integer> noticeList);
+    void unfixNotices(List<Integer> noticeList);
+
 }

@@ -21,7 +21,7 @@
             popup_status = #{popupStatus}
         WHERE notice_id = #{noticeId}
     </update>
-    <delete id="deleteNotice" parameterType="java.util.List">
+    <delete id="deleteNotices" parameterType="java.util.List">
         DELETE FROM notices
         WHERE notice_id IN
         <foreach item="id" collection="noticeList" open="(" separator="," close=")">
@@ -36,4 +36,22 @@
         SELECT * FROM notices
         WHERE fix = FALSE;
     </select>
+    <update id="fixNotices" parameterType="java.util.List">
+        UPDATE notices
+        SET
+        fix = true
+        WHERE notice_id IN
+        <foreach item="id" collection="noticeList" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+    <update id="unfixNotices" parameterType="java.util.List">
+        UPDATE notices
+        SET
+        fix = false
+        WHERE notice_id IN
+        <foreach item="id" collection="noticeList" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
 </mapper>

@@ -60,7 +60,7 @@ public class NoticeController {
     @DeleteMapping("/delete")
     public ResponseEntity<ApiResponse> deleteNotices(@RequestBody List<Integer> deleteList) {
         try {
-            noticeService.deleteNotice(deleteList);
+            noticeService.deleteNotices(deleteList);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "삭제가 완료되었습니다.", null));
         } catch (Exception ex) {
@@ -93,4 +93,33 @@ public class NoticeController {
         }
     }
 
+    @PutMapping("/fix")
+    public ResponseEntity<ApiResponse> fixNotices(@RequestBody List<Integer> fixList) {
+        try {
+            noticeService.fixNotices(fixList);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "선택 글 고정에 성공하였습니다.", null));
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponse(false, ex.getMessage(), null));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
+
+    @PutMapping("/unfix")
+    public ResponseEntity<ApiResponse> unfixNotices(@RequestBody List<Integer> unfixList) {
+        try {
+            noticeService.unfixNotices(unfixList);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "선택 글 고정을 해제하였습니다.", null));
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponse(false, ex.getMessage(), null));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
 }
