@@ -37,4 +37,96 @@
         select count(*) from disruptive_customers
     </select>
 
+<!--  검색하기  -->
+    <select id="disruptiveSearchInquiries">
+        select
+        u.id,
+        d.restriction_reason,
+        d.created_at
+        from disruptive_customers d
+        left join users u on d.user_id = u.user_id
+        where d.restriction_status = '제한됨'
+
+        <!-- 날짜 필터링 -->
+        <if test="dateFilter == '오늘'">
+            and d.created_at >= CURDATE()
+        </if>
+        <if test="dateFilter == '일주일'">
+            and d.created_at >= CURDATE() - interval 7 day
+        </if>
+        <if test="dateFilter == '1개월'">
+            and d.created_at >= CURDATE() - interval 1 month
+        </if>
+        <if test="dateFilter == '3개월'">
+            and d.created_at >= CURDATE() - interval 3 month
+        </if>
+        <if test="dateFilter == '1년'">
+            and d.created_at >= CURDATE() - interval 1 year
+        </if>
+
+        <!-- 검색 조건 -->
+        <if test="search != null">
+            and (
+            <choose>
+                <when test="search == '아이디'">
+                    u.id like CONCAT('%', #{searchValue}, '%')
+                </when>
+                <when test="search == '제한사유'">
+                    d.restriction_reason like CONCAT('%', #{searchValue}, '%')
+                </when>
+            </choose>
+            )
+        </if>
+
+        <!-- 정렬 조건 -->
+        <if test="orderBy == '최신순'">
+            order by d.created_at desc
+        </if>
+        <if test="orderBy == '오래된순'">
+            order by d.created_at asc
+        </if>
+
+        LIMIT #{pageSize} OFFSET #{offset}
+    </select>
+
+
+    <!-- 필터링 검색했을때 문의글 게수 -->
+    <select id="searchCount">
+        select count(*) from disruptive_customers d
+        left join users u on d.user_id = u.user_id
+        where d.restriction_status = '제한됨'
+
+        <!-- 날짜 필터링 -->
+        <if test="dateFilter == '오늘'">
+            and d.created_at >= CURDATE()
+        </if>
+        <if test="dateFilter == '일주일'">
+            and d.created_at >= CURDATE() - interval 7 day
+        </if>
+        <if test="dateFilter == '1개월'">
+            and d.created_at >= CURDATE() - interval 1 month
+        </if>
+        <if test="dateFilter == '3개월'">
+            and d.created_at >= CURDATE() - interval 3 month
+        </if>
+        <if test="dateFilter == '1년'">
+            and d.created_at >= CURDATE() - interval 1 year
+        </if>
+
+        <!-- 검색 조건 -->
+        <if test="search != null">
+            and (
+            <choose>
+                <when test="search == '아이디'">
+                    u.id like CONCAT('%', #{searchValue}, '%')
+                </when>
+                <when test="search == '제한사유'">
+                    d.restriction_reason like CONCAT('%', #{searchValue}, '%')
+                </when>
+            </choose>
+            )
+        </if>
+    </select>
+
+
 </mapper>

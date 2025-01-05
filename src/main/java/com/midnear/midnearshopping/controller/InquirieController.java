@@ -107,15 +107,15 @@ public class InquirieController {
         return ResponseEntity.ok(response);
     }
 
-//  문의List 사람으로 검색
-    @GetMapping("/getInquiryWriterList")
-    public ResponseEntity<Map<String, Object>> WriterSearchInquiries(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "search")String search, @RequestParam(value = "dateFilter")  String dateFilter, @RequestParam(value = "orderBy")String orderBy, @RequestParam(value = "searchValue")String searchValue) {
+//  문의List 검색
+    @GetMapping("/getInquirySearchList")
+    public ResponseEntity<Map<String, Object>> SearchInquiries(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "search")String search, @RequestParam(value = "dateFilter")  String dateFilter, @RequestParam(value = "orderBy")String orderBy, @RequestParam(value = "searchValue")String searchValue) {
 
         //      페이징 번호에 맞는 문의글 List
-        List<InquiriesListDTO> inquiryList = inquirieService.WriterSearchInquiries(pageNumber,search,dateFilter,orderBy,searchValue);
+        List<InquiriesListDTO> inquiryList = inquirieService.SearchInquiries(pageNumber,search,dateFilter,orderBy,searchValue);
 
         //      총 게시물 수
-        int totalCount = inquirieService.countWriter(search,dateFilter,orderBy,searchValue);
+        int totalCount = inquirieService.searchCount(search,dateFilter,orderBy,searchValue);
 
         //      총 페이지 수
         int totalPages = (int) Math.ceil((double) totalCount / 2);

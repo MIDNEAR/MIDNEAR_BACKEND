@@ -19,5 +19,8 @@ public interface DisruptiveMapper {
     List<disruptiveListDTO> SelectDisruptlist(@Param("offset") int offset, @Param("pageSize") int pageSize);
     int count();
 
+//  검색
+    List<disruptiveListDTO> disruptiveSearchInquiries(@Param("offset") int offset, @Param("pageSize") int pageSize, @Param("dateFilter")String dateFilter, @Param("orderBy")String orderBy, @Param("search")String search ,@Param("searchValue")String searchValue);
+    int searchCount(@Param("dateFilter")String dateFilter, @Param("orderBy")String orderBy, @Param("search")String search, @Param("searchValue")String searchValue);
 
 }

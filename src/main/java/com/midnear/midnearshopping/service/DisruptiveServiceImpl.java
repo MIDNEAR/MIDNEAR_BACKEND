@@ -15,16 +15,20 @@ public class DisruptiveServiceImpl implements DisruptiveService {
 
     private final DisruptiveMapper disruptiveMapper;
     private static final int pageSize = 2;
+
+//  아이디 검색
     @Override
     public List<String> searchId(String id) {
         return disruptiveMapper.searchId(id);
     }
 
+//  판매 방해고객 등록
     @Override
     public void insertDisruptive(disruptiveDTO disruptiveDTO) {
         disruptiveMapper.insertDisruptive(disruptiveDTO);
     }
 
+//  판매 방해고객 전체/최신순 정렬
     @Override
     public List<disruptiveListDTO> SelectDisruptlist(int pageNumber) {
         int offset = (pageNumber - 1) * pageSize;
@@ -34,4 +38,16 @@ public class DisruptiveServiceImpl implements DisruptiveService {
     public int count() {
         return disruptiveMapper.count();
     }
+
+//  검색
+    @Override
+    public List<disruptiveListDTO> disruptiveSearchInquiries(int pageNumber, String dateFilter, String orderBy, String search, String searchValue) {
+        int offset = (pageNumber - 1) * pageSize;
+        return disruptiveMapper.disruptiveSearchInquiries(offset,pageSize,dateFilter,orderBy,search,searchValue);
+    }
+    @Override
+    public int searchCount(String dateFilter, String orderBy, String search, String searchValue) {
+        return disruptiveMapper.searchCount(dateFilter,orderBy,search,searchValue);
+    }
+
 }

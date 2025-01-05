@@ -18,4 +18,8 @@ public interface DisruptiveService {
 //  판매방해 등록 전체, 최신순 조회
     List<disruptiveListDTO> SelectDisruptlist(int pageNumber);
     int count();
+
+//  검색
+    List<disruptiveListDTO> disruptiveSearchInquiries(int pageNumber ,String dateFilter, String orderBy, String search, String searchValue);
+    int searchCount(String dateFilter, String orderBy, String search, String searchValue);
 }

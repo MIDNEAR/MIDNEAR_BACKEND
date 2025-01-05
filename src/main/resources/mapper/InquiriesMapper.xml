@@ -100,7 +100,7 @@
     </select>
 
 <!--  검색하기  -->
-    <select id="WriterSearchInquiries">
+    <select id="SearchInquiries">
         select
         i.inquiry_id,
         i.title,
@@ -161,7 +161,7 @@
     </select>
 
 <!-- 필터링 검색했을때 문의글 게수 -->
-    <select id="countWriter">
+    <select id="searchCount">
         select count(*) from inquiries i
         left join users u on i.user_id = u.user_id
         where 1 = 1
