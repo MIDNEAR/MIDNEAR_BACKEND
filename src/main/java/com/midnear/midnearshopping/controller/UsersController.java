@@ -2,7 +2,7 @@ package com.midnear.midnearshopping.controller;
 
 
 import com.midnear.midnearshopping.domain.dto.member.LoginDto;
-import com.midnear.midnearshopping.domain.dto.member.MemberDto;
+import com.midnear.midnearshopping.domain.dto.member.UsersDto;
 import com.midnear.midnearshopping.exception.ApiResponse;
 import com.midnear.midnearshopping.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/member")
-public class MemberController {
+public class UsersController {
     private final MemberService memberService;
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signUp(@RequestBody MemberDto memberDto) {
+    public ResponseEntity<?> signUp(@RequestBody UsersDto memberDto) {
         try {
             memberService.signUp(memberDto);
             return ResponseEntity.ok(new ApiResponse(true, "회원가입 성공", null));

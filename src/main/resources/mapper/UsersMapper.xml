@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.midnear.midnearshopping.mapper.member.MemberMapper">
-    <insert id="createMember" parameterType="MemberVO">
+<mapper namespace="com.midnear.midnearshopping.mapper.member.UsersMapper">
+    <insert id="createMember" parameterType="UsersVO">
         INSERT INTO users (
             name, id, password, phone_number, email, withdrawn, point_balance
         ) VALUES (
@@ -14,13 +14,13 @@
         FROM users
         WHERE id = #{id}
     </select>
-    <select id="getMemberById" parameterType="string" resultType="com.midnear.midnearshopping.domain.vo.member.MemberVO">
+    <select id="getMemberById" parameterType="string" resultType="com.midnear.midnearshopping.domain.vo.users.UsersVO">
         SELECT *
         FROM users
         WHERE id = #{id}
     </select>
 
-    <select id="getMemberByUserId" parameterType="int" resultType="com.midnear.midnearshopping.domain.vo.member.MemberVO">
+    <select id="getMemberByUserId" parameterType="int" resultType="com.midnear.midnearshopping.domain.vo.users.UsersVO">
         SELECT *
         FROM users
         WHERE user_id = #{userId}

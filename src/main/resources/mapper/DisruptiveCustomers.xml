@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.midnear.midnearshopping.mapper.disruptive.DisruptiveMapper">
+<!-- 제한할 아이디 검색 (제한된 아이디는 제외) -->
+    <select id="searchId">
+        select u.id
+        from users u
+                 left join disruptive_customers d on u.user_id = d.user_id
+        where u.id like CONCAT('%', #{id}, '%')
+          and (d.restriction_status != '제한됨' or d.restriction_status is null);
+    </select>
+</mapper>

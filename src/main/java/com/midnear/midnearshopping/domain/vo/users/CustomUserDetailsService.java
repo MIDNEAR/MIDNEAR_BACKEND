@@ -1,7 +1,7 @@
-package com.midnear.midnearshopping.domain.vo.member;
+package com.midnear.midnearshopping.domain.vo.users;
 
-import com.midnear.midnearshopping.domain.dto.member.MemberDto;
-import com.midnear.midnearshopping.mapper.member.MemberMapper;
+import com.midnear.midnearshopping.domain.dto.member.UsersDto;
+import com.midnear.midnearshopping.mapper.member.UsersMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,15 +13,15 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
-    private final MemberMapper memberMapper;
+    private final UsersMapper memberMapper;
 
     @Override
     public UserDetails loadUserByUsername(String id) {
-        MemberVO member = memberMapper.getMemberById(id);
+        UsersVO member = memberMapper.getMemberById(id);
         if(member == null){
             throw new UsernameNotFoundException("해당하는 유저가 없습니다.");
         }
-        MemberDto dto = MemberDto.toDto(member);
+        UsersDto dto = UsersDto.toDto(member);
         return new CustomUserDetails(dto);
     }
 }
