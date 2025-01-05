@@ -6,6 +6,7 @@ import com.midnear.midnearshopping.domain.dto.Inquiries.Inquiry_commentsDTO;
 import com.midnear.midnearshopping.mapper.Inquiries.InquiriesMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -59,15 +60,16 @@ public class InquirieServiceImpl implements InquirieService {
 
 //  문의 게시글 검색
     @Override
-    public List<InquiriesListDTO> WriterSearchInquiries(int pageNumber,String search, String dateFilter, String orderBy,String searchValue) {
+    public List<InquiriesListDTO> SearchInquiries(int pageNumber,String search, String dateFilter, String orderBy,String searchValue) {
         int offset = (pageNumber - 1) * pageSize;
-        return inquiriesMapper.WriterSearchInquiries(offset,pageSize,search,dateFilter,orderBy,searchValue);
+        return inquiriesMapper.SearchInquiries(offset,pageSize,search,dateFilter,orderBy,searchValue);
     }
     @Override
-    public int countWriter(String search, String dateFilter, String orderBy,String searchValue) {
-        return inquiriesMapper.countWriter(search,dateFilter,orderBy,searchValue);
+    public int searchCount(String search, String dateFilter, String orderBy,String searchValue) {
+        return inquiriesMapper.searchCount(search,dateFilter,orderBy,searchValue);
     }
-
+//  문의 게시글 삭제
+    @Transactional
     @Override
     public void deleteInquiriy(List<Integer> inquiryId) {
         for(int i = 0; i<inquiryId.size(); i++) {

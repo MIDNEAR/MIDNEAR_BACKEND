@@ -1,6 +1,6 @@
 package com.midnear.midnearshopping.jwt;
 
-import com.midnear.midnearshopping.domain.dto.member.MemberDto;
+import com.midnear.midnearshopping.domain.dto.member.UsersDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -28,12 +28,12 @@ public class JwtUtil {
         this.accessTokenExpTime = accessTokenExpTime;
     }
 
-    public String createAccessToken(MemberDto member) {
+    public String createAccessToken(UsersDto member) {
         return createToken(member, accessTokenExpTime);
     }
 
 
-    private String createToken(MemberDto member, long expireTime) {
+    private String createToken(UsersDto member, long expireTime) {
         Claims claims = Jwts.claims();
         claims.put("userId", member.getUserId()); //유저아이디 1인걸로 관리자 구분할거래서.. 클레임에 넣었습니다
         claims.put("id", member.getId());

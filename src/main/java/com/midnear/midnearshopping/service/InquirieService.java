@@ -28,9 +28,10 @@ public interface InquirieService {
     int countReply(String hasReply);
 
 //   문의 게시글 검색
-     List<InquiriesListDTO>WriterSearchInquiries(int pageNumber,String search ,String dateFilter, String orderBy,String searchValue);
-     int countWriter(String search ,String dateFilter, String orderBy,String searchValue);
+     List<InquiriesListDTO>SearchInquiries(int pageNumber,String search ,String dateFilter, String orderBy,String searchValue);
+     int searchCount(String search ,String dateFilter, String orderBy,String searchValue);
 
 //   문의 게시글 삭제
      void deleteInquiriy(List<Integer> inquiryId);
+
 }

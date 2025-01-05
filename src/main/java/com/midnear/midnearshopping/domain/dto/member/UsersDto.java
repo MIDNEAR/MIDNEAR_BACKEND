@@ -1,8 +1,7 @@
 package com.midnear.midnearshopping.domain.dto.member;
 
-import com.midnear.midnearshopping.domain.vo.member.MemberVO;
+import com.midnear.midnearshopping.domain.vo.users.UsersVO;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +11,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberDto {
+public class UsersDto {
     private Integer userId;
     @NotBlank(message = "이름을 입력해주세요")
     private String name;
@@ -25,8 +24,8 @@ public class MemberDto {
     @NotBlank(message = "이메일을 입력해주세요")
     private String email;
 
-    public static MemberDto toDto(MemberVO member) {
-        return new MemberDto(
+    public static UsersDto toDto(UsersVO member) {
+        return new UsersDto(
                 member.getUserId(),
                 member.getName(),
                 member.getId(),
