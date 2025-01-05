@@ -13,11 +13,33 @@
 
 <!-- 제한 id 사유와 함께 등록 -->
     <insert id="insertDisruptive">
-        insert into disruptive_customers(restriction_reason,restriction_status,user_id)
-        select '제한됨', #{restrictionReason},u.user_id
+        insert into disruptive_customers(restriction_reason,restriction_status,user_id,created_at)
+        select '제한됨', #{restrictionReason},u.user_id,NOW()
         from users u
         where u.id = #{id};
     </insert>
 
+<!--판매방해 고객 List 필터링 전체, 최신순-->
+    <select id="SelectDisruptlist">
+        select
+            restriction_reason
+            restriction_status,user_id
+            i.inquiry_id,
+            i.title,
+            i.content,
+            i.created_at,
+            i.view_count,
+            i.has_reply,
+            u.id
+        from inquiries i
+                 left join users u on i.user_id = u.user_id
+        order by i.created_at desc
+            LIMIT #{pageSize} OFFSET #{offset}
+    </select>
+
+<!--  전체 List 개수  -->
+    <select id="count" resultType="int">
+        select count(*) from inquiries
+    </select>
 
 </mapper>
