@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.midnear.midnearshopping.mapper.InquiriesMapper">
-<!-- 문의 게시글 조회 -->
-    <select id="selectInquiries" resultType="com.midnear.midnearshopping.domain.dto.Inquiries.InquiriesDTO">
+<mapper namespace="com.midnear.midnearshopping.mapper.Inquiries.InquiriesMapper">
+<!-- 문의 게시글 -->
+    <select id="selectInquiries">
         select
             i.inquiry_id,
             i.title,
@@ -38,4 +38,175 @@
             reply_date = #{replyDate}
         where comment_id = #{commentId}
     </update>
+
+<!--문의 List 필터링 전체, 최신순-->
+    <select id="SelectInquirylist">
+        select
+            i.inquiry_id,
+            i.title,
+            i.content,
+            i.created_at,
+            i.view_count,
+            i.has_reply,
+            u.id
+        from inquiries i
+                 left join users u on i.user_id = u.user_id
+        order by i.created_at desc
+            LIMIT #{pageSize} OFFSET #{offset}
+    </select>
+
+<!--  전체 List 개수  -->
+    <select id="count" resultType="int">
+        select count(*) from inquiries
+    </select>
+
+<!-- 답글대기, 답글 완료 필터링 -->
+    <select id="SelectReplyInquirylist">
+        select
+        i.inquiry_id,
+        i.title,
+        i.content,
+        i.created_at,
+        i.view_count,
+        i.has_reply,
+        u.id
+        from inquiries i
+        left join users u on i.user_id = u.user_id
+        where 1 = 1
+        <!-- hasReply 값이 '대기중'인 경우 -->
+        <if test="hasReply == '대기중'">
+            and i.has_reply = '대기중'
+        </if>
+        <!-- hasReply 값이 '응답완료'인 경우 -->
+        <if test="hasReply == '완료'">
+            and i.has_reply = '완료'
+        </if>
+         order by i.created_at desc
+        LIMIT #{pageSize} OFFSET #{offset}
+    </select>
+
+<!--답글 대기중/완료 개수-->
+    <select id="countReply">
+        select count(*) from inquiries i
+        where 1 = 1
+        <!-- hasReply 값이 '대기중'인 경우 -->
+        <if test="hasReply == '대기중'">
+            and i.has_reply = '대기중'
+        </if>
+        <!-- hasReply 값이 '응답완료'인 경우 -->
+        <if test="hasReply == '완료'">
+            and i.has_reply = '완료'
+        </if>
+    </select>
+
+<!--  검색하기  -->
+    <select id="WriterSearchInquiries">
+        select
+        i.inquiry_id,
+        i.title,
+        i.content,
+        i.created_at,
+        i.view_count,
+        i.has_reply,
+        u.id
+        from inquiries i
+        left join users u on i.user_id = u.user_id
+        where 1 = 1
+        <!-- 날짜 필터링 -->
+        <if test="dateFilter == '오늘'">
+            and i.created_at >= CURDATE()
+        </if>
+        <if test="dateFilter == '일주일'">
+            and i.created_at >= CURDATE() - interval 7 day
+        </if>
+        <if test="dateFilter == '1개월'">
+            and i.created_at >= CURDATE() - interval 1 month
+        </if>
+        <if test="dateFilter == '3개월'">
+            and i.created_at >= CURDATE() - interval 3 month
+        </if>
+        <if test="dateFilter == '1년'">
+            and i.created_at >= CURDATE() - interval 1 year
+        </if>
+
+        <!-- 검색 조건 -->
+        <if test="search != null">
+            and (
+            <choose>
+                <when test="search == '작성자'">
+                    u.id like CONCAT('%', #{searchValue}, '%')
+                </when>
+                <when test="search == '제목'">
+                    i.title like CONCAT('%', #{searchValue}, '%')
+                </when>
+                <when test="search == '내용'">
+                    i.content like CONCAT('%', #{searchValue}, '%')
+                </when>
+            </choose>
+            )
+        </if>
+
+        <!-- 정렬 조건 -->
+        <if test="orderBy == '최신순'">
+            order by i.created_at desc
+        </if>
+        <if test="orderBy == '오래된순'">
+            order by  i.created_at asc
+        </if>
+        <if test="orderBy == '조회순'">
+            order by  i.view_count DESC
+        </if>
+
+        LIMIT #{pageSize} offset #{offset}
+    </select>
+
+<!-- 필터링 검색했을때 문의글 게수 -->
+    <select id="countWriter">
+        select count(*) from inquiries i
+        left join users u on i.user_id = u.user_id
+        where 1 = 1
+
+        <!-- 작성 날짜 필터링 -->
+        <if test="dateFilter == '오늘'">
+            and i.created_at >= CURDATE()
+        </if>
+        <if test="dateFilter == '일주일'">
+            and i.created_at >= CURDATE() - interval 7 day
+        </if>
+        <if test="dateFilter == '1개월'">
+            and i.created_at >= CURDATE() - interval 1 month
+        </if>
+        <if test="dateFilter == '3개월'">
+            and i.created_at >= CURDATE() - interval 3 month
+        </if>
+        <if test="dateFilter == '1년'">
+            and i.created_at >= CURDATE() - interval 1 year
+        </if>
+
+
+        <!-- 검색 조건 -->
+        <if test="search != null">
+            and (
+            <choose>
+                <when test="search == '작성자'">
+                    u.id like CONCAT('%', #{searchValue}, '%')
+                </when>
+                <when test="search == '제목'">
+                    i.title like CONCAT('%', #{searchValue}, '%')
+                </when>
+                <when test="search == '내용'">
+                    i.content like CONCAT('%', #{searchValue}, '%')
+                </when>
+            </choose>
+            )
+        </if>
+
+    </select>
+
+<!-- 문의글 삭제 -->
+    <delete id="deleteInquiriy">
+        delete from inquiries
+        where inquiry_id = #{inquiryId}
+    </delete>
+
 </mapper>
