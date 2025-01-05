@@ -31,4 +31,7 @@ public interface InquiriesMapper {
 // 문의 게시글 검색
    List<InquiriesListDTO> WriterSearchInquiries(@Param("offset") int offset, @Param("pageSize") int pageSize, @Param("search")String search,@Param("dateFilter")String dateFilter ,@Param("orderBy")String orderBy,@Param("searchValue")String searchValue);
    int countWriter(@Param("search")String search,@Param("dateFilter")String dateFilter ,@Param("orderBy")String orderBy,@Param("searchValue")String searchValue);
+
+// 문의 게시글 삭제
+   void deleteInquiriy(int inquiryId);
 }

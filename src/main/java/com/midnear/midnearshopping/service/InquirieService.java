@@ -23,7 +23,6 @@ public interface InquirieService {
     List<InquiriesListDTO> SelectInquirylist(int pageNumber);
     int count();
 
-
 //  문의 게시글 답글 완료/대기 필터링
     List<InquiriesListDTO> SelectReplyInquirylist(int pageNumber, String hasReply);
     int countReply(String hasReply);
@@ -31,4 +30,7 @@ public interface InquirieService {
 //   문의 게시글 검색
      List<InquiriesListDTO>WriterSearchInquiries(int pageNumber,String search ,String dateFilter, String orderBy,String searchValue);
      int countWriter(String search ,String dateFilter, String orderBy,String searchValue);
+
+//   문의 게시글 삭제
+     void deleteInquiriy(List<Integer> inquiryId);
 }

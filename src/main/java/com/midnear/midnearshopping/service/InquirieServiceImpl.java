@@ -68,4 +68,11 @@ public class InquirieServiceImpl implements InquirieService {
         return inquiriesMapper.countWriter(search,dateFilter,orderBy,searchValue);
     }
 
+    @Override
+    public void deleteInquiriy(List<Integer> inquiryId) {
+        for(int i = 0; i<inquiryId.size(); i++) {
+            inquiriesMapper.deleteInquiriy(inquiryId.get(i));
+        }
+    }
+
 }

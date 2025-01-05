@@ -40,7 +40,11 @@ public class InquirieController {
         Date today = new Date(System.currentTimeMillis());
         inquiryCommentsDTO.setReplyDate(today);
         inquirieService.insertInquirieComment(inquiryCommentsDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body("댓글이 성공적으로 등록되었습니다.");
+        if (inquiryCommentsDTO != null) {
+            return ResponseEntity.status(HttpStatus.CREATED).body("댓글이 성공적으로 등록되었습니다.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
 //  문의글 댓글 수정
@@ -49,12 +53,16 @@ public class InquirieController {
         Date today = new Date(System.currentTimeMillis());
         inquiryCommentsDTO.setReplyDate(today);
         inquirieService.updateInquiryComment(inquiryCommentsDTO);
-        return ResponseEntity.ok("댓글이 성공적으로 수정되었습니다.");
+        if (inquiryCommentsDTO != null) {
+            return ResponseEntity.ok("댓글이 성공적으로 수정되었습니다.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
 //  문의List 전체, 최신순 필터링
     @GetMapping("/getInquiryList")
-    public  ResponseEntity<Map<String, Object>> list(@RequestParam(value = "page", defaultValue = "1") int pageNumber) {
+    public ResponseEntity<Map<String, Object>> list(@RequestParam(value = "page", defaultValue = "1") int pageNumber) {
 
         //      페이징 번호에 맞는 문의글 List
         List<InquiriesListDTO> inquiryList = inquirieService.SelectInquirylist(pageNumber);
@@ -78,7 +86,7 @@ public class InquirieController {
 
 //  문의List 답글 완료/대기 필터링
     @GetMapping("/getInquiryReplyList")
-    public  ResponseEntity<Map<String, Object>> Inquirylist(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "hasReply")  String hasReply) {
+    public ResponseEntity<Map<String, Object>> Inquirylist(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "hasReply")  String hasReply) {
 
         //      페이징 번호에 맞는 문의글 List
         List<InquiriesListDTO> inquiryList = inquirieService.SelectReplyInquirylist(pageNumber,hasReply);
@@ -101,7 +109,7 @@ public class InquirieController {
 
 //  문의List 사람으로 검색
     @GetMapping("/getInquiryWriterList")
-    public  ResponseEntity<Map<String, Object>> WriterSearchInquiries(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "search")String search, @RequestParam(value = "dateFilter")  String dateFilter, @RequestParam(value = "orderBy")String orderBy, @RequestParam(value = "searchValue")String searchValue) {
+    public ResponseEntity<Map<String, Object>> WriterSearchInquiries(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "search")String search, @RequestParam(value = "dateFilter")  String dateFilter, @RequestParam(value = "orderBy")String orderBy, @RequestParam(value = "searchValue")String searchValue) {
 
         //      페이징 번호에 맞는 문의글 List
         List<InquiriesListDTO> inquiryList = inquirieService.WriterSearchInquiries(pageNumber,search,dateFilter,orderBy,searchValue);
@@ -122,5 +130,14 @@ public class InquirieController {
         return ResponseEntity.ok(response);
     }
 
-
+//  문의글 전체/부분삭제
+    @DeleteMapping("/deleteInquiryList")
+    ResponseEntity<String> deleteInquiriy( @RequestBody List<Integer> inquiryId){
+        inquirieService.deleteInquiriy(inquiryId);
+        if (inquiryId != null) {
+            return ResponseEntity.status(HttpStatus.CREATED).body("문의글이 삭제되었습니다.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
 }

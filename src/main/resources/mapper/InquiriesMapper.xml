@@ -203,7 +203,10 @@
 
     </select>
 
-
-
+<!-- 문의글 삭제 -->
+    <delete id="deleteInquiriy">
+        delete from inquiries
+        where inquiry_id = #{inquiryId}
+    </delete>
 
 </mapper>
