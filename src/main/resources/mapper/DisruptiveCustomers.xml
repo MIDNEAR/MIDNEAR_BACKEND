@@ -22,24 +22,19 @@
 <!--판매방해 고객 List 필터링 전체, 최신순-->
     <select id="SelectDisruptlist">
         select
-            restriction_reason
-            restriction_status,user_id
-            i.inquiry_id,
-            i.title,
-            i.content,
-            i.created_at,
-            i.view_count,
-            i.has_reply,
-            u.id
-        from inquiries i
-                 left join users u on i.user_id = u.user_id
-        order by i.created_at desc
+            u.id,
+            d.restriction_reason,
+            d.created_at
+        from disruptive_customers d
+                 inner join users u on d.user_id = u.user_id
+        where d.restriction_status = '제한됨'
+        order by d.created_at desc
             LIMIT #{pageSize} OFFSET #{offset}
     </select>
 
 <!--  전체 List 개수  -->
     <select id="count" resultType="int">
-        select count(*) from inquiries
+        select count(*) from disruptive_customers
     </select>
 
 </mapper>
