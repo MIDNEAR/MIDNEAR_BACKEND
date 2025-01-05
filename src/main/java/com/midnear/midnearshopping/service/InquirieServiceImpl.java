@@ -6,6 +6,7 @@ import com.midnear.midnearshopping.domain.dto.Inquiries.Inquiry_commentsDTO;
 import com.midnear.midnearshopping.mapper.Inquiries.InquiriesMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -68,6 +69,7 @@ public class InquirieServiceImpl implements InquirieService {
         return inquiriesMapper.searchCount(search,dateFilter,orderBy,searchValue);
     }
 //  문의 게시글 삭제
+    @Transactional
     @Override
     public void deleteInquiriy(List<Integer> inquiryId) {
         for(int i = 0; i<inquiryId.size(); i++) {

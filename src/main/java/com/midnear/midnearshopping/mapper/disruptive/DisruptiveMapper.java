@@ -23,4 +23,6 @@ public interface DisruptiveMapper {
     List<disruptiveListDTO> disruptiveSearchInquiries(@Param("offset") int offset, @Param("pageSize") int pageSize, @Param("dateFilter")String dateFilter, @Param("orderBy")String orderBy, @Param("search")String search ,@Param("searchValue")String searchValue);
     int searchCount(@Param("dateFilter")String dateFilter, @Param("orderBy")String orderBy, @Param("search")String search, @Param("searchValue")String searchValue);
 
+//  판매방해 고객 제한 해제
+    void deleteDisrupt(int disruptiveCustomerId);
 }

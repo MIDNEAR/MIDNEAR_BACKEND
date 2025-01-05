@@ -24,7 +24,8 @@
         select
             u.id,
             d.restriction_reason,
-            d.created_at
+            d.created_at,
+            d.disruptive_customer_id
         from disruptive_customers d
                  inner join users u on d.user_id = u.user_id
         where d.restriction_status = '제한됨'
@@ -42,7 +43,8 @@
         select
         u.id,
         d.restriction_reason,
-        d.created_at
+        d.created_at,
+        d.disruptive_customer_id
         from disruptive_customers d
         left join users u on d.user_id = u.user_id
         where d.restriction_status = '제한됨'
@@ -128,5 +130,9 @@
         </if>
     </select>
 
-
+<!-- 판매방해 고객 제한 해제 -->
+    <delete id="deleteDisrupt">
+        delete from disruptive_customers
+        where disruptive_customer_id = #{disruptiveCustomerId}
+    </delete>
 </mapper>

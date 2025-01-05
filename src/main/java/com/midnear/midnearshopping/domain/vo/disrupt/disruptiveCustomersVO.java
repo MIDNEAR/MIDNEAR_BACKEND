@@ -3,6 +3,8 @@ package com.midnear.midnearshopping.domain.vo.disrupt;
 import lombok.*;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
+
 @Component
 @Getter
 @ToString
@@ -14,4 +16,5 @@ public class disruptiveCustomersVO {
     String restrictionReason;
     String restrictionStatus;
     Long userId;
+    Date created_at;
 }

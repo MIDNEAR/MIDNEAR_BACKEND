@@ -104,6 +104,20 @@ public class DisruptiveController {
                         .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
             }
     }
+
+//  판매방해 고객 제한해제
+    @DeleteMapping("/deleteDisruptSearchList")
+    public ResponseEntity<ApiResponse> deleteDisrupt(@RequestBody List<Integer> disruptiveCustomerId){
+        try {
+            disruptiveService.deleteDisrupt(disruptiveCustomerId);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "성공적으로 삭제되었습니다.", null));
+        }
+        catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
 }
 
 

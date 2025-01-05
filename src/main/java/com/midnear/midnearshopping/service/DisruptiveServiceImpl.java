@@ -50,4 +50,12 @@ public class DisruptiveServiceImpl implements DisruptiveService {
         return disruptiveMapper.searchCount(dateFilter,orderBy,search,searchValue);
     }
 
+    @Override
+    @Transactional
+    public void deleteDisrupt(List<Integer> disruptiveCustomerId) {
+        for(int i=0; i<disruptiveCustomerId.size(); i++){
+            disruptiveMapper.deleteDisrupt(disruptiveCustomerId.get(i));
+        }
+    }
+
 }

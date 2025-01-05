@@ -11,4 +11,5 @@ public class disruptiveListDTO {
     String id;
     String restrictionReason;
     Date createdAt;
+    Long disruptiveCustomerId;
 }
