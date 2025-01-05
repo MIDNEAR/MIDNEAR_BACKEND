@@ -6,8 +6,6 @@ import org.springframework.stereotype.Component;
 @Component
 @Data
 public class disruptiveDTO {
-    Long disruptiveCustomerId;
+    String id;
     String restrictionReason;
-    String restrictionStatus;
-    Long userId;
 }

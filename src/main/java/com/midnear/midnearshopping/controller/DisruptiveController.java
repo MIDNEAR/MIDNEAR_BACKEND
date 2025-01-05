@@ -1,4 +1,5 @@
 package com.midnear.midnearshopping.controller;
+import com.midnear.midnearshopping.domain.dto.disruptive.disruptiveDTO;
 import com.midnear.midnearshopping.exception.ApiResponse;
 import com.midnear.midnearshopping.service.DisruptiveService;
 import lombok.RequiredArgsConstructor;
@@ -28,5 +29,16 @@ public class DisruptiveController {
         }
     }
 
+    @PostMapping("/insertDisrupt")
+    public ResponseEntity<ApiResponse> insertDisruptive(@RequestBody disruptiveDTO disruptiveDTO){
+        try {
+            disruptiveService.insertDisruptive(disruptiveDTO);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "제한 아이디 등록 성공.", null));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
 
 }

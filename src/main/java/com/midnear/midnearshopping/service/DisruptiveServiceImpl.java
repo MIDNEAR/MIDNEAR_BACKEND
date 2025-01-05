@@ -1,5 +1,6 @@
 package com.midnear.midnearshopping.service;
 
+import com.midnear.midnearshopping.domain.dto.disruptive.disruptiveDTO;
 import com.midnear.midnearshopping.mapper.disruptive.DisruptiveMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,5 +15,10 @@ public class DisruptiveServiceImpl implements DisruptiveService {
     @Override
     public List<String> searchId(String id) {
         return disruptiveMapper.searchId(id);
+    }
+
+    @Override
+    public void insertDisruptive(disruptiveDTO disruptiveDTO) {
+        disruptiveMapper.insertDisruptive(disruptiveDTO);
     }
 }

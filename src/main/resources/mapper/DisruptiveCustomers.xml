@@ -10,4 +10,14 @@
         where u.id like CONCAT('%', #{id}, '%')
           and (d.restriction_status != '제한됨' or d.restriction_status is null);
     </select>
+
+<!-- 제한 id 사유와 함께 등록 -->
+    <insert id="insertDisruptive">
+        insert into disruptive_customers(restriction_reason,restriction_status,user_id)
+        select '제한됨', #{restrictionReason},u.user_id
+        from users u
+        where u.id = #{id};
+    </insert>
+
+
 </mapper>
