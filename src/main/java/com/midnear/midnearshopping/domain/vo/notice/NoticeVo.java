@@ -1,12 +1,13 @@
-package com.midnear.midnearshopping.domain.vo;
+package com.midnear.midnearshopping.domain.vo.notice;
 
 import com.midnear.midnearshopping.domain.dto.notice.NoticeDto;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -22,6 +23,8 @@ public class NoticeVo {
 
     private Boolean fix;
 
+    private List<MultipartFile> files;
+
     public static NoticeVo toEntity(NoticeDto noticeDto) {
         return NoticeVo.builder()
                 .noticeId(noticeDto.getNoticeId())
@@ -29,6 +32,7 @@ public class NoticeVo {
                 .content(noticeDto.getContent())
                 .createdDate(noticeDto.getCreatedDate())
                 .fix(noticeDto.getFix())
+                .files(noticeDto.getFiles())
                 .build();
     }
 

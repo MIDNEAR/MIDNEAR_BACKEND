@@ -1,14 +1,17 @@
 package com.midnear.midnearshopping.controller;
 
 import com.midnear.midnearshopping.domain.dto.notice.NoticeDto;
-import com.midnear.midnearshopping.domain.vo.NoticeVo;
+import com.midnear.midnearshopping.domain.vo.notice.NoticeVo;
 import com.midnear.midnearshopping.exception.ApiResponse;
 import com.midnear.midnearshopping.service.NoticeService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.ibatis.javassist.NotFoundException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -18,15 +21,16 @@ import java.util.List;
 public class NoticeController {
     private final NoticeService noticeService;
 
-    @PostMapping("/write")
-    public ResponseEntity<ApiResponse> writeNotice(@RequestBody NoticeDto noticeDto) {
+    @PostMapping(value = "/write", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ApiResponse> writeNotice(
+            @ModelAttribute @Valid NoticeDto noticeDto) {
         try {
             noticeService.writeNotice(noticeDto);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "작성이 완료되었습니다.", null));
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+                    .body(new ApiResponse(false, ex.getMessage(), null));
         }
     }
 
