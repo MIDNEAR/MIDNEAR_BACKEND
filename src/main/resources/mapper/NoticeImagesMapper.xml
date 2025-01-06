@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.midnear.midnearshopping.mapper.notice.NoticeImagesMapper">
+    <insert id="uploadNoticeImages">
+        INSERT INTO notice_images (
+        image_url, file_size, extension, image_creation_date, notice_id
+        ) VALUES (
+        #{imageUrl}, #{fileSize}, #{extension}, NOW(), #{noticeId}
+        )
+    </insert>
+</mapper>

@@ -1,9 +1,12 @@
 package com.midnear.midnearshopping.domain.dto.notice;
 
-import com.midnear.midnearshopping.domain.vo.NoticeVo;
+import com.midnear.midnearshopping.domain.vo.notice.NoticeVo;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -13,16 +16,18 @@ import java.util.Date;
 public class NoticeDto {
     private Integer noticeId;
 
+    @NotNull(message = "제목을 입력해주세요.")
     private String title;
 
+    @NotNull(message = "내용을 입력해주세요.")
     private String content;
 
     private Date createdDate;
 
     private Boolean fix;
 
-    //NOT NULL이 안 걸려있어서 제목이나 내용이 NULL이 들어갈 수 있는데
-    //이떄 기본값으로 "No content"를 넣을까요,,?
+    private List<MultipartFile> files;
+
     public static NoticeDto toDto(NoticeVo notice) {
         return NoticeDto.builder()
                 .noticeId(notice.getNoticeId())
@@ -30,6 +35,7 @@ public class NoticeDto {
                 .content(notice.getContent())
                 .createdDate(notice.getCreatedDate())
                 .fix(notice.getFix())
+                .files(notice.getFiles())
                 .build();
     }
 }

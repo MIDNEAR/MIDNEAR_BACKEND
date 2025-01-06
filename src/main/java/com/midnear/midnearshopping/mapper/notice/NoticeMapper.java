@@ -1,6 +1,6 @@
 package com.midnear.midnearshopping.mapper.notice;
 
-import com.midnear.midnearshopping.domain.vo.NoticeVo;
+import com.midnear.midnearshopping.domain.vo.notice.NoticeVo;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
