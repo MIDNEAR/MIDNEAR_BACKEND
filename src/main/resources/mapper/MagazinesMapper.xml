@@ -121,4 +121,38 @@
         where magazine_id = #{magazineId}
     </delete>
 
+<!-- 매거진 등록 -->
+    <insert id="insertMagazine" useGeneratedKeys="true" keyProperty="magazineId">
+        insert into magazines (title, content, created_date, view_count ,main_image)
+        values ( #{title}, #{content}, NOW(),#{viewCount}, #{mainImage})
+    </insert>
+
+<!-- 매거진 이미지 등록-->
+    <insert id="uploadMagazineImages">
+        insert into magazine_images (image_url, file_size, extension, creation_date, magazine_id)
+        values (#{imageUrl}, #{fileSize}, #{extension}, NOW(), #{magazineId})
+    </insert>
+
+<!-- 작성한 메거진 가져오기 -->
+    <select id="selectMagazine">
+        select * from magazines
+        where magazine_id = #{magazineId}
+    </select>
+
+<!-- 작성한 매거진 수정하기 -->
+    <update id="updateMagazine">
+        update magazines
+        set
+            title = #{title},
+            content = #{content},
+            created_date = NOW(),
+            main_image = #{mainImage}
+        where magazine_id = #{magazineId}
+    </update>
+
+<!-- 기존 매거진 이미지 정보 가져오기 -->
+    <select id="selectMagazineImage">
+        select * from magazine_images
+        where magazine_id = #{magazineId}
+    </select>
 </mapper>

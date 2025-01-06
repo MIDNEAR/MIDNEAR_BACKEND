@@ -1,6 +1,10 @@
 package com.midnear.midnearshopping.mapper.magazines;
 
+import com.midnear.midnearshopping.domain.dto.magazines.MagazineImagesDTO;
+import com.midnear.midnearshopping.domain.dto.magazines.MagazinesDTO;
 import com.midnear.midnearshopping.domain.dto.magazines.MagazinesListDTO;
+import com.midnear.midnearshopping.domain.vo.magazines.MagazineImagesVO;
+import com.midnear.midnearshopping.domain.vo.magazines.MagazinesVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -19,4 +23,19 @@ public interface magazinesMapper {
 
 //  삭제기능
     void deleteMagazines(int magazineId);
+
+//  매거진 게시글 등록
+    void insertMagazine(MagazinesVO magazinesVO);
+
+//  매거진 이미지 등록
+    void uploadNoticeImages(MagazineImagesVO magazineImagesVO);
+
+//  작성한 매거진 가져오기
+    MagazinesDTO selectMagazine(Long magazineId);
+
+//  작성한 매거진 수정하기
+    void updateMagazine(MagazinesVO magazinesVO);
+
+//
+    List<MagazineImagesDTO> selectMagazineImage(Long magazineId);
 }

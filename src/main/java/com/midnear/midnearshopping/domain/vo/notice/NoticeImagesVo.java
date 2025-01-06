@@ -14,7 +14,7 @@ public class NoticeImagesVo {
 
     private String imageUrl;
 
-    private int fileSize;
+    private Long fileSize;
 
     private String extension;
 

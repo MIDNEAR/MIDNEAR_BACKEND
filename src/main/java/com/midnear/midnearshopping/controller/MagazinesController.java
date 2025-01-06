@@ -1,12 +1,15 @@
 package com.midnear.midnearshopping.controller;
 
 import com.midnear.midnearshopping.domain.dto.disruptive.disruptiveListDTO;
+import com.midnear.midnearshopping.domain.dto.magazines.MagazinesDTO;
 import com.midnear.midnearshopping.domain.dto.magazines.MagazinesListDTO;
 import com.midnear.midnearshopping.exception.ApiResponse;
 import com.midnear.midnearshopping.service.MagazinesService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -78,6 +81,8 @@ public class MagazinesController {
                     .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
         }
     }
+
+//  매거진 전체/부분 삭제
     @DeleteMapping("/deleteMagazines")
     public ResponseEntity<ApiResponse> deleteMagazine(@RequestBody List<Integer> magazineId){
         try {
@@ -91,4 +96,34 @@ public class MagazinesController {
                     .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
         }
     }
+
+//  매거진 작성
+    @PostMapping(value = "/insertMagazine",consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ApiResponse> insertMagazine(@ModelAttribute @Valid MagazinesDTO magazinesDTO){
+        try {
+            magazinesService.insertMagazine(magazinesDTO);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "작성이 완료되었습니다.", null));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, ex.getMessage(), null));
+        }
+    }
+
+// 작성한 매거진 가져오기
+    @GetMapping("/selectMagazine")
+    public ResponseEntity<ApiResponse> selectMagazine(@PathVariable Long magazineId){
+        try {
+           MagazinesDTO magazines =  magazinesService.selectMagazine(magazineId);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "불러오기에 성공했습니다.", magazines));
+        }
+        catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
+
+// 작성한 메거진 수정하기
+
 }

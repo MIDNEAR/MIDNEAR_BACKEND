@@ -1,5 +1,7 @@
 package com.midnear.midnearshopping.domain.vo.magazines;
 
+import com.midnear.midnearshopping.domain.dto.magazines.MagazineImagesDTO;
+import com.midnear.midnearshopping.domain.dto.magazines.MagazinesDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,4 +20,13 @@ public class MagazineImagesVO {
     String extension;
     Date creationDate;
     Long magazineId;
+
+    public static MagazineImagesVO toVO(MagazineImagesDTO magazineImagesDTO) {
+        return MagazineImagesVO.builder()
+                .imageUrl(magazineImagesDTO.getImageUrl())
+                .fileSize(magazineImagesDTO.getFileSize())
+                .extension(magazineImagesDTO.getExtension())
+                .magazineId(magazineImagesDTO.getMagazineId())
+                .build();
+    }
 }

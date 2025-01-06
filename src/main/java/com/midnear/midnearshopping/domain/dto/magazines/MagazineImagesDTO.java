@@ -9,10 +9,10 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class MagazinesListDTO {
+public class MagazineImagesDTO {
+    private String imageUrl;
+    private Long fileSize;
+    private String extension;
+    private Date creationDate;
     private Long magazineId;
-    private String title;
-    private String content;
-    private Date createdDate;
-    private Long viewCount;
 }
