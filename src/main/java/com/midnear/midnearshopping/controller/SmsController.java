@@ -24,8 +24,12 @@ public class SmsController {
 
     @PostMapping("/send")
     public ResponseEntity<?> SendSMS(@RequestBody @Valid SmsRequestDto smsRequestDto){
-        smsService.sendSms(smsRequestDto);
-        return ResponseEntity.ok(new ApiResponse(true, "인증 문자 전송 완료", null));
+        try{
+            smsService.sendSms(smsRequestDto);
+            return ResponseEntity.ok(new ApiResponse(true, "인증 문자 전송 완료", null));
+        } catch (IllegalArgumentException ex){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, ex.getMessage(), null));
+        }
     }
 
     @PostMapping("/verify")
