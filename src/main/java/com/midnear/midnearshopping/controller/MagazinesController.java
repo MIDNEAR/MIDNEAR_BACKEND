@@ -24,9 +24,9 @@ import java.util.Map;
 public class MagazinesController {
     private final MagazinesService magazinesService;
 
-//  매거진 List 전체 / 최신순 조회
+    //  매거진 List 전체 / 최신순 조회
     @GetMapping("/getMagazineList")
-    public ResponseEntity<ApiResponse> getMagazineList(@RequestParam(value = "pageNumber", defaultValue = "1") int pageNumber){
+    public ResponseEntity<ApiResponse> getMagazineList(@RequestParam(value = "pageNumber", defaultValue = "1") int pageNumber) {
         try {
             //      페이징 번호에 맞는 문의글 List
             List<MagazinesListDTO> magazinesList = magazinesService.selectMagazineList(pageNumber);
@@ -47,6 +47,35 @@ public class MagazinesController {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "성공적으로 조회되었습니다.", response));
 
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
+
+    //  매거진 List 필터링 검색
+    @GetMapping("/getMagazineSearchList")
+    public ResponseEntity<ApiResponse> getMagazineSearchList(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "dateFilter") String dateFilter, @RequestParam(value = "orderBy") String orderBy, @RequestParam(value = "search") String search, @RequestParam(value = "searchValue") String searchValue) {
+
+        try {
+            //      페이징 번호에 맞는  List
+            List<MagazinesListDTO> magazineList = magazinesService.magazineSearch(pageNumber, dateFilter, orderBy, search, searchValue);
+
+            //      총 게시물 수
+            int totalCount = magazinesService.searchCount(dateFilter, orderBy, search, searchValue);
+
+            //      총 페이지 수
+            int totalPages = (int) Math.ceil((double) totalCount / 2);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("magazinList", magazineList);
+            response.put("currentPage", pageNumber);
+            response.put("totalPages", totalPages);
+            response.put("totalCount", totalCount);
+
+            // 200 OK 응답으로 JSON 반환
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "성공적으로 조회되었습니다.", response));
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));

@@ -25,5 +25,17 @@ public class MagazinesServiceImpl implements MagazinesService {
         return magazinesMapper.count();
     }
 
+//  매거진 목록 필터링 검색
+    @Override
+    public List<MagazinesListDTO> magazineSearch(int pageNumber, String dateFilter, String orderBy, String search, String searchValue) {
+        int offset = (pageNumber - 1) * pageSize;
+        return magazinesMapper.magazineSearch(offset,pageSize,dateFilter,orderBy,search,searchValue);
+    }
+
+    @Override
+    public int searchCount(String dateFilter, String orderBy, String search, String searchValue) {
+        return magazinesMapper.searchCount(dateFilter,orderBy,search,searchValue);
+    }
+
 
 }

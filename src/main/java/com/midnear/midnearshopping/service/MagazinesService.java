@@ -12,5 +12,8 @@ public interface MagazinesService {
    List<MagazinesListDTO> selectMagazineList(int pageNumber);
    int count();
 
+// 매거진 필터링 검색
+   List<MagazinesListDTO> magazineSearch(int pageNumber ,String dateFilter, String orderBy, String search, String searchValue);
+   int searchCount(String dateFilter, String orderBy, String search, String searchValue);
 
 }

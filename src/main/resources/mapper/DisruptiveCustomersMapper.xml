@@ -39,7 +39,7 @@
     </select>
 
 <!--  검색하기  -->
-    <select id="disruptiveSearchInquiries">
+    <select id="disruptiveSearch">
         select
         u.id,
         d.restriction_reason,

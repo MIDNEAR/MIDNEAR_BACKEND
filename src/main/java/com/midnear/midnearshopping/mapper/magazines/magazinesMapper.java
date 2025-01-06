@@ -12,4 +12,9 @@ public interface magazinesMapper {
 //  매거진 List 전체 / 최신순 띄우기
     List<MagazinesListDTO> selectMagazineList(@Param("offset") int offset, @Param("pageSize") int pageSize);
     int count();
+
+//  검색기능
+    List<MagazinesListDTO> magazineSearch(@Param("offset") int offset, @Param("pageSize") int pageSize, @Param("dateFilter")String dateFilter, @Param("orderBy")String orderBy, @Param("search")String search ,@Param("searchValue")String searchValue);
+    int searchCount(@Param("dateFilter")String dateFilter, @Param("orderBy")String orderBy, @Param("search")String search, @Param("searchValue")String searchValue);
+
 }

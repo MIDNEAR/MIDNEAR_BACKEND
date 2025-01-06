@@ -20,4 +20,99 @@
     <select id="count">
         select count(*) from magazines
     </select>
+
+<!--  검색하기  -->
+    <select id="magazineSearch">
+        select
+        magazine_id,
+        title,
+        content,
+        created_date,
+        view_count
+        from magazines
+        where 1=1
+--      where 1=1 붙이면 밑에 조건 전부 미충족해도 에러 안납니당
+        <!-- 날짜 필터링 -->
+        <if test="dateFilter == '오늘'">
+            and created_date >= CURDATE()
+        </if>
+        <if test="dateFilter == '일주일'">
+            and created_date >= CURDATE() - interval 7 day
+        </if>
+        <if test="dateFilter == '1개월'">
+            and created_date >= CURDATE() - interval 1 month
+        </if>
+        <if test="dateFilter == '3개월'">
+            and created_date >= CURDATE() - interval 3 month
+        </if>
+        <if test="dateFilter == '1년'">
+            and created_date >= CURDATE() - interval 1 year
+        </if>
+
+        <!-- 검색 조건 -->
+        <if test="search != null">
+            and (
+            <choose>
+                <when test="search == '제목'">
+                    title like CONCAT('%', #{searchValue}, '%')
+                </when>
+                <when test="search == '내용'">
+                    content like CONCAT('%', #{searchValue}, '%')
+                </when>
+            </choose>
+            )
+        </if>
+
+        <!-- 정렬 조건 -->
+        <if test="orderBy == '최신순'">
+            order by created_date desc
+        </if>
+        <if test="orderBy == '오래된순'">
+            order by created_date asc
+        </if>
+        <if test="orderBy == '조회순'">
+            order by view_count DESC
+        </if>
+
+        LIMIT #{pageSize} OFFSET #{offset}
+    </select>
+
+
+<!-- 필터링 검색했을때 문의글 게수 -->
+    <select id="searchCount">
+        select count(*) from magazines
+        where 1=1
+
+        <!-- 날짜 필터링 -->
+        <if test="dateFilter == '오늘'">
+            and created_date >= CURDATE()
+        </if>
+        <if test="dateFilter == '일주일'">
+            and created_date >= CURDATE() - interval 7 day
+        </if>
+        <if test="dateFilter == '1개월'">
+            and created_date >= CURDATE() - interval 1 month
+        </if>
+        <if test="dateFilter == '3개월'">
+            and created_date >= CURDATE() - interval 3 month
+        </if>
+        <if test="dateFilter == '1년'">
+            and created_date >= CURDATE() - interval 1 year
+        </if>
+
+        <!-- 검색 조건 -->
+        <if test="search != null">
+            and (
+            <choose>
+                <when test="search == '제목'">
+                    title like CONCAT('%', #{searchValue}, '%')
+                </when>
+                <when test="search == '내용'">
+                    content like CONCAT('%', #{searchValue}, '%')
+                </when>
+            </choose>
+            )
+        </if>
+    </select>
+
 </mapper>

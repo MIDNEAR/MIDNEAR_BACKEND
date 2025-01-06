@@ -76,13 +76,13 @@ public class DisruptiveController {
         }
     }
 
-    //  문의List 검색
+    //  판매 방해고객 List 검색
     @GetMapping("/getDisruptSearchList")
-    public ResponseEntity<ApiResponse> SearchInquiries(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "dateFilter") String dateFilter, @RequestParam(value = "orderBy") String orderBy, @RequestParam(value = "search") String search, @RequestParam(value = "searchValue") String searchValue) {
+    public ResponseEntity<ApiResponse> getDisruptSearchList(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "dateFilter") String dateFilter, @RequestParam(value = "orderBy") String orderBy, @RequestParam(value = "search") String search, @RequestParam(value = "searchValue") String searchValue) {
 
             try {
-                //      페이징 번호에 맞는 문의글 List
-                List<disruptiveListDTO> inquiryList = disruptiveService.disruptiveSearchInquiries(pageNumber, dateFilter, orderBy, search, searchValue);
+                //      페이징 번호에 맞는  List
+                List<disruptiveListDTO> inquiryList = disruptiveService.disruptiveSearch(pageNumber, dateFilter, orderBy, search, searchValue);
 
                 //      총 게시물 수
                 int totalCount = disruptiveService.searchCount(dateFilter, orderBy, search, searchValue);
