@@ -1,22 +1,19 @@
-package com.midnear.midnearshopping.domain.vo.member;
+package com.midnear.midnearshopping.domain.vo.users;
 
-import com.midnear.midnearshopping.domain.dto.member.MemberDto;
+import com.midnear.midnearshopping.domain.dto.users.UsersDto;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails {
 
-    private final MemberDto member;
+    private final UsersDto member;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

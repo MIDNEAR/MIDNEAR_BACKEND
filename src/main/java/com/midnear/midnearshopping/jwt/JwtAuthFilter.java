@@ -1,6 +1,6 @@
 package com.midnear.midnearshopping.jwt;
 
-import com.midnear.midnearshopping.domain.vo.member.CustomUserDetailsService;
+import com.midnear.midnearshopping.domain.vo.users.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.midnear.midnearshopping.mapper.disruptive.DisruptiveMapper">
+<!-- 제한할 아이디 검색 (제한된 아이디는 제외) -->
+    <select id="searchId">
+        select u.id
+        from users u
+                 left join disruptive_customers d on u.user_id = d.user_id
+        where u.id like CONCAT('%', #{id}, '%')
+          and (d.restriction_status != '제한됨' or d.restriction_status is null);
+    </select>
+
+<!-- 제한 id 사유와 함께 등록 -->
+    <insert id="insertDisruptive">
+        insert into disruptive_customers(restriction_reason,restriction_status,user_id,created_at)
+        select '제한됨', #{restrictionReason},u.user_id,NOW()
+        from users u
+        where u.id = #{id};
+    </insert>
+
+<!--판매방해 고객 List 필터링 전체, 최신순-->
+    <select id="SelectDisruptlist">
+        select
+            u.id,
+            d.restriction_reason,
+            d.created_at,
+            d.disruptive_customer_id
+        from disruptive_customers d
+                 inner join users u on d.user_id = u.user_id
+        where d.restriction_status = '제한됨'
+        order by d.created_at desc
+            LIMIT #{pageSize} OFFSET #{offset}
+    </select>
+
+<!--  전체 List 개수  -->
+    <select id="count" resultType="int">
+        select count(*) from disruptive_customers
+    </select>
+
+<!--  검색하기  -->
+    <select id="disruptiveSearchInquiries">
+        select
+        u.id,
+        d.restriction_reason,
+        d.created_at,
+        d.disruptive_customer_id
+        from disruptive_customers d
+        left join users u on d.user_id = u.user_id
+        where d.restriction_status = '제한됨'
+
+        <!-- 날짜 필터링 -->
+        <if test="dateFilter == '오늘'">
+            and d.created_at >= CURDATE()
+        </if>
+        <if test="dateFilter == '일주일'">
+            and d.created_at >= CURDATE() - interval 7 day
+        </if>
+        <if test="dateFilter == '1개월'">
+            and d.created_at >= CURDATE() - interval 1 month
+        </if>
+        <if test="dateFilter == '3개월'">
+            and d.created_at >= CURDATE() - interval 3 month
+        </if>
+        <if test="dateFilter == '1년'">
+            and d.created_at >= CURDATE() - interval 1 year
+        </if>
+
+        <!-- 검색 조건 -->
+        <if test="search != null">
+            and (
+            <choose>
+                <when test="search == '아이디'">
+                    u.id like CONCAT('%', #{searchValue}, '%')
+                </when>
+                <when test="search == '제한사유'">
+                    d.restriction_reason like CONCAT('%', #{searchValue}, '%')
+                </when>
+            </choose>
+            )
+        </if>
+
+        <!-- 정렬 조건 -->
+        <if test="orderBy == '최신순'">
+            order by d.created_at desc
+        </if>
+        <if test="orderBy == '오래된순'">
+            order by d.created_at asc
+        </if>
+
+        LIMIT #{pageSize} OFFSET #{offset}
+    </select>
+
+
+    <!-- 필터링 검색했을때 문의글 게수 -->
+    <select id="searchCount">
+        select count(*) from disruptive_customers d
+        left join users u on d.user_id = u.user_id
+        where d.restriction_status = '제한됨'
+
+        <!-- 날짜 필터링 -->
+        <if test="dateFilter == '오늘'">
+            and d.created_at >= CURDATE()
+        </if>
+        <if test="dateFilter == '일주일'">
+            and d.created_at >= CURDATE() - interval 7 day
+        </if>
+        <if test="dateFilter == '1개월'">
+            and d.created_at >= CURDATE() - interval 1 month
+        </if>
+        <if test="dateFilter == '3개월'">
+            and d.created_at >= CURDATE() - interval 3 month
+        </if>
+        <if test="dateFilter == '1년'">
+            and d.created_at >= CURDATE() - interval 1 year
+        </if>
+
+        <!-- 검색 조건 -->
+        <if test="search != null">
+            and (
+            <choose>
+                <when test="search == '아이디'">
+                    u.id like CONCAT('%', #{searchValue}, '%')
+                </when>
+                <when test="search == '제한사유'">
+                    d.restriction_reason like CONCAT('%', #{searchValue}, '%')
+                </when>
+            </choose>
+            )
+        </if>
+    </select>
+
+<!-- 판매방해 고객 제한 해제 -->
+    <delete id="deleteDisrupt">
+        delete from disruptive_customers
+        where disruptive_customer_id = #{disruptiveCustomerId}
+    </delete>
+</mapper>
