@@ -37,5 +37,11 @@ public class MagazinesServiceImpl implements MagazinesService {
         return magazinesMapper.searchCount(dateFilter,orderBy,search,searchValue);
     }
 
-
+//  매거진 목록 삭제
+    @Override
+    public void deleteMagazine(List<Integer> magazineId) {
+        for(int i=0; i<magazineId.size(); i++){
+           magazinesMapper.deleteMagazines(magazineId.get(i));
+        }
+    }
 }

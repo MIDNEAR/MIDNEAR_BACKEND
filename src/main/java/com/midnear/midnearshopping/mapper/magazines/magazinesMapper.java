@@ -17,4 +17,6 @@ public interface magazinesMapper {
     List<MagazinesListDTO> magazineSearch(@Param("offset") int offset, @Param("pageSize") int pageSize, @Param("dateFilter")String dateFilter, @Param("orderBy")String orderBy, @Param("search")String search ,@Param("searchValue")String searchValue);
     int searchCount(@Param("dateFilter")String dateFilter, @Param("orderBy")String orderBy, @Param("search")String search, @Param("searchValue")String searchValue);
 
+//  삭제기능
+    void deleteMagazines(int magazineId);
 }

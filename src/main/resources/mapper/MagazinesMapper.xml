@@ -115,4 +115,10 @@
         </if>
     </select>
 
+<!-- 매거진 삭제 -->
+    <delete id="deleteMagazines">
+        delete from magazines
+        where magazine_id = #{magazineId}
+    </delete>
+
 </mapper>

@@ -16,4 +16,6 @@ public interface MagazinesService {
    List<MagazinesListDTO> magazineSearch(int pageNumber ,String dateFilter, String orderBy, String search, String searchValue);
    int searchCount(String dateFilter, String orderBy, String search, String searchValue);
 
+// 매거진 삭제
+   void deleteMagazine(List<Integer> magazineId);
 }
