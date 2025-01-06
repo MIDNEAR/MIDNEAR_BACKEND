@@ -14,6 +14,11 @@
         FROM users
         WHERE id = #{id}
     </select>
+    <select id="isMemberExistByPhone" parameterType="String" resultType="Boolean">
+        SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END
+        FROM users
+        WHERE phone_number = #{phone}
+    </select>
     <select id="getMemberById" parameterType="string" resultType="com.midnear.midnearshopping.domain.vo.users.UsersVO">
         SELECT *
         FROM users
@@ -24,5 +29,10 @@
         SELECT *
         FROM users
         WHERE user_id = #{userId}
+    </select>
+    <select id="getMemberByPhone" parameterType="String" resultType="com.midnear.midnearshopping.domain.vo.users.UsersVO">
+        SELECT *
+        FROM users
+        WHERE phone_number = #{phone}
     </select>
 </mapper>
