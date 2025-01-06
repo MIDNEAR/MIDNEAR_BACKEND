@@ -1,6 +1,8 @@
-package com.midnear.midnearshopping.domain.vo.users;
+package com.midnear.midnearshopping.service;
 
 import com.midnear.midnearshopping.domain.dto.users.UsersDto;
+import com.midnear.midnearshopping.domain.vo.users.CustomUserDetails;
+import com.midnear.midnearshopping.domain.vo.users.UsersVO;
 import com.midnear.midnearshopping.mapper.users.UsersMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
