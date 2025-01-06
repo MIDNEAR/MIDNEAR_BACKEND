@@ -1,6 +1,6 @@
 package com.midnear.midnearshopping.domain.vo.users;
 
-import com.midnear.midnearshopping.domain.dto.member.UsersDto;
+import com.midnear.midnearshopping.domain.dto.users.UsersDto;
 import lombok.*;
 
 import java.math.BigDecimal;

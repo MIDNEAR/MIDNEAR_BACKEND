@@ -1,4 +1,4 @@
-package com.midnear.midnearshopping.domain.dto.member;
+package com.midnear.midnearshopping.domain.dto.users;
 
 import com.midnear.midnearshopping.domain.vo.users.UsersVO;
 import jakarta.validation.constraints.NotBlank;

@@ -1,10 +1,10 @@
 package com.midnear.midnearshopping.controller;
 
 
-import com.midnear.midnearshopping.domain.dto.member.LoginDto;
-import com.midnear.midnearshopping.domain.dto.member.UsersDto;
+import com.midnear.midnearshopping.domain.dto.users.LoginDto;
+import com.midnear.midnearshopping.domain.dto.users.UsersDto;
 import com.midnear.midnearshopping.exception.ApiResponse;
-import com.midnear.midnearshopping.service.MemberService;
+import com.midnear.midnearshopping.service.UsersService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/member")
 public class UsersController {
-    private final MemberService memberService;
+    private final UsersService memberService;
 
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestBody UsersDto memberDto) {

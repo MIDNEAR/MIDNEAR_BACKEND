@@ -1,10 +1,10 @@
 package com.midnear.midnearshopping.service;
 
-import com.midnear.midnearshopping.domain.dto.member.LoginDto;
-import com.midnear.midnearshopping.domain.dto.member.UsersDto;
+import com.midnear.midnearshopping.domain.dto.users.LoginDto;
+import com.midnear.midnearshopping.domain.dto.users.UsersDto;
 import com.midnear.midnearshopping.domain.vo.users.UsersVO;
 import com.midnear.midnearshopping.jwt.JwtUtil;
-import com.midnear.midnearshopping.mapper.member.UsersMapper;
+import com.midnear.midnearshopping.mapper.users.UsersMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
-public class MemberService {
+public class UsersService {
     private final UsersMapper memberMapper;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JwtUtil jwtUtil;
