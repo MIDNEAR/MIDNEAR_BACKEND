@@ -11,7 +11,6 @@ import org.apache.ibatis.javassist.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,7 +51,7 @@ public class NoticeService {
         } catch (Exception e) {
             // S3에 이미 업로드된 파일 삭제
             for (FileDto file : fileInfo) {
-                //s3Service.deleteFile(file.getFileUrl());
+                s3Service.deleteFile(file.getFileUrl());
             }
             e.printStackTrace();
             throw new RuntimeException("이미지 정보를 데이터베이스에 저장하는 중 오류가 발생했습니다.", e);

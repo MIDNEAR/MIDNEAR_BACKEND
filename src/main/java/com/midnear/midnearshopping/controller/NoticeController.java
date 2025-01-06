@@ -21,6 +21,7 @@ import java.util.List;
 public class NoticeController {
     private final NoticeService noticeService;
 
+    // 공지사항 작성
     @PostMapping(value = "/write", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE}, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponse> writeNotice(
             @ModelAttribute @Valid NoticeDto noticeDto) {
@@ -34,6 +35,7 @@ public class NoticeController {
         }
     }
 
+    // 수정할 공지사항 데이터 불러오기
     @GetMapping("/modify/{noticeId}")
     public ResponseEntity<ApiResponse> getNotice(@PathVariable("noticeId")  int noticeId) {
         try {
@@ -46,6 +48,7 @@ public class NoticeController {
         }
     }
 
+    // 공지사항 수정
     @PutMapping("/modify")
     public ResponseEntity<ApiResponse> modifyNotice(@RequestBody NoticeDto noticeDto) {
         try {
@@ -61,6 +64,7 @@ public class NoticeController {
         }
     }
 
+    // 공지사항 삭제
     @DeleteMapping("/delete")
     public ResponseEntity<ApiResponse> deleteNotices(@RequestBody List<Integer> deleteList) {
         try {
@@ -73,6 +77,7 @@ public class NoticeController {
         }
     }
 
+    // 고정 글 불러오기
     @GetMapping("/fixed")
     public ResponseEntity<ApiResponse> getFixedNoticeList() {
         try {
@@ -85,6 +90,7 @@ public class NoticeController {
         }
     }
 
+    // 일반 글 불러오기
     @GetMapping("/all")
     public ResponseEntity<ApiResponse> getNoticeList() {
         try {
@@ -97,6 +103,7 @@ public class NoticeController {
         }
     }
 
+    // 고정 글 설정
     @PutMapping("/fix")
     public ResponseEntity<ApiResponse> fixNotices(@RequestBody List<Integer> fixList) {
         try {
@@ -112,6 +119,7 @@ public class NoticeController {
         }
     }
 
+    // 고정글 설정 해제
     @PutMapping("/unfix")
     public ResponseEntity<ApiResponse> unfixNotices(@RequestBody List<Integer> unfixList) {
         try {

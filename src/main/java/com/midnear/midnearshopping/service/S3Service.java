@@ -88,4 +88,34 @@ public class S3Service {
 
         return fileName.substring(index + 1);
     }
+
+    // 버킷에 업로드된 파일 삭제
+    public void deleteFile(String fileUrl) {
+        try {
+            // 파일 URL에서 키 추출
+            String key = extractKeyFromUrl(fileUrl);
+
+            // S3에서 파일 삭제 요청
+            DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+                    .bucket(bucket)
+                    .key(key)
+                    .build();
+
+            DeleteObjectResponse response = s3Client.deleteObject(deleteObjectRequest);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("파일 삭제 중 오류가 발생했습니다: " + fileUrl, e);
+        }
+    }
+
+    // url에서 key 추출
+    private String extractKeyFromUrl(String fileUrl) {
+        String prefix = "https://" + bucket + ".s3." + region + ".amazonaws.com/";
+        if (fileUrl.startsWith(prefix)) {
+            return fileUrl.substring(prefix.length());
+        } else {
+            throw new IllegalArgumentException("Invalid S3 file URL: " + fileUrl);
+        }
+    }
 }
