@@ -1,6 +1,6 @@
 package com.midnear.midnearshopping.domain.vo.users;
 
-import com.midnear.midnearshopping.domain.dto.member.UsersDto;
+import com.midnear.midnearshopping.domain.dto.users.UsersDto;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;

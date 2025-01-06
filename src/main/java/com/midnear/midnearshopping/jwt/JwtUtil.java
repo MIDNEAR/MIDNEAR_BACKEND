@@ -1,6 +1,6 @@
 package com.midnear.midnearshopping.jwt;
 
-import com.midnear.midnearshopping.domain.dto.member.UsersDto;
+import com.midnear.midnearshopping.domain.dto.users.UsersDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;

@@ -1,4 +1,4 @@
-package com.midnear.midnearshopping.mapper.member;
+package com.midnear.midnearshopping.mapper.users;
 
 import com.midnear.midnearshopping.domain.vo.users.UsersVO;
 import org.apache.ibatis.annotations.Mapper;
