@@ -7,6 +7,6 @@ import lombok.Getter;
 @Builder
 public class FileDto {
     private String fileUrl;
-    private int fileSize;
+    private long fileSize;
     private String extension;
 }
