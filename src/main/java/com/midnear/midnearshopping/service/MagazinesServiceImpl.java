@@ -90,7 +90,7 @@ public class MagazinesServiceImpl implements MagazinesService {
                         .extension(file.getExtension())
                         .magazineId(magazinesVO.getMagazineId())
                         .build();
-                magazinesMapper.uploadNoticeImages(imagesVo);
+                magazinesMapper.uploadMagazineImages(imagesVo);
             }
 
         } catch (Exception e) {
@@ -109,7 +109,7 @@ public class MagazinesServiceImpl implements MagazinesService {
         return magazinesMapper.selectMagazine(magazineId);
     }
 
-// 작성한 매거진 이미지 가져오기
+    // 작성한 매거진 이미지 가져오기
     @Override
     public List<MagazineImagesDTO> selectMagazineImage(Long magazineId) {
         return magazinesMapper.selectMagazineImage(magazineId);
@@ -133,6 +133,16 @@ public class MagazinesServiceImpl implements MagazinesService {
                 }
             }
 
+        //기존 매거진 이미지 magazine_images 테이블에서 삭제
+
+        for (int i = 0; i < magazineImages.size(); i++) {
+            try {
+                magazinesMapper.deleteMagazineImage(magazinesDTO.getMagazineId());
+            } catch (Exception deleteException) {
+                log.error("이미지 삭제 실패: {}", magazineImages.get(i).getImageUrl(), deleteException);
+            }
+        }
+
 
         // 새 이미지 버킷에 저장
         List<FileDto> fileInfo;
@@ -148,8 +158,9 @@ public class MagazinesServiceImpl implements MagazinesService {
             mainImageUrl = fileInfo.get(0).getFileUrl(); // 첫 번째 파일의 URL을 대표 이미지로 사용
         }
 
-        // dto vo 로 수정 후 insert
+        // dto vo 로 수정 후 update
         MagazinesVO magazinesVO = MagazinesVO.builder()
+                .magazineId(magazinesDTO.getMagazineId())
                 .title(magazinesDTO.getTitle())
                 .content(magazinesDTO.getContent())
                 .mainImage(mainImageUrl).build();
@@ -166,7 +177,7 @@ public class MagazinesServiceImpl implements MagazinesService {
                         .extension(file.getExtension())
                         .magazineId(magazinesVO.getMagazineId())
                         .build();
-                magazinesMapper.uploadNoticeImages(imagesVo);
+                magazinesMapper.uploadMagazineImages(imagesVo);
             }
 
         } catch (Exception e) {
@@ -178,5 +189,6 @@ public class MagazinesServiceImpl implements MagazinesService {
             throw new RuntimeException("이미지 정보를 데이터베이스에 저장하는 중 오류가 발생했습니다.", e);
         }
     }
+
 
 }

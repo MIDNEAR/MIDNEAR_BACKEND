@@ -135,14 +135,23 @@
 
 <!-- 작성한 메거진 가져오기 -->
     <select id="selectMagazine">
-        select * from magazines
+        select *
+        from magazines
         where magazine_id = #{magazineId}
     </select>
+
+<!-- 기존 매거진 이미지 정보 가져오기 -->
+    <select id="selectMagazineImage">
+        select * from magazine_images
+        where magazine_id = #{magazineId}
+    </select>
+
 
 <!-- 작성한 매거진 수정하기 -->
     <update id="updateMagazine">
         update magazines
         set
+            magazine_id = #{magazineId},
             title = #{title},
             content = #{content},
             created_date = NOW(),
@@ -150,9 +159,10 @@
         where magazine_id = #{magazineId}
     </update>
 
-<!-- 기존 매거진 이미지 정보 가져오기 -->
-    <select id="selectMagazineImage">
-        select * from magazine_images
+<!-- 수정시 기존 작성된 이미지 삭제-->
+    <delete id="deleteMagazineImage">
+        delete from magazine_images
         where magazine_id = #{magazineId}
-    </select>
+    </delete>
+
 </mapper>

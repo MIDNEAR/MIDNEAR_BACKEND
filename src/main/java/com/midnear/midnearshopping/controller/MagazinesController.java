@@ -1,6 +1,7 @@
 package com.midnear.midnearshopping.controller;
 
 import com.midnear.midnearshopping.domain.dto.disruptive.disruptiveListDTO;
+import com.midnear.midnearshopping.domain.dto.magazines.MagazineImagesDTO;
 import com.midnear.midnearshopping.domain.dto.magazines.MagazinesDTO;
 import com.midnear.midnearshopping.domain.dto.magazines.MagazinesListDTO;
 import com.midnear.midnearshopping.exception.ApiResponse;
@@ -11,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -98,8 +100,8 @@ public class MagazinesController {
     }
 
 //  매거진 작성
-    @PostMapping(value = "/insertMagazine",consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApiResponse> insertMagazine(@ModelAttribute @Valid MagazinesDTO magazinesDTO){
+    @PostMapping(value = "/insertMagazine")
+    public ResponseEntity<ApiResponse> insertMagazine(@ModelAttribute  MagazinesDTO magazinesDTO){
         try {
             magazinesService.insertMagazine(magazinesDTO);
             return ResponseEntity.status(HttpStatus.OK)
@@ -111,12 +113,19 @@ public class MagazinesController {
     }
 
 // 작성한 매거진 가져오기
-    @GetMapping("/selectMagazine")
-    public ResponseEntity<ApiResponse> selectMagazine(@PathVariable Long magazineId){
+    @Transactional
+    @GetMapping("/selectMagazine/{magazineId}")
+    public ResponseEntity<ApiResponse> selectMagazine(@PathVariable("magazineId")  Long magazineId){
         try {
-           MagazinesDTO magazines =  magazinesService.selectMagazine(magazineId);
+            MagazinesDTO magazines =  magazinesService.selectMagazine(magazineId);
+            List<MagazineImagesDTO> magazineImage= magazinesService.selectMagazineImage(magazineId);
+            Map<String, Object> response = new HashMap<>();
+
+            response.put("magazine", magazines);
+            response.put("magazineImage", magazineImage);
+
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ApiResponse(true, "불러오기에 성공했습니다.", magazines));
+                    .body(new ApiResponse(true, "불러오기에 성공했습니다.", response));
         }
         catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -125,5 +134,16 @@ public class MagazinesController {
     }
 
 // 작성한 메거진 수정하기
+    @PutMapping("/updateMagazine")
+    public ResponseEntity<ApiResponse> updateMagazine(@ModelAttribute  MagazinesDTO magazinesDTO){
+        try {
+            magazinesService.updateMagazine(magazinesDTO);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "작성이 완료되었습니다.", null));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, ex.getMessage(), null));
+        }
+    }
 
 }

@@ -29,9 +29,11 @@ public interface MagazinesService {
 // 작성한 매거진 가져오기
    MagazinesDTO selectMagazine(Long magazineId);
 
+ // 작성한 매거진 이미지 가져오기
+   List<MagazineImagesDTO> selectMagazineImage(Long magazineId);
+
 // 작성한 매거진 수정하기
    void updateMagazine(MagazinesDTO magazinesDTO);
 
-// 작성한 매거진 이미지 목록
-  List<MagazineImagesDTO> selectMagazineImage(Long magazineId);
+
 }

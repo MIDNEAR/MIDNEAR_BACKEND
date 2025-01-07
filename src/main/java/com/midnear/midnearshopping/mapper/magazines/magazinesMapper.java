@@ -28,7 +28,7 @@ public interface magazinesMapper {
     void insertMagazine(MagazinesVO magazinesVO);
 
 //  매거진 이미지 등록
-    void uploadNoticeImages(MagazineImagesVO magazineImagesVO);
+    void uploadMagazineImages(MagazineImagesVO magazineImagesVO);
 
 //  작성한 매거진 가져오기
     MagazinesDTO selectMagazine(Long magazineId);
@@ -36,6 +36,9 @@ public interface magazinesMapper {
 //  작성한 매거진 수정하기
     void updateMagazine(MagazinesVO magazinesVO);
 
-//
+//  저장된 매거진 이미지 가져오기
     List<MagazineImagesDTO> selectMagazineImage(Long magazineId);
+
+//  수정할 매거진 이미지 삭제
+    void deleteMagazineImage(Long magazineId);
 }
