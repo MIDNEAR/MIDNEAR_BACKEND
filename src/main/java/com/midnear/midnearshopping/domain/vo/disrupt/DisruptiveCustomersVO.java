@@ -1,7 +1,6 @@
 package com.midnear.midnearshopping.domain.vo.disrupt;
 
 import lombok.*;
-import org.springframework.stereotype.Component;
 
 import java.util.Date;
 

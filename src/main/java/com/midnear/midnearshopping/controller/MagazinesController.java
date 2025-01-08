@@ -85,6 +85,7 @@ public class MagazinesController {
     }
 
 //  매거진 전체/부분 삭제
+//  수정필요 매거진 삭제시 매거진 이미지도 트렌젝션으로 삭제하도록
     @DeleteMapping("/deleteMagazines")
     public ResponseEntity<ApiResponse> deleteMagazine(@RequestBody List<Integer> magazineId){
         try {
@@ -145,5 +146,4 @@ public class MagazinesController {
                     .body(new ApiResponse(false, ex.getMessage(), null));
         }
     }
-
 }
