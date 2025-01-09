@@ -9,8 +9,6 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-//INT는 Integer로, Decimal은 BigDecimal로 매핑이 권장된다길래 그리 했습니다.
-//코드 리뷰시 이렇게 진행해도 괜찮을지 코멘트 부탁드려요
 
 public class UsersVO {
     private Integer userId;
@@ -21,6 +19,7 @@ public class UsersVO {
     private String email;
     private String withdrawn= "N";
     private BigDecimal pointBalance;
+    private String socialType;
 
     public static UsersVO toEntity(UsersDto memberDto) {
         return UsersVO.builder()
