@@ -1,8 +1,7 @@
 package com.midnear.midnearshopping.config;
-
-import com.midnear.midnearshopping.domain.vo.users.CustomUserDetailsService;
 import com.midnear.midnearshopping.jwt.JwtAuthFilter;
 import com.midnear.midnearshopping.jwt.JwtUtil;
+import com.midnear.midnearshopping.service.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +23,8 @@ public class SecurityConfig {
 
     private static final String[] AUTH_WHITELIST = {
             "/api/v1/member/**", "/swagger-ui/**", "/api-docs", "/swagger-ui-custom.html",
-            "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html", "/api/v1/auth/**","member/signup", "member/login", "disruptive/**","/sms/**"
+            "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html", "/api/v1/auth/**","member/signup", "member/login", "disruptive/**","/sms/**","/inquirie/**"
+            ,"/magazine/**"
     }; //더 열어둘 엔드포인트 여기에 추가
 
     @Bean

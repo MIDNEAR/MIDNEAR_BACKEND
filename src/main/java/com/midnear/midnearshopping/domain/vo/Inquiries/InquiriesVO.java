@@ -4,9 +4,7 @@ import lombok.*;
 import org.springframework.stereotype.Component;
 import java.sql.Date;
 
-@Component
 @Getter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
