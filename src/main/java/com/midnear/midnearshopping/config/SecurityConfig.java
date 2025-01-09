@@ -1,8 +1,7 @@
 package com.midnear.midnearshopping.config;
-
-import com.midnear.midnearshopping.domain.vo.users.CustomUserDetailsService;
 import com.midnear.midnearshopping.jwt.JwtAuthFilter;
 import com.midnear.midnearshopping.jwt.JwtUtil;
+import com.midnear.midnearshopping.service.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
