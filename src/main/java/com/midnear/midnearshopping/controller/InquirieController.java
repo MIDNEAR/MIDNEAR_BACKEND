@@ -29,7 +29,7 @@ public class InquirieController {
         try {
             InquiriesDTO inquiries = inquirieService.selectInquirie(inquiryId);
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ApiResponse(true, "아이디 불러오기 성공.", inquiries));
+                    .body(new ApiResponse(true, "문의글 불러오기 성공.", inquiries));
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
