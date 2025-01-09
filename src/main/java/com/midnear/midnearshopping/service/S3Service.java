@@ -53,7 +53,7 @@ public class S3Service {
 
                     // 업로드 성공 후 FileDto 생성
                     FileDto fileDto = FileDto.builder()
-                            .fileSize((int) file.getSize())
+                            .fileSize(file.getSize())
                             .fileUrl("https://" + bucket + ".s3." + region + ".amazonaws.com/" + key)
                             .extension(getFileExtension(file.getOriginalFilename()))
                             .build();

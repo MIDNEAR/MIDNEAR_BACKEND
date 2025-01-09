@@ -22,8 +22,8 @@ public class DisruptiveController {
     private final DisruptiveService disruptiveService;
 
     //  아이디 검색
-    @GetMapping("/searchId")
-    public ResponseEntity<ApiResponse> getInquirie(@RequestParam("id") String id) {
+    @GetMapping("/searchId/{id}")
+    public ResponseEntity<ApiResponse> getInquirie(@PathVariable("id") String id) {
         try {
             List<String> userID = disruptiveService.searchId(id);
             return ResponseEntity.status(HttpStatus.OK)
@@ -51,8 +51,8 @@ public class DisruptiveController {
     @GetMapping("/getDisruptList")
     public ResponseEntity<ApiResponse> list(@RequestParam(value = "pageNumber", defaultValue = "1") int pageNumber) {
         try {
-            //      페이징 번호에 맞는 문의글 List
-            List<disruptiveListDTO> inquiryList = disruptiveService.SelectDisruptlist(pageNumber);
+            //      페이징 번호에 맞는 List
+            List<disruptiveListDTO> disruptive = disruptiveService.SelectDisruptlist(pageNumber);
 
             //      총 게시물 수
             int totalCount = disruptiveService.count();
@@ -61,7 +61,7 @@ public class DisruptiveController {
             int totalPages = (int) Math.ceil((double) totalCount / 2);
 
             Map<String, Object> response = new HashMap<>();
-            response.put("inquiries", inquiryList);
+            response.put("disruptive", disruptive);
             response.put("currentPage", pageNumber);
             response.put("totalPages", totalPages);
             response.put("totalCount", totalCount);
@@ -76,13 +76,13 @@ public class DisruptiveController {
         }
     }
 
-    //  문의List 검색
+    //  판매 방해고객 List 검색
     @GetMapping("/getDisruptSearchList")
-    public ResponseEntity<ApiResponse> SearchInquiries(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "dateFilter") String dateFilter, @RequestParam(value = "orderBy") String orderBy, @RequestParam(value = "search") String search, @RequestParam(value = "searchValue") String searchValue) {
+    public ResponseEntity<ApiResponse> getDisruptSearchList(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "dateFilter") String dateFilter, @RequestParam(value = "orderBy") String orderBy, @RequestParam(value = "search") String search, @RequestParam(value = "searchValue") String searchValue) {
 
             try {
-                //      페이징 번호에 맞는 문의글 List
-                List<disruptiveListDTO> inquiryList = disruptiveService.disruptiveSearchInquiries(pageNumber, dateFilter, orderBy, search, searchValue);
+                //      페이징 번호에 맞는  List
+                List<disruptiveListDTO> disruptive = disruptiveService.disruptiveSearch(pageNumber, dateFilter, orderBy, search, searchValue);
 
                 //      총 게시물 수
                 int totalCount = disruptiveService.searchCount(dateFilter, orderBy, search, searchValue);
@@ -91,7 +91,7 @@ public class DisruptiveController {
                 int totalPages = (int) Math.ceil((double) totalCount / 2);
 
                 Map<String, Object> response = new HashMap<>();
-                response.put("inquiries", inquiryList);
+                response.put("inquiries", disruptive);
                 response.put("currentPage", pageNumber);
                 response.put("totalPages", totalPages);
                 response.put("totalCount", totalCount);
