@@ -9,7 +9,7 @@ import java.sql.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Inquiry_commentsVO {
+public class InquiryCommentsVO {
     private Long commentId;
     private String replyContent;
     private Date replyDate;
