@@ -27,7 +27,7 @@
             d.created_at,
             d.disruptive_customer_id
         from disruptive_customers d
-                 inner join users u on d.user_id = u.user_id
+                 left join users u on d.user_id = u.user_id
         where d.restriction_status = '제한됨'
         order by d.created_at desc
             LIMIT #{pageSize} OFFSET #{offset}
@@ -36,10 +36,11 @@
 <!--  전체 List 개수  -->
     <select id="count" resultType="int">
         select count(*) from disruptive_customers
+        where restriction_status = '제한됨'
     </select>
 
 <!--  검색하기  -->
-    <select id="disruptiveSearchInquiries">
+    <select id="disruptiveSearch">
         select
         u.id,
         d.restriction_reason,

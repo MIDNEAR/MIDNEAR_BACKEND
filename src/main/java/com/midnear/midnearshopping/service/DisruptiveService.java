@@ -20,7 +20,7 @@ public interface DisruptiveService {
     int count();
 
 //  검색
-    List<disruptiveListDTO> disruptiveSearchInquiries(int pageNumber ,String dateFilter, String orderBy, String search, String searchValue);
+    List<disruptiveListDTO> disruptiveSearch(int pageNumber ,String dateFilter, String orderBy, String search, String searchValue);
     int searchCount(String dateFilter, String orderBy, String search, String searchValue);
 
 //  판매방해 고객 제한 해제

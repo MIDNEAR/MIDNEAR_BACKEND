@@ -15,7 +15,7 @@ public class NoticeImagesDto {
 
     private String imageUrl;
 
-    private long fileSize;
+    private Long fileSize;
 
     private String extension;
 

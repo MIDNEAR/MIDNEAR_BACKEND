@@ -41,9 +41,9 @@ public class DisruptiveServiceImpl implements DisruptiveService {
 
 //  검색
     @Override
-    public List<disruptiveListDTO> disruptiveSearchInquiries(int pageNumber, String dateFilter, String orderBy, String search, String searchValue) {
+    public List<disruptiveListDTO> disruptiveSearch(int pageNumber, String dateFilter, String orderBy, String search, String searchValue) {
         int offset = (pageNumber - 1) * pageSize;
-        return disruptiveMapper.disruptiveSearchInquiries(offset,pageSize,dateFilter,orderBy,search,searchValue);
+        return disruptiveMapper.disruptiveSearch(offset,pageSize,dateFilter,orderBy,search,searchValue);
     }
     @Override
     public int searchCount(String dateFilter, String orderBy, String search, String searchValue) {

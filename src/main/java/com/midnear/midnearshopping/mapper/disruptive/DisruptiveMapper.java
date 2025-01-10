@@ -20,7 +20,7 @@ public interface DisruptiveMapper {
     int count();
 
 //  검색
-    List<disruptiveListDTO> disruptiveSearchInquiries(@Param("offset") int offset, @Param("pageSize") int pageSize, @Param("dateFilter")String dateFilter, @Param("orderBy")String orderBy, @Param("search")String search ,@Param("searchValue")String searchValue);
+    List<disruptiveListDTO> disruptiveSearch(@Param("offset") int offset, @Param("pageSize") int pageSize, @Param("dateFilter")String dateFilter, @Param("orderBy")String orderBy, @Param("search")String search ,@Param("searchValue")String searchValue);
     int searchCount(@Param("dateFilter")String dateFilter, @Param("orderBy")String orderBy, @Param("search")String search, @Param("searchValue")String searchValue);
 
 //  판매방해 고객 제한 해제
