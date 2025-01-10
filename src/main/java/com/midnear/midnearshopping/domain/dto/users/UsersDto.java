@@ -23,6 +23,7 @@ public class UsersDto {
     private String phoneNumber;
     @NotBlank(message = "이메일을 입력해주세요")
     private String email;
+    private String socialType;
 
     public static UsersDto toDto(UsersVO member) {
         return new UsersDto(
@@ -31,7 +32,8 @@ public class UsersDto {
                 member.getId(),
                 member.getPassword(),
                 member.getPhoneNumber(),
-                member.getEmail()
+                member.getEmail(),
+                member.getSocialType()
         );
     }
 
