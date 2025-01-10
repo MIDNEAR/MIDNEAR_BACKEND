@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.services.s3.model.S3Exception;
 
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class NoticeController {
     private final NoticeService noticeService;
 
     // 공지사항 작성
-    @PostMapping(value = "/write", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping("/write")
     public ResponseEntity<ApiResponse> writeNotice(
             @ModelAttribute @Valid NoticeDto noticeDto) {
         try {
@@ -37,7 +38,7 @@ public class NoticeController {
 
     // 수정할 공지사항 데이터 불러오기
     @GetMapping("/modify/{noticeId}")
-    public ResponseEntity<ApiResponse> getNotice(@PathVariable("noticeId")  int noticeId) {
+    public ResponseEntity<ApiResponse> getNotice(@PathVariable("noticeId")  Long noticeId) {
         try {
             NoticeVo noticeVo = NoticeVo.toEntity(noticeService.getNotice(noticeId));
             return ResponseEntity.status(HttpStatus.OK)
@@ -50,12 +51,15 @@ public class NoticeController {
 
     // 공지사항 수정
     @PutMapping("/modify")
-    public ResponseEntity<ApiResponse> modifyNotice(@RequestBody NoticeDto noticeDto) {
+    public ResponseEntity<ApiResponse> modifyNotice(@ModelAttribute @Valid NoticeDto noticeDto) {
         try {
             noticeService.modifyNotice(noticeDto);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "수정이 완료되었습니다.", null));
         } catch (NotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse(false, ex.getMessage(), null));
+        } catch (S3Exception ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ApiResponse(false, ex.getMessage(), null));
         } catch (Exception ex) {
@@ -66,7 +70,7 @@ public class NoticeController {
 
     // 공지사항 삭제
     @DeleteMapping("/delete")
-    public ResponseEntity<ApiResponse> deleteNotices(@RequestBody List<Integer> deleteList) {
+    public ResponseEntity<ApiResponse> deleteNotices(@RequestBody List<Long> deleteList) {
         try {
             noticeService.deleteNotices(deleteList);
             return ResponseEntity.status(HttpStatus.OK)
@@ -105,7 +109,7 @@ public class NoticeController {
 
     // 고정 글 설정
     @PutMapping("/fix")
-    public ResponseEntity<ApiResponse> fixNotices(@RequestBody List<Integer> fixList) {
+    public ResponseEntity<ApiResponse> fixNotices(@RequestBody List<Long> fixList) {
         try {
             noticeService.fixNotices(fixList);
             return ResponseEntity.status(HttpStatus.OK)
@@ -121,7 +125,7 @@ public class NoticeController {
 
     // 고정글 설정 해제
     @PutMapping("/unfix")
-    public ResponseEntity<ApiResponse> unfixNotices(@RequestBody List<Integer> unfixList) {
+    public ResponseEntity<ApiResponse> unfixNotices(@RequestBody List<Long> unfixList) {
         try {
             noticeService.unfixNotices(unfixList);
             return ResponseEntity.status(HttpStatus.OK)

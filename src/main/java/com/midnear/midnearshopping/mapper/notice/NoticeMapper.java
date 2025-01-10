@@ -8,12 +8,12 @@ import java.util.List;
 @Mapper
 public interface NoticeMapper {
     void createNotice(NoticeVo noticeVo);
-    NoticeVo findNoticeById(int noticeId);
+    NoticeVo findNoticeById(Long noticeId);
     void updateNotice(NoticeVo noticeVo);
-    void deleteNotices(List<Integer> noticeList);
+    void deleteNotices(List<Long> noticeList);
     List<NoticeVo> getFixedNotices();
     List<NoticeVo> getNotices();
-    void fixNotices(List<Integer> noticeList);
-    void unfixNotices(List<Integer> noticeList);
+    void fixNotices(List<Long> noticeList);
+    void unfixNotices(List<Long> noticeList);
 
 }

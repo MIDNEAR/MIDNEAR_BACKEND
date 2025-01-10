@@ -11,7 +11,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 public class NoticeImagesDto {
-    private Integer noticeImageId;
+    private Long noticeImageId;
 
     private String imageUrl;
 
@@ -21,7 +21,7 @@ public class NoticeImagesDto {
 
     private Date imageCreationDate;
 
-    private int noticeId;
+    private Long noticeId;
     public static NoticeImagesDto toDto(NoticeImagesVo noticeImagesVo) {
         return NoticeImagesDto.builder()
                 .noticeImageId(noticeImagesVo.getNoticeImageId())
