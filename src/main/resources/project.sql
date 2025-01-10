@@ -1,10 +1,10 @@
 CREATE TABLE `users` (
     `user_id` int NOT NULL AUTO_INCREMENT,
     `name` varchar(20) NULL,
-    `id` varchar(20) NULL,
+    `id` varchar(50) NULL,
     `password` varchar(255) NULL,
     `phone_number` varchar(20) NULL,
-    `email` varchar(20) NULL,
+    `email` varchar(50) NULL,
     `withdrawn` varchar(20) NULL DEFAULT 'N',
     `point_balance` decimal NULL,
      PRIMARY KEY (`user_id`),

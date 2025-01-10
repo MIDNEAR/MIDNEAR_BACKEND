@@ -23,6 +23,7 @@ public class SecurityConfig {
 
     private static final String[] AUTH_WHITELIST = {
             "/api/v1/member/**", "/swagger-ui/**", "/api-docs", "/swagger-ui-custom.html",
+            "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html", "/api/v1/auth/**","/user/**","/oauth/**",
             "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html", "/api/v1/auth/**","member/signup", "member/login", "disruptive/**","/sms/**","/inquirie/**"
             ,"/magazine/**"
     }; //더 열어둘 엔드포인트 여기에 추가
@@ -45,6 +46,7 @@ public class SecurityConfig {
         http.httpBasic(AbstractHttpConfigurer::disable);
         //JwtAuthFilter를 UsernamePasswordAuthenticationFilter 앞에 추가
         http.addFilterBefore(new JwtAuthFilter(customUserDetailsService, jwtUtil), UsernamePasswordAuthenticationFilter.class);
+
 
         // 권한 규칙 작성
         http.authorizeHttpRequests(authorize -> authorize

@@ -10,5 +10,6 @@ public interface UsersMapper {
     UsersVO getMemberById(String Id);
     UsersVO getMemberByUserId(Integer userId);
     UsersVO getMemberByPhone(String phone);
+    UsersVO getMemberByEmail(String email);
     Boolean isMemberExistByPhone(String phone);
 }
