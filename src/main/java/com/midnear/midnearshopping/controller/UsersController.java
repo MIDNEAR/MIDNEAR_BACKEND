@@ -50,7 +50,7 @@ public class UsersController {
         }
     }
 
-    @GetMapping("/isDuplicate")
+    @GetMapping("/is-duplicate")
     public ResponseEntity<String> isDuplicate(@RequestParam String id) {
         try {
             Boolean result = memberService.isDuplicate(id);
@@ -63,13 +63,36 @@ public class UsersController {
         }
     }
 
-    @GetMapping("/findId")
+    @GetMapping("/find-id")
     public ResponseEntity<?> findId(@RequestParam String phone) {
         try {
             String id = memberService.findIdByPhone(phone);
             return ResponseEntity.ok(new ApiResponse(true, "아이디 찾기 성공", id));
         } catch (Exception ex) {
             return ResponseEntity.status(404).body(new ApiResponse(false, ex.getMessage(), null));
+        }
+    }
+
+    @GetMapping("/find-by-email")
+    public ResponseEntity<?> findByEmail(@RequestParam String email) {
+        try {
+            String id = memberService.findIdByEmail(email);
+            return ResponseEntity.ok(new ApiResponse(true, "아이디 찾기 성공", id));
+        } catch (Exception ex) {
+            return ResponseEntity.status(404).body(new ApiResponse(false, ex.getMessage(), null));
+        }
+    }
+
+    @PatchMapping("/change-password")
+    public ResponseEntity<?> changePassword(@RequestBody LoginDto loginDto) {
+        try{
+            memberService.changePassword(loginDto.getId(), loginDto.getPassword());
+            return ResponseEntity.ok(new ApiResponse(true, "비밀번호 변경 성공", loginDto.getId()));
+        }catch (IllegalArgumentException ex){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, ex.getMessage(), null));
+
+        }catch (UsernameNotFoundException ex){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(false, ex.getMessage(), null));
         }
     }
 }

@@ -56,8 +56,42 @@ public class UsersService {
         if (user == null) {
             throw new UsernameNotFoundException("해당 번호로 가입된 아이디가 존재하지 않습니다. 문제가 계속 될 경우 고객센터로 문의하시기 바랍니다.");
         }
+        if (user.getSocialType().equals("kakao") || user.getSocialType().equals("google") || user.getSocialType().equals("naver")) {
+            throw new IllegalArgumentException("소셜 계정으로 가입된 전화번호 입니다. 소셜 로그인을 시도해주세요.");
+        }
         return user.getId();
     }
+
+    public String findIdByEmail(String email) {
+        UsersVO user = usersMapper.getMemberByEmail(email);
+        if (user == null) {
+            throw new UsernameNotFoundException("해당 이메일로 가입된 아이디가 존재하지 않습니다. 문제가 계속 될 경우 고객센터로 문의하시기 바랍니다.");
+        }
+        if (user.getSocialType()!=null) {
+            throw new IllegalArgumentException("소셜 계정으로 가입된 이메일 입니다. 소셜 로그인을 시도해주세요.");
+        }
+        return user.getId();
+    }
+
+    @Transactional
+    public String changePassword(String id, String password) {
+        UsersVO user = usersMapper.getMemberById(id);
+        if (user == null) {
+            throw new UsernameNotFoundException("해당 번호로 가입된 아이디가 존재하지 않습니다. 문제가 계속 될 경우 고객센터로 문의하시기 바랍니다.");
+        }
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encodedPassword = passwordEncoder.encode(password);
+
+        user.setPassword(encodedPassword);
+        int updateCount = usersMapper.updatePassword(user);
+
+        if (updateCount == 0) {
+            throw new RuntimeException("비밀번호 변경에 실패했습니다. 다시 시도해주세요.");
+        }
+        return user.getId();
+    }
+
+
 
 }
 

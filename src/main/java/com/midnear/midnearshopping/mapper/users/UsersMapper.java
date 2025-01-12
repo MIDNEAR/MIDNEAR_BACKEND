@@ -12,4 +12,5 @@ public interface UsersMapper {
     UsersVO getMemberByPhone(String phone);
     UsersVO getMemberByEmail(String email);
     Boolean isMemberExistByPhone(String phone);
+    int updatePassword(UsersVO user);
 }

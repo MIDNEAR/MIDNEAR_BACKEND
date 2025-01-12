@@ -40,4 +40,9 @@
         FROM users
         WHERE email = #{email}
     </select>
+    <update id="updatePassword" parameterType="UsersVO">
+        UPDATE users
+        SET password = #{password}
+        WHERE id = #{id}
+    </update>
 </mapper>
