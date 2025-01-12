@@ -45,4 +45,16 @@
         SET password = #{password}
         WHERE id = #{id}
     </update>
+
+    <update id="updateUserInfo" parameterType="UserInfoChangeDto">
+        UPDATE users
+        SET name = #{name}, email = #{email}, phone_number = #{phoneNumber}
+        WHERE id = #{id}
+    </update>
+
+    <select id="getPasswordById" parameterType="String">
+        SELECT password
+        FROM users
+        WHERE id = #{id}
+    </select>
 </mapper>

@@ -2,15 +2,19 @@ package com.midnear.midnearshopping.controller;
 
 
 import com.midnear.midnearshopping.domain.dto.users.LoginDto;
+import com.midnear.midnearshopping.domain.dto.users.UserInfoChangeDto;
 import com.midnear.midnearshopping.domain.dto.users.UsersDto;
+import com.midnear.midnearshopping.domain.vo.users.CustomUserDetails;
 import com.midnear.midnearshopping.exception.ApiResponse;
 
 
+import com.midnear.midnearshopping.service.CustomUserDetailsService;
 import com.midnear.midnearshopping.service.UsersService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
@@ -86,13 +90,46 @@ public class UsersController {
     @PatchMapping("/change-password")
     public ResponseEntity<?> changePassword(@RequestBody LoginDto loginDto) {
         try{
-            memberService.changePassword(loginDto.getId(), loginDto.getPassword());
-            return ResponseEntity.ok(new ApiResponse(true, "비밀번호 변경 성공", loginDto.getId()));
+            String id = memberService.changePassword(loginDto.getId(), loginDto.getPassword());
+            return ResponseEntity.ok(new ApiResponse(true, "비밀번호 변경 성공", id));
         }catch (IllegalArgumentException ex){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, ex.getMessage(), null));
 
         }catch (UsernameNotFoundException ex){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(false, ex.getMessage(), null));
+        }
+    }
+    @GetMapping("/check-password")
+    public ResponseEntity<?> checkPassword(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestParam String password) {
+        try {
+            Boolean result = memberService.checkPassword(customUserDetails.getUsername(), password);
+            if (result) {
+                return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(true, "비밀번호가 일치합니다.", null));
+            }
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse(false, "비밀번호가 일치하지 않습니다.", null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(false, "비밀번호 확인 중 에러가 발생했습니다\n." + e.getMessage(), null));
+        }
+    }
+
+    @GetMapping("/user-info")
+    public ResponseEntity<ApiResponse> getUserInfo(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        try {
+            UserInfoChangeDto result = memberService.getUserInfo(customUserDetails.getUsername());
+            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(true, "유저 정보 조회 성공", result));
+
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse(false, "유저 정보 확인 중 에러가 발생했습니다\n." + e.getMessage(), null));
+        }
+    }
+    @PutMapping("/change-user-info")
+    public ResponseEntity<ApiResponse> getUserInfo(@RequestBody UserInfoChangeDto userInfoChangeDto) {
+        try {
+            memberService.changeUserInfo(userInfoChangeDto);
+            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(true, "유저 정보 변경 완료", null));
+
+        } catch (UsernameNotFoundException | IllegalArgumentException ex) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse(false, ex.getMessage(), null));
         }
     }
 }

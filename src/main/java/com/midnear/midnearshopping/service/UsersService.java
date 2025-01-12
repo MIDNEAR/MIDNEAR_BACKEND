@@ -1,6 +1,7 @@
 package com.midnear.midnearshopping.service;
 
 import com.midnear.midnearshopping.domain.dto.users.LoginDto;
+import com.midnear.midnearshopping.domain.dto.users.UserInfoChangeDto;
 import com.midnear.midnearshopping.domain.dto.users.UsersDto;
 import com.midnear.midnearshopping.domain.vo.users.UsersVO;
 import com.midnear.midnearshopping.jwt.JwtUtil;
@@ -89,6 +90,35 @@ public class UsersService {
             throw new RuntimeException("비밀번호 변경에 실패했습니다. 다시 시도해주세요.");
         }
         return user.getId();
+    }
+
+    public Boolean checkPassword(String id, String password) {
+        String originPwd = memberMapper.getPasswordById(id);
+        return bCryptPasswordEncoder.matches(originPwd, password);
+    }
+
+    public UserInfoChangeDto getUserInfo(String id){
+        UsersVO user = usersMapper.getMemberById(id);
+        if (user == null) {
+            throw new UsernameNotFoundException("존재하지 않는 유저입니다.");
+        }
+        return UserInfoChangeDto.toDto(user);
+
+    }
+
+    @Transactional
+    public void changeUserInfo(UserInfoChangeDto userInfoChangeDto) {
+        UsersVO user = usersMapper.getMemberById(userInfoChangeDto.getId());
+        if (user == null) {
+            throw new UsernameNotFoundException("존재하지 않는 유저입니다.");
+        }
+        if (user.getSocialType()!=null) {
+            throw new UsernameNotFoundException("소셜 계정으로 가입된 회원은 이메일 변경이 불가능 합니다.");
+        }
+        usersMapper.updateUserInfo(userInfoChangeDto);
+
+
+
     }
 
 
