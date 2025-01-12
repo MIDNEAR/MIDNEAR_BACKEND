@@ -7,7 +7,6 @@ import com.midnear.midnearshopping.exception.ApiResponse;
 
 
 import com.midnear.midnearshopping.service.UsersService;
-import com.midnear.midnearshopping.service.oauth.OAuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,7 +51,7 @@ public class UsersController {
     }
 
     @GetMapping("/isDuplicate")
-    public ResponseEntity<String> isDuplicate(String id) {
+    public ResponseEntity<String> isDuplicate(@RequestParam String id) {
         try {
             Boolean result = memberService.isDuplicate(id);
             if (result) {
@@ -62,7 +61,15 @@ public class UsersController {
         } catch (Exception e) {
             return ResponseEntity.status(500).body("중복확인 중 오류가 발생했습니다.");
         }
-
     }
 
+    @GetMapping("/findId")
+    public ResponseEntity<?> findId(@RequestParam String phone) {
+        try {
+            String id = memberService.findIdByPhone(phone);
+            return ResponseEntity.ok(new ApiResponse(true, "아이디 찾기 성공", id));
+        } catch (Exception ex) {
+            return ResponseEntity.status(404).body(new ApiResponse(false, ex.getMessage(), null));
+        }
+    }
 }
