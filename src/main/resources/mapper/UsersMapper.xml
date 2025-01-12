@@ -3,9 +3,9 @@
 <mapper namespace="com.midnear.midnearshopping.mapper.users.UsersMapper">
     <insert id="createMember" parameterType="UsersVO">
         INSERT INTO users (
-            name, id, password, phone_number, email, withdrawn, point_balance
+            name, id, password, phone_number, email, withdrawn, point_balance, social_type
         ) VALUES (
-                     #{name}, #{id}, #{password}, #{phoneNumber}, #{email}, #{withdrawn}, #{pointBalance}
+                     #{name}, #{id}, #{password}, #{phoneNumber}, #{email}, #{withdrawn}, #{pointBalance}, #{socialType}
                  )
 
     </insert>
@@ -34,5 +34,10 @@
         SELECT *
         FROM users
         WHERE phone_number = #{phone}
+    </select>
+    <select id="getMemberByEmail" parameterType="String" resultType="com.midnear.midnearshopping.domain.vo.users.UsersVO">
+        SELECT *
+        FROM users
+        WHERE email = #{email}
     </select>
 </mapper>
