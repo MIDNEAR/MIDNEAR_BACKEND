@@ -1,4 +1,4 @@
-package com.midnear.midnearshopping.service;
+package com.midnear.midnearshopping.service.magazine;
 
 import com.midnear.midnearshopping.domain.dto.magazines.MagazineImagesDTO;
 import com.midnear.midnearshopping.domain.dto.magazines.MagazinesDTO;
@@ -21,7 +21,7 @@ public interface MagazinesService {
    int searchCount(String dateFilter, String orderBy, String search, String searchValue);
 
 // 매거진 삭제
-   void deleteMagazine(List<Integer> magazineId);
+   void deleteMagazine(List<Long> magazineId);
 
 // 매거진 작성
    void insertMagazine(MagazinesDTO magazinesDTO);
