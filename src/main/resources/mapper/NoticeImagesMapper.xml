@@ -8,4 +8,12 @@
         #{imageUrl}, #{fileSize}, #{extension}, NOW(), #{noticeId}
         )
     </insert>
+    <select id="getNoticeImageVo" resultType="NoticeImagesVo">
+        SELECT * FROM notice_images
+        WHERE notice_id = #{noticeId};
+    </select>
+    <delete id="deleteNoticeImages">
+        DELETE FROM notice_images
+        WHERE notice_id = #{noticeId}
+    </delete>
 </mapper>

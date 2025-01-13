@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 public class NoticeVo {
 
-    private Integer noticeId;
+    private Long noticeId;
 
     private String title;
 
