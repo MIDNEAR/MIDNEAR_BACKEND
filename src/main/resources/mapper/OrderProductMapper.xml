@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.midnear.midnearshopping.mapper.order.OrderProductsMapper">
+<!-- 전체 상품 최신순 조회 -->
+    <select id="selectAll">
+        select
+            o.order_number,
+            op.order_status,
+            op.claim_status,
+            p.payment_date,
+            pr.product_name,
+            pc.color,
+            op.size,
+            op.quantity,
+            o.total_payment_amount,
+            o.all_payment,
+            o.order_name,
+            o.order_id,
+            o.recipient_name,
+            di.delivery_process_date,
+            o.order_contact,
+            o.postal_code,
+            o.address,
+            o.detailed_address
+        from order_products op
+            inner join orders o on op.order_id = o.order_id
+            left join delivery_info di on op.delivery_id = di.delivery_id
+            left join payments p ON o.order_id = p.order_id
+            inner join products pr on op.product_id = pr.product_id
+            inner join product_colors pc on  pc.product_id = pr.product_id
+        order by op.order_product_id
+            LIMIT #{pageSize} OFFSET #{offset}
+    </select>
+
+   <select id="count">
+       select count(*)
+       from order_products op
+            inner join orders o on op.order_id = o.order_id
+            left join delivery_info di on op.delivery_id = di.delivery_id
+            left join payments p ON o.order_id = p.order_id
+            inner join products pr on op.product_id = pr.product_id
+            inner join product_colors pc on  pc.product_id = pr.product_id
+   </select>
+</mapper>

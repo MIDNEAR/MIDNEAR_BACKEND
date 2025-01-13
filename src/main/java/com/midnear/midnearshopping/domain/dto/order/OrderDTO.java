@@ -28,5 +28,5 @@ public class OrderDTO {
     String orderContact;
     String postalCode;
     String address;
-    String detail_address;
+    String detailedAddress;
 }

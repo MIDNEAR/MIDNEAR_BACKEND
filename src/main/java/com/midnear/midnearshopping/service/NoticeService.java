@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.ibatis.javassist.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import software.amazon.awssdk.services.s3.model.S3Exception;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -58,7 +59,7 @@ public class NoticeService {
         }
     }
 
-    public NoticeDto getNotice(int noticeId) {
+    public NoticeDto getNotice(Long noticeId) {
         return NoticeDto.toDto(noticeMapper.findNoticeById(noticeId));
     }
 
@@ -67,13 +68,71 @@ public class NoticeService {
         if (noticeMapper.findNoticeById(noticeDto.getNoticeId()) == null) {
             throw new NotFoundException("수정할 공지사항을 찾을 수 없습니다.");
         }
-        NoticeVo noticeVo = NoticeVo.toEntity(noticeDto);
-        noticeMapper.updateNotice(noticeVo);
+        List<FileDto> fileInfo = null;
+        try {
+            // 공지사항 테이블 수정
+            NoticeVo noticeVo = NoticeVo.toEntity(noticeDto);
+            noticeMapper.updateNotice(noticeVo);
+
+            // 기존 이미지 삭제
+            List<NoticeImagesVo> noticeImagesVoList = noticeImagesMapper.getNoticeImageVo(noticeDto.getNoticeId());
+            for (NoticeImagesVo imagesVo : noticeImagesVoList) {
+                s3Service.deleteFile(imagesVo.getImageUrl());
+            }
+
+            // 새로운 파일 업로드
+            fileInfo = s3Service.uploadFiles("notices", noticeDto.getFiles());
+
+            // DB에 이미지 정보 변경
+            noticeImagesMapper.deleteNoticeImages(noticeDto.getNoticeId());
+            for (FileDto file : fileInfo) {
+                NoticeImagesVo imagesVo = NoticeImagesVo.builder()
+                        .noticeImageId(null)
+                        .imageUrl(file.getFileUrl())
+                        .fileSize(file.getFileSize())
+                        .extension(file.getExtension())
+                        .imageCreationDate(null)
+                        .noticeId(noticeVo.getNoticeId())
+                        .build();
+                noticeImagesMapper.uploadNoticeImages(imagesVo);
+            }
+
+        } catch (S3Exception s3Ex) {
+            throw new RuntimeException("S3 처리 중 오류가 발생했습니다.", s3Ex);
+
+            // 예외 처리를 어느 정도로 자세하게 하면 좋을까요..,~ 커스텀은 코드 재활용성이 떨어져보임.,
+//        } catch (DatabaseException dbEx) {
+//            // S3에 업로드된 파일 삭제
+//            if (fileInfo != null) {
+//                for (FileDto file : fileInfo) {
+//                    s3Service.deleteFile(file.getFileUrl());
+//                }
+//            }
+//            throw new RuntimeException("DB 처리 중 오류가 발생했습니다.", dbEx);
+//
+          } catch (Exception ex) {
+            if (fileInfo != null) {
+                 for (FileDto file : fileInfo) {
+                     s3Service.deleteFile(file.getFileUrl());
+                 }
+            }
+            throw new RuntimeException("DB 업데이트 중 오류가 발생했습니다", ex);
+        }
     }
 
     @Transactional
-    public void deleteNotices(List<Integer> deleteList) {
+    public void deleteNotices(List<Long> deleteList) {
         noticeMapper.deleteNotices(deleteList);
+        // 관련 이미지 삭제
+        for (Long id : deleteList) {
+            // 버킷에서 삭제
+            List<NoticeImagesVo> noticeImagesVoList = noticeImagesMapper.getNoticeImageVo(id);
+            for (NoticeImagesVo imagesVo : noticeImagesVoList) {
+                s3Service.deleteFile(imagesVo.getImageUrl());
+            }
+            // 테이블에서 이미지 정보 삭제
+            noticeImagesMapper.deleteNoticeImages(id);
+        }
     }
 
     public List<NoticeDto> getFixedNoticeList() {
@@ -91,7 +150,7 @@ public class NoticeService {
     }
 
     @Transactional
-    public void fixNotices(List<Integer> fixList) {
+    public void fixNotices(List<Long> fixList) {
         if (fixList == null || fixList.isEmpty()) {
             throw new IllegalArgumentException("선택된 공지사항이 없습니다.");
         }
@@ -99,7 +158,7 @@ public class NoticeService {
     }
 
     @Transactional
-    public void unfixNotices(List<Integer> unfixList) {
+    public void unfixNotices(List<Long> unfixList) {
         if (unfixList == null || unfixList.isEmpty()) {
             throw new IllegalArgumentException("선택된 공지사항이 없습니다.");
         }

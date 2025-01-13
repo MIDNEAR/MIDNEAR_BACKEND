@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class NoticeDto {
-    private Integer noticeId;
+    private Long noticeId;
 
     @NotNull(message = "제목을 입력해주세요.")
     private String title;

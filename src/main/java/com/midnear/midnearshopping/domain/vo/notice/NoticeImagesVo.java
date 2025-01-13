@@ -10,7 +10,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 public class NoticeImagesVo {
-    private Integer noticeImageId;
+    private Long noticeImageId;
 
     private String imageUrl;
 
@@ -20,7 +20,7 @@ public class NoticeImagesVo {
 
     private Date imageCreationDate;
 
-    private int noticeId;
+    private Long noticeId;
     public static NoticeImagesVo toEntity(NoticeImagesDto noticeImagesDto) {
         return NoticeImagesVo.builder()
                 .noticeImageId(noticeImagesDto.getNoticeImageId())
