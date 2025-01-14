@@ -22,7 +22,7 @@ public class OrderDTO {
     BigDecimal totalPaymentAmount;
     BigDecimal allPayment;
     String orderName;
-    String orderId;
+    String id;
     String recipientName;
     Date deliveryProcessDate;
     String orderContact;

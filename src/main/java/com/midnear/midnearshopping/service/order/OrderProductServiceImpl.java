@@ -1,6 +1,7 @@
 package com.midnear.midnearshopping.service.order;
 
 import com.midnear.midnearshopping.domain.dto.order.OrderDTO;
+import com.midnear.midnearshopping.domain.dto.order.OrderParamDTO;
 import com.midnear.midnearshopping.mapper.order.OrderProductsMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,5 +25,18 @@ public class OrderProductServiceImpl implements OrderProductService {
     @Override
     public int count() {
         return orderProductsMapper.count();
+    }
+
+    @Override
+    public List<OrderDTO> filterSearch(OrderParamDTO orderParamDTO) {
+        int offset = (orderParamDTO.getPageNumber()- 1) * pageSize;
+        orderParamDTO.setOffset(offset);
+        orderParamDTO.setPageSize(pageSize);
+        return orderProductsMapper.filterSearch(orderParamDTO);
+    }
+
+    @Override
+    public int filterCount(OrderParamDTO orderParamDTO) {
+        return orderProductsMapper.filterCount(orderParamDTO);
     }
 }
