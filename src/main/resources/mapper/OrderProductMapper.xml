@@ -73,16 +73,14 @@
         where 1 = 1
         <!-- 동적 날짜 조건 -->
         <if test="searchPeriod != null">
-            AND
             <choose>
                 <when test="searchPeriod == '결제일'">
-                    p.payment_date
+                    and p.payment_date >=
                 </when>
                 <when test="searchPeriod == '발송처리일'">
-                    di.delivery_process_date
+                    and di.delivery_process_date >=
                 </when>
             </choose>
-            >=
             <choose>
                 <when test="dateFilter == '오늘'">
                     CURDATE()
