@@ -22,7 +22,7 @@ public interface magazinesMapper {
     int searchCount(@Param("dateFilter")String dateFilter, @Param("orderBy")String orderBy, @Param("search")String search, @Param("searchValue")String searchValue);
 
 //  삭제기능
-    void deleteMagazines(int magazineId);
+    void deleteMagazines(Long magazineId);
 
 //  매거진 게시글 등록
     void insertMagazine(MagazinesVO magazinesVO);

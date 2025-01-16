@@ -1,4 +1,4 @@
-package com.midnear.midnearshopping.service;
+package com.midnear.midnearshopping.service.inquirie;
 
 import com.midnear.midnearshopping.domain.dto.Inquiries.InquiriesDTO;
 import com.midnear.midnearshopping.domain.dto.Inquiries.InquiriesListDTO;

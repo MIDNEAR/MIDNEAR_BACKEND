@@ -1,4 +1,4 @@
-package com.midnear.midnearshopping.service;
+package com.midnear.midnearshopping.service.magazine;
 import com.midnear.midnearshopping.domain.dto.FileDto;
 import com.midnear.midnearshopping.domain.dto.magazines.MagazineImagesDTO;
 import com.midnear.midnearshopping.domain.dto.magazines.MagazinesDTO;
@@ -6,6 +6,7 @@ import com.midnear.midnearshopping.domain.dto.magazines.MagazinesListDTO;
 import com.midnear.midnearshopping.domain.vo.magazines.MagazineImagesVO;
 import com.midnear.midnearshopping.domain.vo.magazines.MagazinesVO;
 import com.midnear.midnearshopping.mapper.magazines.magazinesMapper;
+import com.midnear.midnearshopping.service.S3Service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -47,9 +48,34 @@ public class MagazinesServiceImpl implements MagazinesService {
 
 //  매거진 목록 삭제
     @Override
-    public void deleteMagazine(List<Integer> magazineId) {
+    public void deleteMagazine(List<Long> magazineId) {
+
         for(int i=0; i<magazineId.size(); i++){
-           magazinesMapper.deleteMagazines(magazineId.get(i));
+            // 기존 매거진 이미지 s3에서 삭제
+            List<MagazineImagesDTO> magazineImages = magazinesMapper.selectMagazineImage(magazineId.get(i));
+
+            if (magazineImages == null) {
+                throw new RuntimeException("존재하지 않는 매거진입니다.");
+            }
+            for (int j = 0; j < magazineImages.size(); j++)
+                try {
+                    s3Service.deleteFile(magazineImages.get(j).getImageUrl());
+                } catch (Exception deleteException) {
+                    log.error("이미지 삭제 실패: {}", magazineImages.get(j).getImageUrl(), deleteException);
+                }
+
+
+            //기존 매거진 이미지 magazine_images 테이블에서 삭제
+
+            for (int k = 0; k < magazineImages.size(); k++) {
+                try {
+                    magazinesMapper.deleteMagazineImage(magazineImages.get(k).getMagazineId());
+                } catch (Exception deleteException) {
+                    log.error("이미지 삭제 실패: {}", magazineImages.get(k).getImageUrl(), deleteException);
+                }
+            }
+            //매거진 게시글 삭제
+            magazinesMapper.deleteMagazines(magazineId.get(i));
         }
     }
 

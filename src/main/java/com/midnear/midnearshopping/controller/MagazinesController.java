@@ -1,16 +1,13 @@
 package com.midnear.midnearshopping.controller;
 
-import com.midnear.midnearshopping.domain.dto.disruptive.disruptiveListDTO;
 import com.midnear.midnearshopping.domain.dto.magazines.MagazineImagesDTO;
 import com.midnear.midnearshopping.domain.dto.magazines.MagazinesDTO;
 import com.midnear.midnearshopping.domain.dto.magazines.MagazinesListDTO;
 import com.midnear.midnearshopping.exception.ApiResponse;
-import com.midnear.midnearshopping.service.MagazinesService;
-import jakarta.validation.Valid;
+import com.midnear.midnearshopping.service.magazine.MagazinesService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -87,7 +84,7 @@ public class MagazinesController {
 //  매거진 전체/부분 삭제
 //  수정필요 매거진 삭제시 매거진 이미지도 트렌젝션으로 삭제하도록
     @DeleteMapping("/deleteMagazines")
-    public ResponseEntity<ApiResponse> deleteMagazine(@RequestBody List<Integer> magazineId){
+    public ResponseEntity<ApiResponse> deleteMagazine(@RequestBody List<Long> magazineId){
         try {
             magazinesService.deleteMagazine(magazineId);
             // 200 OK 응답으로 JSON 반환
