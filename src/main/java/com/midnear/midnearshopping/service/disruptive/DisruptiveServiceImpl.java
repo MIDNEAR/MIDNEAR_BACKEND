@@ -1,4 +1,4 @@
-package com.midnear.midnearshopping.service;
+package com.midnear.midnearshopping.service.disruptive;
 
 import com.midnear.midnearshopping.domain.dto.disruptive.disruptiveDTO;
 import com.midnear.midnearshopping.domain.dto.disruptive.disruptiveListDTO;

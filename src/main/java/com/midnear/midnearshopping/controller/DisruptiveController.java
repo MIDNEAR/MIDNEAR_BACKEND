@@ -1,9 +1,8 @@
 package com.midnear.midnearshopping.controller;
-import com.midnear.midnearshopping.domain.dto.Inquiries.InquiriesListDTO;
 import com.midnear.midnearshopping.domain.dto.disruptive.disruptiveDTO;
 import com.midnear.midnearshopping.domain.dto.disruptive.disruptiveListDTO;
 import com.midnear.midnearshopping.exception.ApiResponse;
-import com.midnear.midnearshopping.service.DisruptiveService;
+import com.midnear.midnearshopping.service.disruptive.DisruptiveService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
