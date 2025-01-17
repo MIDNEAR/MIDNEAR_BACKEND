@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.midnear.midnearshopping.mapper.delivery.DeliveryAddressMapper">
+    <select id="getDeliveryAddressById" parameterType="int">
+        SELECT
+            delivery_address_id AS deliveryAddressId,
+            delivery_name AS deliveryName,
+            postal_code AS postalCode,
+            address,
+            detail_address AS detailAddress,
+            default_address_status AS defaultAddressStatus,
+            recipient,
+            recipient_contact AS recipientContact,
+            delivery_request AS deliveryRequest,
+            user_id AS userId
+        FROM delivery_address
+        WHERE delivery_address_id = #{deliveryAddressId}
+    </select>
+    <insert id="createDeliveryAddress" parameterType="com.example.vo.DeliveryAddressVO">
+        INSERT INTO delivery_address (
+            delivery_name,
+            postal_code,
+            address,
+            detail_address,
+            default_address_status,
+            recipient,
+            recipient_contact,
+            delivery_request,
+            user_id
+        ) VALUES (
+                     #{deliveryName},
+                     #{postalCode},
+                     #{address},
+                     #{detailAddress},
+                     #{defaultAddressStatus},
+                     #{recipient},
+                     #{recipientContact},
+                     #{deliveryRequest},
+                     #{userId}
+                 )
+    </insert>
+
+</mapper>
