@@ -1,11 +1,9 @@
 package com.midnear.midnearshopping.controller;
 
-import com.midnear.midnearshopping.domain.dto.disruptive.disruptiveListDTO;
-import com.midnear.midnearshopping.domain.dto.order.OrderDTO;
-import com.midnear.midnearshopping.domain.dto.order.OrderParamDTO;
+import com.midnear.midnearshopping.domain.dto.productManagement.OrderDTO;
+import com.midnear.midnearshopping.domain.dto.productManagement.OrderParamDTO;
 import com.midnear.midnearshopping.exception.ApiResponse;
-import com.midnear.midnearshopping.mapper.order.OrderProductsMapper;
-import com.midnear.midnearshopping.service.order.OrderProductService;
+import com.midnear.midnearshopping.service.productManagement.OrderProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,7 +53,7 @@ public class OrderController {
                     .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
         }
     }
-    //  주문정보 최신순 조회
+    //  주문정보 필터링 조회
     @GetMapping("/filterSearch")
     public ResponseEntity<ApiResponse> filterSearch(@ModelAttribute @Valid OrderParamDTO OrderParamDTO){
 

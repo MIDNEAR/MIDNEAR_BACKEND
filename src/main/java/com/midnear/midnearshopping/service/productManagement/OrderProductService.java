@@ -1,8 +1,7 @@
-package com.midnear.midnearshopping.service.order;
+package com.midnear.midnearshopping.service.productManagement;
 
-import com.midnear.midnearshopping.domain.dto.order.OrderDTO;
-import com.midnear.midnearshopping.domain.dto.order.OrderParamDTO;
-import org.springframework.core.annotation.Order;
+import com.midnear.midnearshopping.domain.dto.productManagement.OrderDTO;
+import com.midnear.midnearshopping.domain.dto.productManagement.OrderParamDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

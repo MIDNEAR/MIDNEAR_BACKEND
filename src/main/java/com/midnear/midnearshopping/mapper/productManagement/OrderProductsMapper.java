@@ -1,7 +1,7 @@
-package com.midnear.midnearshopping.mapper.order;
+package com.midnear.midnearshopping.mapper.productManagement;
 
-import com.midnear.midnearshopping.domain.dto.order.OrderDTO;
-import com.midnear.midnearshopping.domain.dto.order.OrderParamDTO;
+import com.midnear.midnearshopping.domain.dto.productManagement.OrderDTO;
+import com.midnear.midnearshopping.domain.dto.productManagement.OrderParamDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

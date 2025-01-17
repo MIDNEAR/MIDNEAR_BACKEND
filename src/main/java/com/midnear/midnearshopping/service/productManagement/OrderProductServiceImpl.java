@@ -1,8 +1,8 @@
-package com.midnear.midnearshopping.service.order;
+package com.midnear.midnearshopping.service.productManagement;
 
-import com.midnear.midnearshopping.domain.dto.order.OrderDTO;
-import com.midnear.midnearshopping.domain.dto.order.OrderParamDTO;
-import com.midnear.midnearshopping.mapper.order.OrderProductsMapper;
+import com.midnear.midnearshopping.domain.dto.productManagement.OrderDTO;
+import com.midnear.midnearshopping.domain.dto.productManagement.OrderParamDTO;
+import com.midnear.midnearshopping.mapper.productManagement.OrderProductsMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

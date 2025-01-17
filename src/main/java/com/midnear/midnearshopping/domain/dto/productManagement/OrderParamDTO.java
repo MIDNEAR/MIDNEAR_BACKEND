@@ -1,6 +1,5 @@
-package com.midnear.midnearshopping.domain.dto.order;
+package com.midnear.midnearshopping.domain.dto.productManagement;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import java.time.LocalDateTime;
 
