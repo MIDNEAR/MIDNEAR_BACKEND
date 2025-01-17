@@ -1,7 +1,7 @@
 package com.midnear.midnearshopping.mapper.productManagement;
 
 import com.midnear.midnearshopping.domain.dto.productManagement.OrderDTO;
-import com.midnear.midnearshopping.domain.dto.productManagement.OrderParamDTO;
+import com.midnear.midnearshopping.domain.dto.productManagement.ParamDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -15,8 +15,8 @@ public interface OrderProductsMapper {
     int count();
 
 //  필터링 검색
-    List<OrderDTO> filterSearch(OrderParamDTO orderParamDTO);
+    List<OrderDTO> filterSearch(ParamDTO orderParamDTO);
 
-    int filterCount(OrderParamDTO orderParamDTO);
+    int filterCount(ParamDTO orderParamDTO);
 
 }

@@ -72,7 +72,7 @@
             inner join users u on o.user_id = u.user_id
         where 1 = 1
         <!-- 동적 날짜 조건 -->
-        <if test="searchPeriod != null">
+        <if test="searchPeriod != null and searchPeriod != ''">
             <choose>
                 <when test="searchPeriod == '결제일'">
                     and p.payment_date >=
@@ -138,17 +138,15 @@
         inner join product_colors pc on  pc.product_id = pr.product_id
         left join users u on o.user_id = u.user_id
         where 1 = 1
-        <if test="searchPeriod != null">
-            AND
+        <if test="searchPeriod != null and searchPeriod != ''">
             <choose>
                 <when test="searchPeriod == '결제일'">
-                    p.payment_date
+                   and p.payment_date >=
                 </when>
                 <when test="searchPeriod == '발송처리일'">
-                    di.delivery_process_date
+                   and di.delivery_process_date  >=
                 </when>
             </choose>
-            >=
             <choose>
                 <when test="dateFilter == '오늘'">
                     CURDATE()
@@ -169,7 +167,7 @@
                     #{startDate} AND #{endDate}
                 </when>
             </choose>
-        </if>
+        </>
         <if test="searchCondition == '주문번호'">
             o.order_number like CONCAT('%', #{searchValue}, '%')
         </if>

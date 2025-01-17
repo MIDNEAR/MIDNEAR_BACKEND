@@ -1,7 +1,7 @@
 package com.midnear.midnearshopping.service.productManagement;
 
 import com.midnear.midnearshopping.domain.dto.productManagement.OrderDTO;
-import com.midnear.midnearshopping.domain.dto.productManagement.OrderParamDTO;
+import com.midnear.midnearshopping.domain.dto.productManagement.ParamDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,7 +15,7 @@ public interface OrderProductService {
    int count();
 
 // 주문내역 필터링 조회
-   List<OrderDTO> filterSearch(OrderParamDTO orderParamDTO);
+   List<OrderDTO> filterSearch(ParamDTO orderParamDTO);
 
-   int filterCount(OrderParamDTO orderParamDTO);
+   int filterCount(ParamDTO orderParamDTO);
 }

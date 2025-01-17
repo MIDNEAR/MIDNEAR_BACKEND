@@ -1,7 +1,7 @@
 package com.midnear.midnearshopping.controller;
 
 import com.midnear.midnearshopping.domain.dto.productManagement.OrderDTO;
-import com.midnear.midnearshopping.domain.dto.productManagement.OrderParamDTO;
+import com.midnear.midnearshopping.domain.dto.productManagement.ParamDTO;
 import com.midnear.midnearshopping.exception.ApiResponse;
 import com.midnear.midnearshopping.service.productManagement.OrderProductService;
 import jakarta.validation.Valid;
@@ -55,7 +55,7 @@ public class OrderController {
     }
     //  주문정보 필터링 조회
     @GetMapping("/filterSearch")
-    public ResponseEntity<ApiResponse> filterSearch(@ModelAttribute @Valid OrderParamDTO OrderParamDTO){
+    public ResponseEntity<ApiResponse> filterSearch(@ModelAttribute @Valid ParamDTO OrderParamDTO){
 
 
             //      페이징 번호에 맞는 List
