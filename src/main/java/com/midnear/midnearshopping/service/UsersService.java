@@ -57,10 +57,10 @@ public class UsersService {
         if (user == null) {
             throw new UsernameNotFoundException("해당 번호로 가입된 아이디가 존재하지 않습니다. 문제가 계속 될 경우 고객센터로 문의하시기 바랍니다.");
         }
-        if (user.getSocialType().equals("kakao") || user.getSocialType().equals("google") || user.getSocialType().equals("naver")) {
-            throw new IllegalArgumentException("소셜 계정으로 가입된 전화번호 입니다. 소셜 로그인을 시도해주세요.");
+        if (user.getSocialType() == null) {
+            return user.getId();
         }
-        return user.getId();
+        throw new IllegalArgumentException("소셜 계정으로 가입된 전화번호 입니다. 소셜 로그인을 시도해주세요.");
     }
 
     public String findIdByEmail(String email) {
@@ -68,10 +68,10 @@ public class UsersService {
         if (user == null) {
             throw new UsernameNotFoundException("해당 이메일로 가입된 아이디가 존재하지 않습니다. 문제가 계속 될 경우 고객센터로 문의하시기 바랍니다.");
         }
-        if (user.getSocialType()!=null) {
-            throw new IllegalArgumentException("소셜 계정으로 가입된 이메일 입니다. 소셜 로그인을 시도해주세요.");
+        if (user.getSocialType()==null) {
+            return user.getId();
         }
-        return user.getId();
+        throw new IllegalArgumentException("소셜 계정으로 가입된 이메일 입니다. 소셜 로그인을 시도해주세요.");
     }
 
     @Transactional
@@ -94,7 +94,7 @@ public class UsersService {
 
     public Boolean checkPassword(String id, String password) {
         String originPwd = memberMapper.getPasswordById(id);
-        return bCryptPasswordEncoder.matches(originPwd, password);
+        return bCryptPasswordEncoder.matches(password, originPwd);
     }
 
     public UserInfoChangeDto getUserInfo(String id){
