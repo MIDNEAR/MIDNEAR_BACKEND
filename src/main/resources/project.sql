@@ -382,15 +382,7 @@ CREATE TABLE `magazine_images` (
     FOREIGN KEY (`magazine_id`) REFERENCES `magazines`(`magazine_id`)
 );
 
-CREATE TABLE `cart_products` (
-    `cart_id` int NOT NULL AUTO_INCREMENT,
-    `product_id` int NOT NULL,
-    `product_quantity` int NULL,
-    `size` varchar(20) NULL,
-    PRIMARY KEY (`cart_id`, `product_id`),
-    FOREIGN KEY (`cart_id`) REFERENCES `cart`(`cart_id`),
-    FOREIGN KEY (`product_id`) REFERENCES `products`(`product_id`)
-);
+
 
 CREATE TABLE `order_coupons` (
     `order_id` int NOT NULL AUTO_INCREMENT,
@@ -416,5 +408,12 @@ CREATE TABLE `return_delivery` (
     FOREIGN KEY (`return_id`) REFERENCES `returns`(`return_id`),
     FOREIGN KEY (`delivery_address_id`) REFERENCES `delivery_address`(`delivery_address_id`)
     );
-select * from return_delivery;
 
+CREATE TABLE `delivery_charge` (
+     `charge_id` int NOT NULL AUTO_INCREMENT,
+     `basic_delivery_cost` int NOT NULL,
+     `free_delivery_condition` int NOT NULL,
+     `Jeju_delivery_cost` int NOT NULL,
+     `island_mountain_delivery_cost` int NOT NULL,
+      PRIMARY KEY (`charge_id`)
+);

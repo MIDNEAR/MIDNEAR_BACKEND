@@ -1,5 +1,6 @@
 package com.midnear.midnearshopping.mapper.users;
 
+import com.midnear.midnearshopping.domain.dto.users.UserInfoChangeDto;
 import com.midnear.midnearshopping.domain.vo.users.UsersVO;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -12,4 +13,7 @@ public interface UsersMapper {
     UsersVO getMemberByPhone(String phone);
     UsersVO getMemberByEmail(String email);
     Boolean isMemberExistByPhone(String phone);
+    int updatePassword(UsersVO user);
+    String getPasswordById(String id);
+    void updateUserInfo(UserInfoChangeDto userInfoChangeDto);
 }

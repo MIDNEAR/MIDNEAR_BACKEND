@@ -66,6 +66,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     //oauth
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+    // 인증 Email에 필요한 것
+    implementation 'com.sun.mail:javax.mail:1.6.2'
+    implementation 'org.springframework:spring-context-support:5.3.9'
+    implementation 'org.hibernate.validator:hibernate-validator:6.1.7.Final'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 }
 
 tasks.named('test') {

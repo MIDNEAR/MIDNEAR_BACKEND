@@ -3,7 +3,7 @@ import com.midnear.midnearshopping.domain.dto.Inquiries.InquiriesDTO;
 import com.midnear.midnearshopping.domain.dto.Inquiries.InquiriesListDTO;
 import com.midnear.midnearshopping.domain.dto.Inquiries.Inquiry_commentsDTO;
 import com.midnear.midnearshopping.exception.ApiResponse;
-import com.midnear.midnearshopping.service.InquirieService;
+import com.midnear.midnearshopping.service.inquirie.InquirieService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
