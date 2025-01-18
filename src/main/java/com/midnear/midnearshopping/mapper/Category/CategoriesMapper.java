@@ -8,4 +8,5 @@ import java.util.List;
 @Mapper
 public interface CategoriesMapper {
     List<CategoryVo> getCategories();
+    CategoryVo getCategoryById(Long categoryId);
 }

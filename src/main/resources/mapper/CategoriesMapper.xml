@@ -4,4 +4,9 @@
     <select id="getCategories" resultType="CategoryVo">
         SELECT * FROM categories
     </select>
+    <select id="getCategoryById" resultType="CategoryVo">
+        <!-- 특정 카테고리 정보 조회 -->
+        SELECT * FROM categories
+        WHERE category_id = #{categoryId};
+    </select>
 </mapper>

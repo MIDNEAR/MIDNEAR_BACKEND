@@ -6,9 +6,10 @@ import lombok.Getter;
 @Getter
 @Builder
 public class ProductColorsVo {
-    private Long productColorsId;
-    private Long coordinatedProductId;
+    private Long productColorId;
+    //private Long coordinatedProductId;
     private String color;
     private Long productId;
+    private boolean saleStatus;
 }
 

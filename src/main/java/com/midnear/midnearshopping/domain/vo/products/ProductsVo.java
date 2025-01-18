@@ -10,15 +10,15 @@ import java.util.Date;
 @Builder
 public class ProductsVo {
     private Long productId;
-    private String product_name;
+    private String productName;
     private BigDecimal price;
     private BigDecimal discountPrice;
-    private  int discountRate;
-    private Date discountStartDate;
-    private Date discountEndDate;
     private String detail;
+    private int discountRate;
     private String sizeGuide;
     private Date registeredDate;
+    private Date discountStartDate;
+    private Date discountEndDate;
     private Long categoryId;
 
 }
