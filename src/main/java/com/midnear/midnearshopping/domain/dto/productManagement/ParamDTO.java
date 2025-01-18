@@ -1,7 +1,8 @@
-package com.midnear.midnearshopping.domain.dto.order;
+package com.midnear.midnearshopping.domain.dto.productManagement;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.time.LocalDateTime;
 
 @Getter
@@ -9,7 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class OrderParamDTO {
+public class ParamDTO {
     @Builder.Default
     int pageNumber = 1;
     int pageSize;
