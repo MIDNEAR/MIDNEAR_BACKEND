@@ -1,5 +1,6 @@
-package com.midnear.midnearshopping.domain.products;
+package com.midnear.midnearshopping.domain.dto.products;
 
+import com.midnear.midnearshopping.domain.enums.ProductStatus;
 import com.midnear.midnearshopping.domain.vo.products.SizesVo;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,5 +14,5 @@ import java.util.List;
 public class ProductColorsListDto {
     private String color;
     private List<SizesVo> sizes;
-    private boolean saleStatus;
+    private ProductStatus saleStatus;
 }

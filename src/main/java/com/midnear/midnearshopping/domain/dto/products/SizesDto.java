@@ -1,4 +1,4 @@
-package com.midnear.midnearshopping.domain.products;
+package com.midnear.midnearshopping.domain.dto.products;
 
 import lombok.Getter;
 import lombok.Setter;

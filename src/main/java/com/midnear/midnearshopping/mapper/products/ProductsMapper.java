@@ -1,6 +1,5 @@
 package com.midnear.midnearshopping.mapper.products;
 
-import com.midnear.midnearshopping.domain.products.ProductsDto;
 import com.midnear.midnearshopping.domain.vo.products.ProductsVo;
 import org.apache.ibatis.annotations.Mapper;
 

@@ -12,4 +12,31 @@
         SELECT * FROM product_colors
         WHERE product_id = #{productId}
     </select>
+    <update id="setOnSale">
+        UPDATE product_colors
+        SET
+        sale_status = 'ON_SALE'
+        WHERE product_color_id IN
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+    <update id="setSoldOut">
+        UPDATE product_colors
+        SET
+        sale_status = 'OUT_OF_STOCK'
+        WHERE product_color_id IN
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+    <update id="setDiscontinued">
+        UPDATE product_colors
+        SET
+        sale_status = 'HIDDEN'
+        WHERE product_color_id IN
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
 </mapper>

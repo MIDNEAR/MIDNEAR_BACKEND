@@ -1,9 +1,8 @@
 package com.midnear.midnearshopping.controller;
 
 import com.midnear.midnearshopping.domain.dto.category.CategoryDto;
-import com.midnear.midnearshopping.domain.products.ProductColorsListDto;
-import com.midnear.midnearshopping.domain.products.ProductManagementListDto;
-import com.midnear.midnearshopping.domain.products.ProductsDto;
+import com.midnear.midnearshopping.domain.dto.products.ProductManagementListDto;
+import com.midnear.midnearshopping.domain.dto.products.ProductsDto;
 import com.midnear.midnearshopping.exception.ApiResponse;
 import com.midnear.midnearshopping.service.ProductManagementService;
 import jakarta.validation.Valid;
@@ -11,10 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -70,4 +66,44 @@ public class ProductManagementController {
         }
     }
 
+    // 판매중으로 변경
+    @PutMapping("/setOnSale")
+    public ResponseEntity<ApiResponse> setOnSale(@RequestBody List<Long> saleList) {
+        try {
+            productManagementService.setOnSale(saleList);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "판매중으로 변경 완료", null));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
+
+    @PutMapping("/setSoldOut")
+    public ResponseEntity<ApiResponse> setSoldOut(@RequestBody List<Long> soldOutList) {
+        try {
+            productManagementService.setSoldOut(soldOutList);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "sold out 처리 완료", null));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
+
+    // 판매 중단(숨김 처리로 변경)
+    @PutMapping("/setDiscontinued")
+    public ResponseEntity<ApiResponse> setDiscontinued(@RequestBody List<Long> discontinuedList) {
+        try {
+            productManagementService.setDiscontinued(discontinuedList);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "숨김 처리 완료", null));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
 }

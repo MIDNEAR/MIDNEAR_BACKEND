@@ -2,9 +2,8 @@ package com.midnear.midnearshopping.service;
 
 import com.midnear.midnearshopping.domain.dto.FileDto;
 import com.midnear.midnearshopping.domain.dto.category.CategoryDto;
-import com.midnear.midnearshopping.domain.products.*;
+import com.midnear.midnearshopping.domain.dto.products.*;
 import com.midnear.midnearshopping.domain.vo.category.CategoryVo;
-import com.midnear.midnearshopping.domain.vo.notice.NoticeImagesVo;
 import com.midnear.midnearshopping.domain.vo.products.ProductColorsVo;
 import com.midnear.midnearshopping.domain.vo.products.ProductImagesVo;
 import com.midnear.midnearshopping.domain.vo.products.ProductsVo;
@@ -14,12 +13,10 @@ import com.midnear.midnearshopping.mapper.products.ProductColorsMapper;
 import com.midnear.midnearshopping.mapper.products.ProductImagesMapper;
 import com.midnear.midnearshopping.mapper.products.ProductsMapper;
 import com.midnear.midnearshopping.mapper.products.SizesMapper;
-import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -156,7 +153,7 @@ public class ProductManagementService {
                 ProductColorsListDto productColors = ProductColorsListDto.builder()
                         .color(productColorsVo.getColor())
                         .sizes(sizes)
-                        .saleStatus(productColorsVo.isSaleStatus())
+                        .saleStatus(productColorsVo.getSaleStatus())
                         .build();
                 colors.add(productColors);
             }
@@ -193,6 +190,30 @@ public class ProductManagementService {
         } else {
             return hierarchy;
         }
+    }
+
+    @Transactional
+    public void setOnSale(List<Long> onSaleList) {
+        if (onSaleList == null || onSaleList.isEmpty()) {
+            throw new IllegalArgumentException("선택된 상품이 없습니다.");
+        }
+        productColorsMapper.setOnSale(onSaleList);
+    }
+
+    @Transactional
+    public void setSoldOut(List<Long> soldOutList) {
+        if (soldOutList == null || soldOutList.isEmpty()) {
+            throw new IllegalArgumentException("선택된 상품이 없습니다.");
+        }
+        productColorsMapper.setSoldOut(soldOutList);
+    }
+
+    @Transactional
+    public void setDiscontinued(List<Long> discontinuedList) {
+        if (discontinuedList == null || discontinuedList.isEmpty()) {
+            throw new IllegalArgumentException("선택된 상품이 없습니다.");
+        }
+        productColorsMapper.setDiscontinued(discontinuedList);
     }
 
 }
