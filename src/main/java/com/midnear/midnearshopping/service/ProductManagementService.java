@@ -4,6 +4,7 @@ import com.midnear.midnearshopping.domain.dto.FileDto;
 import com.midnear.midnearshopping.domain.dto.category.CategoryDto;
 import com.midnear.midnearshopping.domain.dto.products.*;
 import com.midnear.midnearshopping.domain.vo.category.CategoryVo;
+import com.midnear.midnearshopping.domain.vo.notice.NoticeImagesVo;
 import com.midnear.midnearshopping.domain.vo.products.ProductColorsVo;
 import com.midnear.midnearshopping.domain.vo.products.ProductImagesVo;
 import com.midnear.midnearshopping.domain.vo.products.ProductsVo;
@@ -214,6 +215,20 @@ public class ProductManagementService {
             throw new IllegalArgumentException("선택된 상품이 없습니다.");
         }
         productColorsMapper.setDiscontinued(discontinuedList);
+    }
+
+    @Transactional
+    public void deleteProducts(List<Long> deleteList) {
+        // 관련 이미지 삭제
+        for (Long id : deleteList) {
+            // 버킷에서 삭제
+            List<ProductImagesVo> noticeImagesVoList = productImagesMapper.getImagesById(id);
+            for (ProductImagesVo imagesVo : noticeImagesVoList) {
+                s3Service.deleteFile(imagesVo.getImageUrl());
+            }
+        }
+        // 상품 삭제, 관련 테이블 (productColors, sizes, productImages 에 cascade 걸려있음)
+        productsMapper.deleteProducts(deleteList);
     }
 
 }

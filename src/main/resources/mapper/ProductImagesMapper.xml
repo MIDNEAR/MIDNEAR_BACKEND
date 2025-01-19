@@ -8,4 +8,8 @@
         #{imageUrl}, #{fileSize}, #{extension}, NOW(), #{productColorId}
         )
     </insert>
+    <select id="getImagesById" resultType="ProductImagesVo">
+        SELECT * FROM product_images
+        WHERE product_color_id = #{productColorId};
+    </select>
 </mapper>

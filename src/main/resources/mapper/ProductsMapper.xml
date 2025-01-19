@@ -11,4 +11,11 @@
     <select id="findAll" resultType="ProductsVo">
         SELECT * FROM products;
     </select>
+    <delete id="deleteProducts">
+        DELETE FROM products
+        WHERE product_id IN
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
 </mapper>

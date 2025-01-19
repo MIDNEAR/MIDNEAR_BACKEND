@@ -106,4 +106,18 @@ public class ProductManagementController {
                     .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
         }
     }
+
+    // 상품 삭제
+    @DeleteMapping("/delete")
+    public ResponseEntity<ApiResponse> deleteProducts(@RequestBody List<Long> deleteList) {
+        try {
+            productManagementService.deleteProducts(deleteList);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "상품 삭제 완료", null));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
 }

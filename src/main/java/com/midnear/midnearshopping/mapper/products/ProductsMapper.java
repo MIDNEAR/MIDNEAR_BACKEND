@@ -10,4 +10,6 @@ public interface ProductsMapper {
     void registerProducts(ProductsVo productsVo);
 
     List<ProductsVo> findAll();
+
+    void deleteProducts(List<Long> productList);
 }
