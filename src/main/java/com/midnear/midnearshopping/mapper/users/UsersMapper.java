@@ -16,4 +16,5 @@ public interface UsersMapper {
     int updatePassword(UsersVO user);
     String getPasswordById(String id);
     void updateUserInfo(UserInfoChangeDto userInfoChangeDto);
+    Integer getUserIdById(String id);
 }

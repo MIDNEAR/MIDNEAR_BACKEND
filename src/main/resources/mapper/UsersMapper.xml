@@ -57,4 +57,9 @@
         FROM users
         WHERE id = #{id}
     </select>
+    <select id="getUserIdById" parameterType="String">
+        SELECT user_id
+        FROM users
+        WHERE id = #{id}
+    </select>
 </mapper>
