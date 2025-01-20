@@ -2,26 +2,26 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.midnear.midnearshopping.mapper.magazines.magazinesMapper">
 
-<!-- 매거진 List 전체/최신순 띄우기 -->
+    <!-- 매거진 List 전체/최신순 띄우기 -->
     <select id="selectMagazineList">
-            select
-                magazine_id,
-                title,
-                content,
-                created_date,
-                view_count
-            from magazines
-            order by created_date desc
-                LIMIT #{pageSize} OFFSET #{offset}
+        select
+            magazine_id,
+            title,
+            content,
+            created_date,
+            view_count
+        from magazines
+        order by created_date desc
+            LIMIT #{pageSize} OFFSET #{offset}
 
     </select>
 
-<!--  전체 List 개수  -->
+    <!--  전체 List 개수  -->
     <select id="count">
         select count(*) from magazines
     </select>
 
-<!--  검색하기  -->
+    <!--  검색하기  -->
     <select id="magazineSearch">
         select
         magazine_id,
@@ -31,7 +31,7 @@
         view_count
         from magazines
         where 1=1
---      where 1=1 붙이면 밑에 조건 전부 미충족해도 에러 안납니당
+        --      where 1=1 붙이면 밑에 조건 전부 미충족해도 에러 안납니당
         <!-- 날짜 필터링 -->
         <if test="dateFilter == '오늘'">
             and created_date >= CURDATE()
@@ -78,7 +78,7 @@
     </select>
 
 
-<!-- 필터링 검색했을때 문의글 게수 -->
+    <!-- 필터링 검색했을때 문의글 게수 -->
     <select id="searchCount">
         select count(*) from magazines
         where 1=1
@@ -115,39 +115,39 @@
         </if>
     </select>
 
-<!-- 매거진 삭제 -->
+    <!-- 매거진 삭제 -->
     <delete id="deleteMagazines">
         delete from magazines
         where magazine_id = #{magazineId}
     </delete>
 
-<!-- 매거진 등록 -->
+    <!-- 매거진 등록 -->
     <insert id="insertMagazine" useGeneratedKeys="true" keyProperty="magazineId">
         insert into magazines (title, content, created_date, view_count ,main_image)
         values ( #{title}, #{content}, NOW(),#{viewCount}, #{mainImage})
     </insert>
 
-<!-- 매거진 이미지 등록-->
+    <!-- 매거진 이미지 등록-->
     <insert id="uploadMagazineImages">
         insert into magazine_images (image_url, file_size, extension, creation_date, magazine_id)
         values (#{imageUrl}, #{fileSize}, #{extension}, NOW(), #{magazineId})
     </insert>
 
-<!-- 작성한 메거진 가져오기 -->
+    <!-- 작성한 메거진 가져오기 -->
     <select id="selectMagazine">
         select *
         from magazines
         where magazine_id = #{magazineId}
     </select>
 
-<!-- 기존 매거진 이미지 정보 가져오기 -->
+    <!-- 기존 매거진 이미지 정보 가져오기 -->
     <select id="selectMagazineImage">
         select * from magazine_images
         where magazine_id = #{magazineId}
     </select>
 
 
-<!-- 작성한 매거진 수정하기 -->
+    <!-- 작성한 매거진 수정하기 -->
     <update id="updateMagazine">
         update magazines
         set
@@ -159,7 +159,7 @@
         where magazine_id = #{magazineId}
     </update>
 
-<!-- 수정시 기존 작성된 이미지 삭제-->
+    <!-- 수정시 기존 작성된 이미지 삭제-->
     <delete id="deleteMagazineImage">
         delete from magazine_images
         where magazine_id = #{magazineId}

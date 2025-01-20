@@ -5,11 +5,11 @@
     <select id="selectAll">
         select
             o.order_number,
-            op.order_status,
+            di.tracking_delivery,
             op.claim_status,
             p.payment_date,
-            pr.product_name,
-            pc.color,
+            op.product_name,
+            op.color,
             op.size,
             op.quantity,
             o.total_payment_amount,
@@ -26,8 +26,6 @@
             inner join orders o on op.order_id = o.order_id
             left join delivery_info di on op.delivery_id = di.delivery_id
             left join payments p ON o.order_id = p.order_id
-            inner join products pr on op.product_id = pr.product_id
-            inner join product_colors pc on  pc.product_id = pr.product_id
         order by op.order_product_id
             LIMIT #{pageSize} OFFSET #{offset}
     </select>
@@ -38,19 +36,17 @@
             inner join orders o on op.order_id = o.order_id
             left join delivery_info di on op.delivery_id = di.delivery_id
             left join payments p ON o.order_id = p.order_id
-            inner join products pr on op.product_id = pr.product_id
-            inner join product_colors pc on  pc.product_id = pr.product_id
    </select>
 
 <!-- 주문 통합검색 필터링 조회 -->
     <select id="filterSearch">
         select
             o.order_number,
-            op.order_status,
+            di.tracking_delivery,
             op.claim_status,
             p.payment_date,
-            pr.product_name,
-            pc.color,
+            op.product_name,
+            op.color,
             op.size,
             op.quantity,
             o.total_payment_amount,
@@ -67,8 +63,6 @@
             inner join orders o on op.order_id = o.order_id
             left join delivery_info di on op.delivery_id = di.delivery_id
             left join payments p ON o.order_id = p.order_id
-            inner join products pr on op.product_id = pr.product_id
-            inner join product_colors pc on  pc.product_id = pr.product_id
             inner join users u on o.user_id = u.user_id
         where 1 = 1
         <!-- 동적 날짜 조건 -->
@@ -103,7 +97,7 @@
             </choose>
         </if>
         <if test="searchCondition == '주문상태'">
-            and  op.order_status like CONCAT('%', #{searchValue}, '%')
+            and di.tracking_delivery like CONCAT('%', #{searchValue}, '%')
         </if>
         <if test="searchCondition == '클레임상태'">
             and  op.claim_status like CONCAT('%', #{searchValue}, '%')
@@ -134,8 +128,6 @@
         inner join orders o on op.order_id = o.order_id
         left join delivery_info di on op.delivery_id = di.delivery_id
         left join payments p ON o.order_id = p.order_id
-        inner join products pr on op.product_id = pr.product_id
-        inner join product_colors pc on  pc.product_id = pr.product_id
         left join users u on o.user_id = u.user_id
         where 1 = 1
         <if test="searchPeriod != null and searchPeriod != ''">
@@ -167,12 +159,9 @@
                     #{startDate} AND #{endDate}
                 </when>
             </choose>
-        </>
-        <if test="searchCondition == '주문번호'">
-            o.order_number like CONCAT('%', #{searchValue}, '%')
         </if>
         <if test="searchCondition == '주문상태'">
-            op.order_status like CONCAT('%', #{searchValue}, '%')
+            di.tracking_delivery like CONCAT('%', #{searchValue}, '%')
         </if>
         <if test="searchCondition == '클레임상태'">
             op.claim_status like CONCAT('%', #{searchValue}, '%')

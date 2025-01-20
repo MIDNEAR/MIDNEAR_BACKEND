@@ -22,6 +22,7 @@ public class MagazinesDTO {
         private String content;
         private String mainImage;
         private List<MultipartFile> files;
+        private List<String> imageUrl;
     }
 
 
