@@ -167,7 +167,7 @@
                     #{startDate} AND #{endDate}
                 </when>
             </choose>
-        </>
+        </if>
         <if test="searchCondition == '주문번호'">
             o.order_number like CONCAT('%', #{searchValue}, '%')
         </if>
