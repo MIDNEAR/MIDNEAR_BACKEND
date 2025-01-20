@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.midnear.midnearshopping.mapper.productManagement.ConfirmPurchaseMapper">
+    <!-- 전체 상품 최신순 조회 -->
+    <select id="selectAll">
+        select
+            o.order_number,
+            op.buy_confirm_date,
+            p.payment_date,
+            o.order_name,
+            o.recipient_name,
+            o.order_contact,
+            o.recipient_contact,
+            o.postal_code,
+            o.address,
+            o.detailed_address,
+            di.courier,
+            di.invoice_number,
+            op.product_name,
+            op.color,
+            op.size,
+            op.quantity,
+            op.product_price,
+            op.point_discount,
+            op.coupon_discount,
+            o.total_payment_amount,
+            op.delivery_charge,
+            o.all_payment
+        from order_products op
+             inner join orders o on op.order_id = o.order_id
+             left join delivery_info di on op.delivery_id = di.delivery_id
+             left join payments p ON o.order_id = p.order_id
+        where  op.buy_confirm_date IS NOT NULL
+        order by op.order_product_id
+            LIMIT #{pageSize} OFFSET #{offset}
+    </select>
+
+    <select id="count">
+        select count(*)
+        from order_products op
+             inner join orders o on op.order_id = o.order_id
+             left join delivery_info di on op.delivery_id = di.delivery_id
+             left join payments p ON o.order_id = p.order_id
+    </select>
+
+    <!-- 주문 통합검색 필터링 조회 -->
+    <select id="filterSearch">
+        select
+            o.order_number,
+            op.buy_confirm_date,
+            p.payment_date,
+            o.order_name,
+            o.recipient_name,
+            o.order_contact,
+            o.recipient_contact,
+            o.postal_code,
+            o.address,
+            o.detailed_address,
+            di.courier,
+            di.invoice_number,
+            op.product_name,
+            op.color,
+            op.size,
+            op.quantity,
+            op.product_price,
+            op.point_discount,
+            op.coupon_discount,
+            o.total_payment_amount,
+            op.delivery_charge,
+            o.all_payment
+        from order_products op
+        inner join orders o on op.order_id = o.order_id
+        left join delivery_info di on op.delivery_id = di.delivery_id
+        left join payments p ON o.order_id = p.order_id
+        inner join users u on o.user_id = u.user_id
+        where op.buy_confirm_date IS NOT NULL
+        <!-- 동적 날짜 조건 -->
+        <if test="searchPeriod != null and searchPeriod != ''">
+            <choose>
+                <when test="searchPeriod == '결제일'">
+                    and p.payment_date >=
+                </when>
+                <when test="searchPeriod == '구매확정일'">
+                    and op.buy_confirm_date >=
+                </when>
+            </choose>
+            <choose>
+                <when test="dateFilter == '오늘'">
+                    CURDATE()
+                </when>
+                <when test="dateFilter == '일주일'">
+                    CURDATE() - INTERVAL 7 DAY
+                </when>
+                <when test="dateFilter == '1개월'">
+                    CURDATE() - INTERVAL 1 MONTH
+                </when>
+                <when test="dateFilter == '3개월'">
+                    CURDATE() - INTERVAL 3 MONTH
+                </when>
+                <when test="dateFilter == '6개월'">
+                    CURDATE() - INTERVAL 6 MONTH
+                </when>
+                <when test="dateFilter == '기간'">
+                    #{startDate} AND #{endDate}
+                </when>
+            </choose>
+        </if>
+        <if test="searchCondition == '결제일'">
+            and  p.payment_date like CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchCondition == '구매자명'">
+            and  o.order_name like CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchCondition == '구매자ID'">
+            and  u.id like CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchCondition == '수취인명'">
+            and  o.recipient_name like CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchCondition == '송장번호'">
+            and o.order_contact like CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchCondition == '구매자연락처'">
+            and o.order_contact like CONCAT('%', #{searchValue}, '%')
+        </if>
+        order by op.order_product_id
+        LIMIT #{pageSize} OFFSET #{offset}
+    </select>
+
+    <!--  필터링 검색 개수 -->
+    <select id="filterCount">
+        select count(*)
+        from order_products op
+        inner join orders o on op.order_id = o.order_id
+        left join delivery_info di on op.delivery_id = di.delivery_id
+        left join payments p ON o.order_id = p.order_id
+        inner join users u on o.user_id = u.user_id
+        where op.buy_confirm_date IS NOT NULL
+        <!-- 동적 날짜 조건 -->
+        <if test="searchPeriod != null and searchPeriod != ''">
+            <choose>
+                <when test="searchPeriod == '결제일'">
+                    and p.payment_date >=
+                </when>
+                <when test="searchPeriod == '구매확정일'">
+                    and op.buy_confirm_date >=
+                </when>
+            </choose>
+            <choose>
+                <when test="dateFilter == '오늘'">
+                    CURDATE()
+                </when>
+                <when test="dateFilter == '일주일'">
+                    CURDATE() - INTERVAL 7 DAY
+                </when>
+                <when test="dateFilter == '1개월'">
+                    CURDATE() - INTERVAL 1 MONTH
+                </when>
+                <when test="dateFilter == '3개월'">
+                    CURDATE() - INTERVAL 3 MONTH
+                </when>
+                <when test="dateFilter == '6개월'">
+                    CURDATE() - INTERVAL 6 MONTH
+                </when>
+                <when test="dateFilter == '기간'">
+                    #{startDate} AND #{endDate}
+                </when>
+            </choose>
+        </if>
+        <if test="searchCondition == '결제일'">
+            and  p.payment_date like CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchCondition == '구매자명'">
+            and  o.order_name like CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchCondition == '구매자ID'">
+            and  u.id like CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchCondition == '수취인명'">
+            and  o.recipient_name like CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchCondition == '송장번호'">
+            and o.order_contact like CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchCondition == '구매자연락처'">
+            and o.order_contact like CONCAT('%', #{searchValue}, '%')
+        </if>
+    </select>
+</mapper>
