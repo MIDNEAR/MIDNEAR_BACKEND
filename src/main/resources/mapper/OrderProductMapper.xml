@@ -114,6 +114,9 @@
         <if test="searchCondition == '수취인명'">
             and  o.recipient_name like CONCAT('%', #{searchValue}, '%')
         </if>
+        <if test="searchCondition == '송장번호'">
+            and o.order_contact like CONCAT('%', #{searchValue}, '%')
+        </if>
         <if test="searchCondition == '구매자연락처'">
             and o.order_contact like CONCAT('%', #{searchValue}, '%')
         </if>
@@ -161,25 +164,28 @@
             </choose>
         </if>
         <if test="searchCondition == '주문상태'">
-            di.tracking_delivery like CONCAT('%', #{searchValue}, '%')
+            and di.tracking_delivery like CONCAT('%', #{searchValue}, '%')
         </if>
         <if test="searchCondition == '클레임상태'">
-            op.claim_status like CONCAT('%', #{searchValue}, '%')
+            and  op.claim_status like CONCAT('%', #{searchValue}, '%')
         </if>
         <if test="searchCondition == '결제일'">
-            p.payment_date like CONCAT('%', #{searchValue}, '%')
+            and  p.payment_date like CONCAT('%', #{searchValue}, '%')
         </if>
         <if test="searchCondition == '구매자명'">
-            o.order_name like CONCAT('%', #{searchValue}, '%')
+            and  o.order_name like CONCAT('%', #{searchValue}, '%')
         </if>
         <if test="searchCondition == '구매자ID'">
-            u.id like CONCAT('%', #{searchValue}, '%')
+            and  u.id like CONCAT('%', #{searchValue}, '%')
         </if>
         <if test="searchCondition == '수취인명'">
-            o.recipient_name like CONCAT('%', #{searchValue}, '%')
+            and  o.recipient_name like CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchCondition == '송장번호'">
+            and o.order_contact like CONCAT('%', #{searchValue}, '%')
         </if>
         <if test="searchCondition == '구매자연락처'">
-            o.order_contact like CONCAT('%', #{searchValue}, '%')
+            and o.order_contact like CONCAT('%', #{searchValue}, '%')
         </if>
     </select>
 </mapper>
