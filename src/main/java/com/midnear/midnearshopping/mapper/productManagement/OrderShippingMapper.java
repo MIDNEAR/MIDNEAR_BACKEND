@@ -1,5 +1,6 @@
 package com.midnear.midnearshopping.mapper.productManagement;
 
+import com.midnear.midnearshopping.domain.dto.productManagement.InvoiceInsertDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.OrderShippingDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.ParamDTO;
 import org.apache.ibatis.annotations.Mapper;
@@ -22,5 +23,5 @@ public interface OrderShippingMapper {
     void updateConfirm(@Param("orderProductId")List<Long> orderProductId);
 
 //  송장번호 입력
-    void insertInvoice(List<Long> orderProductId);
+    void insertInvoice(InvoiceInsertDTO invoiceInsertDTO);
 }

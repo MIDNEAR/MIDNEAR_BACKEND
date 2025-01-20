@@ -1,5 +1,6 @@
 package com.midnear.midnearshopping.service.productManagement;
 
+import com.midnear.midnearshopping.domain.dto.productManagement.InvoiceInsertDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.OrderShippingDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.ParamDTO;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,12 @@ public interface OrderShippingService {
 // 필터링 검색
    List<OrderShippingDTO> filterSearch(ParamDTO paramDTO);
    int filterCount(ParamDTO paramDTO);
+
    @Transactional
 // 발주확인
    void updateConfirm(List<Long> orderProductId);
+
+   @Transactional
+// 송장번호 입력
+   void insertInvoice(InvoiceInsertDTO invoiceInsertDTO);
 }

@@ -1,5 +1,6 @@
 package com.midnear.midnearshopping.service.productManagement;
 
+import com.midnear.midnearshopping.domain.dto.productManagement.InvoiceInsertDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.OrderShippingDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.ParamDTO;
 
@@ -47,5 +48,11 @@ public class OrderShippingServiceImpl implements OrderShippingService {
     @Override
     public void updateConfirm(List<Long> orderProductId) {
         orderShippingMapper.updateConfirm(orderProductId);
+    }
+
+    @Transactional
+    @Override
+    public void insertInvoice(InvoiceInsertDTO invoiceInsertDTO) {
+        orderShippingMapper.insertInvoice(invoiceInsertDTO);
     }
 }

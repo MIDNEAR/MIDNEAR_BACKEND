@@ -1,4 +1,5 @@
 package com.midnear.midnearshopping.controller;
+import com.midnear.midnearshopping.domain.dto.productManagement.InvoiceInsertDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.OrderShippingDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.ParamDTO;
 import com.midnear.midnearshopping.exception.ApiResponse;
@@ -87,6 +88,21 @@ public class OrderShippingController {
     public ResponseEntity<ApiResponse> filterSearch(@RequestBody List<Long> orderProductId) {
         try {
             orderShippingService.updateConfirm(orderProductId);
+            // 200 OK 응답으로 JSON 반환
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "성공적으로 수정되었습니다.", null));
+
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
+
+    // 송장번호 입력
+    @PutMapping("/Invoice")
+    public ResponseEntity<ApiResponse> filterSearch(@RequestBody InvoiceInsertDTO invoiceInsertDTO) {
+        try {
+            orderShippingService.insertInvoice(invoiceInsertDTO);
             // 200 OK 응답으로 JSON 반환
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "성공적으로 수정되었습니다.", null));

@@ -192,12 +192,22 @@
 <!-- 발주확인 -->
     <update id="updateConfirm">
         update delivery_info di
-            inner join order_products op on di.delivery_id = op.delivery_id
+            inner join order_products op on op.delivery_id = di.delivery_id
             set di.tracking_delivery = '배송전'
         where op.order_product_id in
         <foreach item="id" index="index" collection="orderProductId" open="(" separator="," close=")">
             #{id}
         </foreach>
+    </update>
 
+<!-- 송장번호 입력 -->
+    <update id="insertInvoice">
+        update delivery_info di
+        inner join order_products op on op.delivery_id = di.delivery_id
+        set di.tracking_delivery = '배송중', di.courier = #{courier}, di.invoice_number=#{invoiceNumber}
+        where op.order_product_id in
+        <foreach item="id" index="index" collection="orderProductId" open="(" separator="," close=")">
+            #{id}
+        </foreach>
     </update>
 </mapper>
