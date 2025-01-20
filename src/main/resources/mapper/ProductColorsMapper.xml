@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.midnear.midnearshopping.mapper.products.ProductColorsMapper">
+    <insert id="registerProducts" useGeneratedKeys="true" keyProperty="productColorId">
+        INSERT INTO product_colors (
+        color, product_id, sale_status    <!-- 상품 등록 시에는 코디 상품 x -->
+        ) VALUES (
+        #{color}, #{productId}, 'ON_SALE'
+        )
+    </insert>
+    <select id="getProductColorsByProductId" resultType="ProductColorsVo">
+        SELECT * FROM product_colors
+        WHERE product_id = #{productId}
+    </select>
+    <update id="setOnSale">
+        UPDATE product_colors
+        SET
+        sale_status = 'ON_SALE'
+        WHERE product_color_id IN
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+    <update id="setSoldOut">
+        UPDATE product_colors
+        SET
+        sale_status = 'OUT_OF_STOCK'
+        WHERE product_color_id IN
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+    <update id="setDiscontinued">
+        UPDATE product_colors
+        SET
+        sale_status = 'HIDDEN'
+        WHERE product_color_id IN
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+</mapper>

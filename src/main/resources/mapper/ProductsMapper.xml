@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.midnear.midnearshopping.mapper.products.ProductsMapper">
+    <insert id="registerProducts" useGeneratedKeys="true" keyProperty="productId">
+        INSERT INTO products (
+        product_name, price, discount_price, discount_rate, discount_start_date, discount_end_date, detail, size_guide, registered_date, category_id
+        ) VALUES (
+        #{productName}, #{price}, #{discountPrice}, #{discountRate}, #{discountStartDate}, #{discountEndDate}, #{detail}, #{sizeGuide}, NOW(), #{categoryId}
+        )
+    </insert>
+    <select id="findAll" resultType="ProductsVo">
+        SELECT * FROM products;
+    </select>
+    <delete id="deleteProducts">
+        DELETE FROM products
+        WHERE product_id IN
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

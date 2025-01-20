@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.midnear.midnearshopping.mapper.products.SizesMapper">
+    <insert id="registerProducts" useGeneratedKeys="true" keyProperty="sizeId">
+        INSERT INTO sizes (
+        size, stock, product_color_id
+        ) VALUES (
+        #{size}, #{stock}, #{productColorId}
+        )
+    </insert>
+    <select id="getSizesByProductColorsId" resultType="SizesVo">
+        SELECT * FROM sizes
+        WHERE product_color_id = #{productColorId}
+    </select>
+</mapper>
