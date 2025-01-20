@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.midnear.midnearshopping.mapper.delivery.DeliveryAddressMapper">
+    <!--배송지 아이디로 하나만 가져오기-->
     <select id="getDeliveryAddressById" parameterType="int">
         SELECT
             delivery_address_id AS deliveryAddressId,
@@ -16,7 +17,39 @@
         FROM delivery_address
         WHERE delivery_address_id = #{deliveryAddressId}
     </select>
-    <insert id="createDeliveryAddress" parameterType="com.example.vo.DeliveryAddressVO">
+    <!--기본 배송지 가져오기-->
+    <select id="getDefaultAddr" parameterType="int">
+        SELECT
+            delivery_address_id AS deliveryAddressId,
+            delivery_name AS deliveryName,
+            postal_code AS postalCode,
+            address,
+            detail_address AS detailAddress,
+            default_address_status AS defaultAddressStatus,
+            recipient,
+            recipient_contact AS recipientContact,
+            delivery_request AS deliveryRequest,
+            user_id AS userId
+        FROM delivery_address
+        WHERE delivery_address_id = #{deliveryAddressId} AND default_address_status = 1
+    </select>
+    <!--유저 아이디로 배송주소들 다 조회-->
+    <select id="getDeliveryAddressesByUserId" parameterType="int" >
+        SELECT
+            delivery_address_id AS deliveryAddressId,
+            recipient,
+            recipient_contact AS recipientContact,
+            delivery_name AS deliveryName,
+            postal_code AS postalCode,
+            address,
+            detail_address AS detailAddress,
+            default_address_status AS defaultAddressStatus,
+            delivery_request AS deliveryRequest,
+            user_id AS userId
+        FROM delivery_address
+        WHERE user_id = #{userId}
+    </select>
+    <insert id="createDeliveryAddress" parameterType="com.midnear.midnearshopping.domain.vo.delivery.DeliveryAddressVO">
         INSERT INTO delivery_address (
             delivery_name,
             postal_code,
@@ -39,5 +72,27 @@
                      #{userId}
                  )
     </insert>
+    <update id="updateDeliveryAddress" parameterType="com.midnear.midnearshopping.domain.vo.delivery.DeliveryAddressVO">
+        UPDATE delivery_address
+        SET delivery_name = #{deliveryName},
+            postal_code =  #{postalCode},
+            address = #{address},
+            detail_address=#{detailAddress},
+            default_address_status = #{defaultAddressStatus},
+            recipient = #{recipient},
+            recipient_contact = #{recipientContact},
+            delivery_request = #{deliveryRequest}
+        WHERE delivery_address_id = #{deliveryAddressId}
+    </update>
+    <update id="updateDeliveryRequest" parameterType="com.midnear.midnearshopping.domain.dto.delivery.UpdateDeliveryRequest">
+        UPDATE delivery_address
+        SET delivery_request = #{deliveryRequest}
+        WHERE delivery_address_id = #{deliveryAddressId}
+    </update>
+    <!-- 새로 추가된 deleteDeliveryAddress -->
+    <delete id="deleteDeliveryAddress" parameterType="int">
+        DELETE FROM delivery_address
+        WHERE delivery_address_id = #{deliveryAddressId}
+    </delete>
 
 </mapper>

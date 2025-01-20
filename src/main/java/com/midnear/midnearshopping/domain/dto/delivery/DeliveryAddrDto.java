@@ -1,13 +1,15 @@
 package com.midnear.midnearshopping.domain.dto.delivery;
 
 import com.midnear.midnearshopping.domain.vo.delivery.DeliveryAddressVO;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class DeliveryAddrDto {
-    private int deliveryAddressId;
+    private Integer deliveryAddressId;
     private String recipient;
     private String recipientContact;
     private String deliveryName;
@@ -23,18 +25,18 @@ public class DeliveryAddrDto {
             return null;
         }
 
-        DeliveryAddrDto dto = new DeliveryAddrDto();
-        dto.setDeliveryAddressId(vo.getDeliveryAddressId());
-        dto.setRecipient(vo.getRecipient());
-        dto.setRecipientContact(vo.getRecipientContact());
-        dto.setDeliveryName(vo.getDeliveryName());
-        dto.setPostalCode(vo.getPostalCode());
-        dto.setAddress(vo.getAddress());
-        dto.setDetailAddress(vo.getDetailAddress());
-        dto.setDefaultAddressStatus(vo.getDefaultAddressStatus());
-        dto.setDeliveryRequest(vo.getDeliveryRequest());
-        dto.setUserId(vo.getUserId());
-
-        return dto;
+        return DeliveryAddrDto.builder()
+                .deliveryAddressId(vo.getDeliveryAddressId())
+                .recipient(vo.getRecipient())
+                .recipientContact(vo.getRecipientContact())
+                .deliveryName(vo.getDeliveryName())
+                .postalCode(vo.getPostalCode())
+                .address(vo.getAddress())
+                .detailAddress(vo.getDetailAddress())
+                .defaultAddressStatus(vo.getDefaultAddressStatus())
+                .deliveryRequest(vo.getDeliveryRequest())
+                .userId(vo.getUserId())
+                .build();
     }
+
 }
