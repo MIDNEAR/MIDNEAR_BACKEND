@@ -40,4 +40,9 @@ public class OrderShippingServiceImpl implements OrderShippingService {
     public int filterCount(ParamDTO paramDTO) {
         return orderShippingMapper.filterCount(paramDTO);
     }
+
+    @Override
+    public void updateConfirm(Long orderProductId) {
+        orderShippingMapper.updateConfirm(orderProductId);
+    }
 }

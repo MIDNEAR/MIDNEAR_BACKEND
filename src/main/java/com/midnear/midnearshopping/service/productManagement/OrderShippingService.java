@@ -17,4 +17,7 @@ public interface OrderShippingService {
 // 필터링 검색
    List<OrderShippingDTO> filterSearch(ParamDTO paramDTO);
    int filterCount(ParamDTO paramDTO);
+
+// 발주확인
+   void updateConfirm(Long orderProductId);
 }
