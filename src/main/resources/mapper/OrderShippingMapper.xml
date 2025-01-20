@@ -189,11 +189,15 @@
         </if>
     </select>
 
-    <!-- 발주확인 -->
+<!-- 발주확인 -->
     <update id="updateConfirm">
         update delivery_info di
             inner join order_products op on di.delivery_id = op.delivery_id
             set di.tracking_delivery = '배송전'
-        where op.order_product_id = #{orderProductId}
+        where op.order_product_id in
+        <foreach item="id" index="index" collection="orderProductId" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+
     </update>
 </mapper>

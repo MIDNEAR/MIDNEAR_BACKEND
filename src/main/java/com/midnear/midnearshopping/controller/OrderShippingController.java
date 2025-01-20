@@ -84,7 +84,7 @@ public class OrderShippingController {
 
     // 발주확인
     @PutMapping("/orderConfirmation")
-    public ResponseEntity<ApiResponse> filterSearch(@RequestBody Long orderProductId) {
+    public ResponseEntity<ApiResponse> filterSearch(@RequestBody List<Long> orderProductId) {
         try {
             orderShippingService.updateConfirm(orderProductId);
             // 200 OK 응답으로 JSON 반환

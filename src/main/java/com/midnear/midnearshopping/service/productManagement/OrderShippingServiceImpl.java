@@ -2,10 +2,11 @@ package com.midnear.midnearshopping.service.productManagement;
 
 import com.midnear.midnearshopping.domain.dto.productManagement.OrderShippingDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.ParamDTO;
-import com.midnear.midnearshopping.mapper.productManagement.OrderProductsMapper;
+
 import com.midnear.midnearshopping.mapper.productManagement.OrderShippingMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 @Service
@@ -41,8 +42,10 @@ public class OrderShippingServiceImpl implements OrderShippingService {
         return orderShippingMapper.filterCount(paramDTO);
     }
 
+//  발주확인
+    @Transactional
     @Override
-    public void updateConfirm(Long orderProductId) {
+    public void updateConfirm(List<Long> orderProductId) {
         orderShippingMapper.updateConfirm(orderProductId);
     }
 }

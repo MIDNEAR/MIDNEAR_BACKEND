@@ -19,5 +19,8 @@ public interface OrderShippingMapper {
     int filterCount(ParamDTO orderParamDTO);
 
 //  발주확인
-    void updateConfirm(Long orderProductId);
+    void updateConfirm(@Param("orderProductId")List<Long> orderProductId);
+
+//  송장번호 입력
+    void insertInvoice(List<Long> orderProductId);
 }
