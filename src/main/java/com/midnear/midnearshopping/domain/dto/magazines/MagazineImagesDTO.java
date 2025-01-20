@@ -8,7 +8,6 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class MagazineImagesDTO {
     private String imageUrl;
     private Long fileSize;

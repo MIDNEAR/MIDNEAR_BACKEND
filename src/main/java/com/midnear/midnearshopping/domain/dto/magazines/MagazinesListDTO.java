@@ -8,7 +8,6 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class MagazinesListDTO {
     private Long magazineId;
     private String title;
