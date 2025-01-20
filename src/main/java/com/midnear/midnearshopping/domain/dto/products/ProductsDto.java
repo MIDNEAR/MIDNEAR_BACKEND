@@ -1,4 +1,4 @@
-package com.midnear.midnearshopping.domain.products;
+package com.midnear.midnearshopping.domain.dto.products;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -11,10 +11,10 @@ import java.util.List;
 @Setter
 public class ProductsDto {
     private Long productId;
-    private String product_name;
+    private String productName;
     private BigDecimal price;
     private BigDecimal discountPrice;
-    private  int discountRate;
+    private int discountRate;
     private Date discountStartDate;
     private Date discountEndDate;
     private String detail;
