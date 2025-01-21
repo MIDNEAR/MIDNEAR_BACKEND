@@ -1,6 +1,7 @@
 package com.midnear.midnearshopping.mapper.productManagement;
 
 import com.midnear.midnearshopping.domain.dto.productManagement.InvoiceInsertDTO;
+import com.midnear.midnearshopping.domain.dto.productManagement.OptionQuantityDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.OrderShippingDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.ParamDTO;
 import org.apache.ibatis.annotations.Mapper;
@@ -30,4 +31,7 @@ public interface OrderShippingMapper {
 
 //  판매자 직접 취소
     void directCancel(@Param("orderProductId")List<Long> orderProductId);
+
+//  옵션별 주문수량 보기
+     List<OptionQuantityDTO> selectOptionQuantity(@Param("orderProductId")List<Long> orderProductId);
 }

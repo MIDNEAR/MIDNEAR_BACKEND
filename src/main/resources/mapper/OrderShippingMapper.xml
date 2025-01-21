@@ -232,5 +232,19 @@
         </foreach>
     </insert>
 
+<!-- 옵션별 수량 엑셀 다운로드를 위한 자료조회 -->
+    <select id="selectOptionQuantity">
+        select
+        product_name,
+        color,
+        size,
+        SUM(quantity) as quantity
+        from order_products
+        where order_product_id in
+        <foreach item="id" index="index" collection="orderProductId" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        group by product_name, color, size
+    </select>
 
 </mapper>

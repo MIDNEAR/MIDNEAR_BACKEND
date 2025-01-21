@@ -1,6 +1,7 @@
 package com.midnear.midnearshopping.service.productManagement;
 
 import com.midnear.midnearshopping.domain.dto.productManagement.InvoiceInsertDTO;
+import com.midnear.midnearshopping.domain.dto.productManagement.OptionQuantityDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.OrderShippingDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.ParamDTO;
 
@@ -67,5 +68,10 @@ public class OrderShippingServiceImpl implements OrderShippingService {
     @Override
     public void directCancel(List<Long> orderProductId) {
         orderShippingMapper.directCancel(orderProductId);
+    }
+
+    @Override
+    public List<OptionQuantityDTO> selectOptionQuantity(List<Long> orderProductId) {
+        return orderShippingMapper.selectOptionQuantity(orderProductId);
     }
 }
