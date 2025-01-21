@@ -27,4 +27,7 @@ public interface OrderShippingMapper {
 
 //  발송지연
     void delaySipping(@Param("orderProductId")List<Long> orderProductId);
+
+//  판매자 직접 취소
+    void directCancel(@Param("orderProductId")List<Long> orderProductId);
 }

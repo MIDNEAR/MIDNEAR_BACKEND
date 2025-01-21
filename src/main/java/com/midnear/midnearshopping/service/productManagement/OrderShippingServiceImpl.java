@@ -62,4 +62,10 @@ public class OrderShippingServiceImpl implements OrderShippingService {
     public void delaySipping(List<Long> orderProductId) {
         orderShippingMapper.delaySipping(orderProductId);
     }
+
+//  판매가 직접취소
+    @Override
+    public void directCancel(List<Long> orderProductId) {
+        orderShippingMapper.directCancel(orderProductId);
+    }
 }

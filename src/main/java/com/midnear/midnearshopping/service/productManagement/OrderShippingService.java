@@ -29,4 +29,8 @@ public interface OrderShippingService {
 // 배송지연
    @Transactional
    void delaySipping(List<Long> orderProductId);
+
+// 판매자 직접취소
+   @Transactional
+   void directCancel(List<Long> orderProductId);
 }

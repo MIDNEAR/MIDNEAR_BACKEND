@@ -113,6 +113,7 @@ public class OrderShippingController {
         }
     }
 
+    // 배송지연
     @PutMapping("/delayShipping")
     public ResponseEntity<ApiResponse> delayShipping(@RequestBody List<Long> orderProductId) {
         try {
@@ -126,4 +127,20 @@ public class OrderShippingController {
                     .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
         }
     }
+
+    // 판매자 직접취소
+    @PostMapping("/directCancel")
+    public ResponseEntity<ApiResponse> directCancel(@RequestBody List<Long> orderProductId) {
+        try {
+            orderShippingService.directCancel(orderProductId);
+            // 200 OK 응답으로 JSON 반환
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "성공적으로 수정되었습니다.", null));
+
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
+
 }
