@@ -25,4 +25,8 @@ public interface OrderShippingService {
    @Transactional
 // 송장번호 입력
    void insertInvoice(InvoiceInsertDTO invoiceInsertDTO);
+
+// 배송지연
+   @Transactional
+   void delaySipping(List<Long> orderProductId);
 }

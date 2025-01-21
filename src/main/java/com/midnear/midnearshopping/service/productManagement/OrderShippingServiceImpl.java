@@ -50,9 +50,16 @@ public class OrderShippingServiceImpl implements OrderShippingService {
         orderShippingMapper.updateConfirm(orderProductId);
     }
 
+//  송장번호 입력
     @Transactional
     @Override
     public void insertInvoice(InvoiceInsertDTO invoiceInsertDTO) {
         orderShippingMapper.insertInvoice(invoiceInsertDTO);
+    }
+
+//  배송지연
+    @Override
+    public void delaySipping(List<Long> orderProductId) {
+        orderShippingMapper.delaySipping(orderProductId);
     }
 }

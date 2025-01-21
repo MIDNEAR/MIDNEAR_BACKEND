@@ -4,6 +4,7 @@
     <!-- 주문 상품 최신순 조회 -->
     <select id="selectAll">
         select
+            o.order_product_id,
             o.order_number,
             di.tracking_delivery,
             p.payment_date,
@@ -49,6 +50,7 @@
 <!-- 주문상품 필터링 조회 -->
     <select id="filterSearch">
         select
+            o.order_product_id,
             o.order_number,
             di.tracking_delivery,
             p.payment_date,
@@ -210,4 +212,16 @@
             #{id}
         </foreach>
     </update>
+
+<!-- 발송 지연처리 -->
+    <update id="delaySipping">
+        update delivery_info di
+        inner join order_products op on op.delivery_id = di.delivery_id
+        set di.tracking_delivery = '배송전'
+        where op.order_product_id in
+        <foreach item="id" index="index" collection="orderProductId" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
 </mapper>

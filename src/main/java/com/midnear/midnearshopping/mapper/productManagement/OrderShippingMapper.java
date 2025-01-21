@@ -24,4 +24,7 @@ public interface OrderShippingMapper {
 
 //  송장번호 입력
     void insertInvoice(InvoiceInsertDTO invoiceInsertDTO);
+
+//  발송지연
+    void delaySipping(@Param("orderProductId")List<Long> orderProductId);
 }

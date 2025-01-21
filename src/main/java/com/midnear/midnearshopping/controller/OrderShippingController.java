@@ -112,4 +112,18 @@ public class OrderShippingController {
                     .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
         }
     }
+
+    @PutMapping("/delayShipping")
+    public ResponseEntity<ApiResponse> delayShipping(@RequestBody List<Long> orderProductId) {
+        try {
+            orderShippingService.delaySipping(orderProductId);
+            // 200 OK 응답으로 JSON 반환
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "성공적으로 수정되었습니다.", null));
+
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
 }
