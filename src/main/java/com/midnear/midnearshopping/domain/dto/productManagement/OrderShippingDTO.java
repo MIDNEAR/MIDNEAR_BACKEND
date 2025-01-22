@@ -9,21 +9,25 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderDTO {
+public class OrderShippingDTO {
     Long orderNumber;
-    String orderStatus;
-    String claimStatus;
+    String trackingDelivery;
     Date paymentDate;
     String productName;
     String color;
     String size;
     int quantity;
-    BigDecimal totalPaymentAmount;
+    BigDecimal productPrice;
+    BigDecimal couponDiscount;
+    BigDecimal pointDiscount;
     BigDecimal allPayment;
+    BigDecimal deliveryCharge;
     String orderName;
     String id;
     String recipientName;
-    Date deliveryProcessDate;
+    String courier;
+    Long invoiceNumber;
+    Date deliveryProcess_date;
     String orderContact;
     String postalCode;
     String address;

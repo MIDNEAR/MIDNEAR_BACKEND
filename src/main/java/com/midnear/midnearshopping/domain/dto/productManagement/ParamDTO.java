@@ -9,9 +9,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class ParamDTO {
-    @Builder.Default
     int pageNumber = 1;
     int pageSize;
     int offset;

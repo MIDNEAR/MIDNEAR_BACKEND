@@ -1,6 +1,5 @@
 package com.midnear.midnearshopping.controller;
 import com.midnear.midnearshopping.domain.dto.productManagement.ConfirmPurchaseDTO;
-import com.midnear.midnearshopping.domain.dto.productManagement.OrderDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.ParamDTO;
 import com.midnear.midnearshopping.exception.ApiResponse;
 import com.midnear.midnearshopping.service.productManagement.ConfirmPurchaseService;

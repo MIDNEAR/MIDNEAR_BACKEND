@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
-@Component
 @Data
 public class disruptiveListDTO {
     String id;

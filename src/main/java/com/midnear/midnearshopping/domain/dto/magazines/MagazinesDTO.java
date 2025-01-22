@@ -15,13 +15,13 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class MagazinesDTO {
         private Long magazineId;
         private String title;
         private String content;
         private String mainImage;
         private List<MultipartFile> files;
+        private List<String> imageUrl;
     }
 
 
