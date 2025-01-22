@@ -1,9 +1,6 @@
 package com.midnear.midnearshopping.service.productManagement;
 
-import com.midnear.midnearshopping.domain.dto.productManagement.InvoiceInsertDTO;
-import com.midnear.midnearshopping.domain.dto.productManagement.OptionQuantityDTO;
-import com.midnear.midnearshopping.domain.dto.productManagement.OrderShippingDTO;
-import com.midnear.midnearshopping.domain.dto.productManagement.ParamDTO;
+import com.midnear.midnearshopping.domain.dto.productManagement.*;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,4 +35,7 @@ public interface OrderShippingService {
 
 // 옵션별 주문수량 보기
    List<OptionQuantityDTO> selectOptionQuantity(List<Long> orderProductId);
+
+// 선택건 주문서 출력
+   List<OrderReciptDTO> selectOrderRecipt(List<Long> orderProductId);
 }

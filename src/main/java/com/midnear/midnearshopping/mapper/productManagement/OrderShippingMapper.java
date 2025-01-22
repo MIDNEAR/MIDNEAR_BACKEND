@@ -1,9 +1,6 @@
 package com.midnear.midnearshopping.mapper.productManagement;
 
-import com.midnear.midnearshopping.domain.dto.productManagement.InvoiceInsertDTO;
-import com.midnear.midnearshopping.domain.dto.productManagement.OptionQuantityDTO;
-import com.midnear.midnearshopping.domain.dto.productManagement.OrderShippingDTO;
-import com.midnear.midnearshopping.domain.dto.productManagement.ParamDTO;
+import com.midnear.midnearshopping.domain.dto.productManagement.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -34,4 +31,7 @@ public interface OrderShippingMapper {
 
 //  옵션별 주문수량 보기
      List<OptionQuantityDTO> selectOptionQuantity(@Param("orderProductId")List<Long> orderProductId);
+
+//  선택건 주문서 출력
+    List<OrderReciptDTO> selectOrderRecipt(@Param("orderProductId")List<Long> orderProductId);
 }

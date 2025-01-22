@@ -247,4 +247,36 @@
         group by product_name, color, size
     </select>
 
+<!-- 선택건 주문서 출력-->
+    <select id="selectOrderRecipt">
+        select
+            o.order_number,
+            op.buy_confirm_date,
+            di.tracking_delivery,
+            op.product_name,
+            op.product_price,
+            op.quantity,
+            da.recipient,
+            da.recipient_contact,
+            da.postal_code,
+            da.address,
+            da.detail_address,
+            da.delivery_request,
+            p.payment_method,
+            o.total_payment_amount,
+            op.delivery_charge,
+            p.total_order_payment,
+            p.all_payment
+        from order_products op
+            inner join delivery_info di on op.delivery_id = di.delivery_id
+            inner join delivery_address da on di.delivery_address_id = da.delivery_address_id
+            inner join orders o on op.order_id = o.order_id
+            left join payments p on p.order_id = o.order_id
+        where op.order_product_id in
+        <foreach item="id" index="index" collection="orderProductId" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
 </mapper>
+
+

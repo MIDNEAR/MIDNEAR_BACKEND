@@ -1,8 +1,5 @@
 package com.midnear.midnearshopping.controller;
-import com.midnear.midnearshopping.domain.dto.productManagement.InvoiceInsertDTO;
-import com.midnear.midnearshopping.domain.dto.productManagement.OptionQuantityDTO;
-import com.midnear.midnearshopping.domain.dto.productManagement.OrderShippingDTO;
-import com.midnear.midnearshopping.domain.dto.productManagement.ParamDTO;
+import com.midnear.midnearshopping.domain.dto.productManagement.*;
 import com.midnear.midnearshopping.exception.ApiResponse;
 import com.midnear.midnearshopping.service.productManagement.OrderShippingService;
 import org.springframework.http.HttpHeaders;
@@ -214,6 +211,21 @@ public class OrderShippingController {
                     .body(new ApiResponse(false, "엑셀 파일 생성 중 오류가 발생했습니다.", null));
         }
 
+    }
+
+    // 선택건 주문서 출력
+    @GetMapping("/selectOrderRecipt")
+    public ResponseEntity<ApiResponse> selectOrderRecipt(@RequestParam List<Long> orderProductId) {
+        try {
+            List<OrderReciptDTO> orderRecipt = orderShippingService.selectOrderRecipt(orderProductId);
+            // 200 OK 응답으로 JSON 반환
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "성공적으로 출력되었습니다.", orderRecipt));
+
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
     }
 
 }
