@@ -10,45 +10,46 @@
                 cp.cancellation_status,
                 p.payment_date,
                 cp.cancellation_request_date,
-
-                o.order_name,
-                o.recipient_name,
-                o.order_contact,
-                o.recipient_contact,
-                o.postal_code,
-                o.address,
-                o.detailed_address,
-                di.courier,
-                di.invoice_number,
-                pr.product_name,
-                pc.color,
+                cp.cancel_reason,
+                cp.cancellation_approval_date,
+                op.product_name,
+                op.color,
                 op.size,
                 op.quantity,
-                pr.price,
-                op.point_discount,
+                op.product_price,
                 op.coupon_discount,
+                o.point_usage,
                 o.total_payment_amount,
-                di.delivery_charge,
-                o.all_payment
+                op.delivery_charge,
+                o.all_payment,
+                o.order_name,
+                u.id,
+                o.recipient_name,
+                o.order_contact,
+                o.postal_code,
+                o.address,
+                o.detailed_address
             from order_products op
                      inner join orders o on op.order_id = o.order_id
-                     inner join canceled_products cp on op.order_product_id = cp.order_product_id
+                     inner join canceled_products cp on cp.order_product_id = op.order_product_id
                      left join delivery_info di on op.delivery_id = di.delivery_id
                      left join payments p ON o.order_id = p.order_id
-                     inner join products pr on op.product_id = pr.product_id
-                     inner join product_colors pc on  pc.product_id = pr.product_id
+                     left join users u on o.user_id = u.user_id
+            where cp.cancellation_request_date is not null
             order by op.order_product_id
                 LIMIT #{pageSize} OFFSET #{offset}
+
         </select>
 
         <select id="count">
             select count(*)
             from order_products op
                      inner join orders o on op.order_id = o.order_id
+                     inner join canceled_products cp on op.order_product_id = cp.order_product_id
                      left join delivery_info di on op.delivery_id = di.delivery_id
                      left join payments p ON o.order_id = p.order_id
-                     inner join products pr on op.product_id = pr.product_id
-                     inner join product_colors pc on  pc.product_id = pr.product_id
+                     left join users u on o.user_id = u.user_id
+            where cp.cancellation_request_date is not null
         </select>
 
 </mapper>
