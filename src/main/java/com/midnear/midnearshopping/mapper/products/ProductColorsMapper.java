@@ -15,4 +15,6 @@ public interface ProductColorsMapper {
     void setDiscontinued(List<Long> productList);
 
     Long getProductIdByColor(Long colorId);
+
+    String getColorById(Long colorId);
 }

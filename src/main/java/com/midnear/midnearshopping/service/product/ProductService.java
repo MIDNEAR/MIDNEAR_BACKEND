@@ -36,10 +36,13 @@ public class ProductService {
         Long productId = productColorsMapper.getProductIdByColor(colorId);
         // ProductColors 조회
         List<ProductColorsVo> productColorsVoList = productColorsMapper.getProductColorsByProductId(productId);
+        String currentColor = productColorsMapper.getColorById(colorId);
         List<ProductDetailColorDto> productColorsDtoList = new ArrayList<>();
 
+        //상품을 조회 == 특정 색상의 상품에 대한 이미지, 그 색상별 사이즈,사이즈별 수량, 상품의 다른 색상 및 색상들의 판매 상태
+        //+ 상품 데베에 등록된 각종 상품 정보들.. 을 알아야 하는거라 굉장히 복잡합니다
+        //컬러 디티오가 조회된 상품의 다른 색상에 대한 이미지, 그 색상들의 사이즈 및 사이즈 별 수량을 담고있습니다
         for (ProductColorsVo productColorVo : productColorsVoList) {
-            // ProductColorsDto 생성
             ProductDetailColorDto productColorsDto = new ProductDetailColorDto();
             productColorsDto.setProductColorId(productColorVo.getProductColorId());
             productColorsDto.setColor(productColorVo.getColor());
@@ -56,13 +59,12 @@ public class ProductService {
                 sizesDtoList.add(sizesDto);
             }
             productColorsDto.setSizes(sizesDtoList);
-
             productColorsDtoList.add(productColorsDto);
         }
 
         ProductsVo productsVo = productsMapper.findByProductId(productId);
 
-        // ProductsDto 생성
+        // ProductsDto 생성 --> 요기가 상품에대한 기본 정보들 조회
         ProductsDetailDto productsDto = new ProductsDetailDto();
         productsDto.setProductId(productId); // ID는 컨트롤러에서 전달받은 값
         productsDto.setProductName(productsVo.getProductName());
@@ -76,6 +78,8 @@ public class ProductService {
         productsDto.setSizeGuide(productsVo.getSizeGuide());
         productsDto.setRegisteredDate(productsVo.getRegisteredDate());
         productsDto.setColors(productColorsDtoList);
+        //현재 색상이 뭔지 알려줘야할거같음
+        productsDto.setCurrentColor(currentColor);
         //이미지 추가..
         List<String> images = productImagesMapper.getImageUrlsById(colorId);
         productsDto.setImages(images);

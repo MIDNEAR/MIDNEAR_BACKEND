@@ -21,6 +21,7 @@ public class ProductsDetailDto {
     private String sizeGuide;
     private Date registeredDate;
     private Long categoryId;
+    private String currentColor;
     private List<ProductDetailColorDto> colors;
     private List<String> images;
 }

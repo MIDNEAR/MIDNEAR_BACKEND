@@ -44,5 +44,9 @@
         SELECT product_id FROM product_colors
         WHERE product_color_id= #{colorId}
     </select>
+    <select id="getColorById">
+        SELECT color FROM product_colors
+        WHERE product_color_id= #{colorId}
+    </select>
 
 </mapper>
