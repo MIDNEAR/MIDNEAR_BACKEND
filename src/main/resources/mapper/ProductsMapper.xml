@@ -11,6 +11,10 @@
     <select id="findAll" resultType="ProductsVo">
         SELECT * FROM products;
     </select>
+    <select id="findByProductId" resultType="ProductsVo">
+        SELECT * FROM products
+        WHERE product_id = #{productId}
+    </select>
     <delete id="deleteProducts">
         DELETE FROM products
         WHERE product_id IN
@@ -18,4 +22,82 @@
             #{id}
         </foreach>
     </delete>
+
+    <!--여기서부터 사용자 파트-->
+    <select id="getProductsByCategory">
+        SELECT
+            p.product_id AS productId,
+            p.product_name AS productName,
+            p.price AS price,
+            p.discount_price AS discountPrice,
+            p.discount_rate AS discountRate,
+            p.category_id AS categoryId,
+            pi.front_image_url AS frontImageUrl,
+            pi.back_image_url AS backImageUrl
+        FROM
+            products p
+                LEFT JOIN
+            product_images pi ON p.product_id = pi.product_id
+        WHERE
+            p.category_id = #{categoryId}
+        </select>
+    <select id="getProductsByCategoryWithHierarchy">
+<!--카테고리 계층구조때문에 재귀써서 먼저 카테고리 불러왔습니당-->
+        WITH RECURSIVE CategoryHierarchy AS (
+        SELECT
+        category_id
+        FROM
+        categories
+        WHERE
+        category_id = #{categoryId}
+        UNION ALL
+        SELECT
+        c.category_id
+        FROM
+        categories c
+        INNER JOIN
+        CategoryHierarchy ch ON c.parent_category_id = ch.category_id
+        )
+        SELECT
+        pc.product_color_id AS colorId,
+        p.product_name AS productName,
+        p.price AS price,
+        p.discount_price AS discountPrice,
+        p.discount_rate AS discountRate,
+        p.category_id AS categoryId,
+        SUBSTRING_INDEX(GROUP_CONCAT(pi.image_url ORDER BY pi.product_image_id ASC), ',', 1) AS frontImageUrl,
+        SUBSTRING_INDEX(SUBSTRING_INDEX(GROUP_CONCAT(pi.image_url ORDER BY pi.product_image_id ASC), ',', 2), ',', -1) AS backImageUrl,
+        COUNT(op.order_product_id) AS popularity
+        FROM
+        products p
+        LEFT JOIN
+        product_colors pc ON p.product_id = pc.product_id
+        LEFT JOIN
+        product_images pi ON pc.product_color_id = pi.product_color_id
+        LEFT JOIN
+        order_products op ON op.order_product_id = p.product_id
+        WHERE
+        p.category_id IN (SELECT category_id FROM CategoryHierarchy)
+        GROUP BY
+        pc.product_color_id
+        ORDER BY
+        <choose>
+            <when test="sort == 'latest'">
+                p.registered_date DESC
+            </when>
+            <when test="sort == 'lowPrice'">
+                p.price ASC
+            </when>
+            <when test="sort == 'highDiscount'">
+                p.discount_rate DESC
+            </when>
+            <when test="sort == 'popularity'">
+                popularity DESC
+            </when>
+            <otherwise>
+                pc.product_color_id ASC
+            </otherwise>
+        </choose>
+        LIMIT #{pageSize} OFFSET #{offset}
+    </select>
 </mapper>

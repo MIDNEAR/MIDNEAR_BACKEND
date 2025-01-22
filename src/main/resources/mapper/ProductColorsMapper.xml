@@ -39,4 +39,10 @@
             #{id}
         </foreach>
     </update>
+
+    <select id="getProductIdByColor">
+        SELECT product_id FROM product_colors
+        WHERE product_color_id= #{colorId}
+    </select>
+
 </mapper>
