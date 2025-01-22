@@ -10,7 +10,6 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class ConfirmPurchaseDTO {
     Long orderNumber;
     Date buyConfirmDate;

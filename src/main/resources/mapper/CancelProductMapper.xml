@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.midnear.midnearshopping.mapper.productManagement.CancelProductMapper">
+    <!-- 취소 상품 최신순 조회 -->
+    <select id="selectAll">
+            select
+                o.order_number,
+                di.tracking_delivery,
+                cp.cancellation_status,
+                p.payment_date,
+                cp.cancellation_request_date,
+
+                o.order_name,
+                o.recipient_name,
+                o.order_contact,
+                o.recipient_contact,
+                o.postal_code,
+                o.address,
+                o.detailed_address,
+                di.courier,
+                di.invoice_number,
+                pr.product_name,
+                pc.color,
+                op.size,
+                op.quantity,
+                pr.price,
+                op.point_discount,
+                op.coupon_discount,
+                o.total_payment_amount,
+                di.delivery_charge,
+                o.all_payment
+            from order_products op
+                     inner join orders o on op.order_id = o.order_id
+                     inner join canceled_products cp on op.order_product_id = cp.order_product_id
+                     left join delivery_info di on op.delivery_id = di.delivery_id
+                     left join payments p ON o.order_id = p.order_id
+                     inner join products pr on op.product_id = pr.product_id
+                     inner join product_colors pc on  pc.product_id = pr.product_id
+            order by op.order_product_id
+                LIMIT #{pageSize} OFFSET #{offset}
+        </select>
+
+        <select id="count">
+            select count(*)
+            from order_products op
+                     inner join orders o on op.order_id = o.order_id
+                     left join delivery_info di on op.delivery_id = di.delivery_id
+                     left join payments p ON o.order_id = p.order_id
+                     inner join products pr on op.product_id = pr.product_id
+                     inner join product_colors pc on  pc.product_id = pr.product_id
+        </select>
+
+</mapper>

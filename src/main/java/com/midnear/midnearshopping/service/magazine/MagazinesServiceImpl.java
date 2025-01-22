@@ -23,7 +23,7 @@ public class MagazinesServiceImpl implements MagazinesService {
 
     private final S3Service s3Service;
 
-//  매거진 목록 전체/최신순 정렬
+    //  매거진 목록 전체/최신순 정렬
     @Override
     public List<MagazinesListDTO> selectMagazineList(int pageNumber) {
         int offset = (pageNumber - 1) * pageSize;
@@ -34,7 +34,7 @@ public class MagazinesServiceImpl implements MagazinesService {
         return magazinesMapper.count();
     }
 
-//  매거진 목록 필터링 검색
+    //  매거진 목록 필터링 검색
     @Override
     public List<MagazinesListDTO> magazineSearch(int pageNumber, String dateFilter, String orderBy, String search, String searchValue) {
         int offset = (pageNumber - 1) * pageSize;
@@ -46,7 +46,7 @@ public class MagazinesServiceImpl implements MagazinesService {
         return magazinesMapper.searchCount(dateFilter,orderBy,search,searchValue);
     }
 
-//  매거진 목록 삭제
+    //  매거진 목록 삭제
     @Override
     public void deleteMagazine(List<Long> magazineId) {
 
@@ -129,7 +129,7 @@ public class MagazinesServiceImpl implements MagazinesService {
         }
     }
 
-//  작성한 매거진 가져오기
+    //  작성한 매거진 가져오기
     @Override
     public MagazinesDTO selectMagazine(Long magazineId) {
         return magazinesMapper.selectMagazine(magazineId);
@@ -141,7 +141,7 @@ public class MagazinesServiceImpl implements MagazinesService {
         return magazinesMapper.selectMagazineImage(magazineId);
     }
 
-//  작성한 매거진 수정하기
+    //  작성한 매거진 수정하기
     @Override
     @Transactional
     public void updateMagazine(MagazinesDTO magazinesDTO) {
@@ -152,12 +152,12 @@ public class MagazinesServiceImpl implements MagazinesService {
             throw new RuntimeException("존재하지 않는 매거진입니다.");
         }
         for (int i = 0; i < magazineImages.size(); i++) {
-                try {
-                    s3Service.deleteFile(magazineImages.get(i).getImageUrl());
-                } catch (Exception deleteException) {
-                    log.error("이미지 삭제 실패: {}", magazineImages.get(i).getImageUrl(), deleteException);
-                }
+            try {
+                s3Service.deleteFile(magazineImages.get(i).getImageUrl());
+            } catch (Exception deleteException) {
+                log.error("이미지 삭제 실패: {}", magazineImages.get(i).getImageUrl(), deleteException);
             }
+        }
 
         //기존 매거진 이미지 magazine_images 테이블에서 삭제
 
