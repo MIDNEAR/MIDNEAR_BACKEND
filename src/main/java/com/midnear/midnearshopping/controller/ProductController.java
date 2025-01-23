@@ -1,0 +1,42 @@
+package com.midnear.midnearshopping.controller;
+
+import com.midnear.midnearshopping.domain.dto.products.ProductsDetailDto;
+import com.midnear.midnearshopping.domain.dto.products.ProductsDto;
+import com.midnear.midnearshopping.domain.dto.products.ProductsListDto;
+import com.midnear.midnearshopping.exception.ApiResponse;
+import com.midnear.midnearshopping.service.product.ProductService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/product")
+public class ProductController {
+    private final ProductService productService;
+
+    //조회 기준 기본값는 최신순으로 뒀습니당
+    //하. 미친 인기순 개짜증남 고쳐야됨
+    @GetMapping("/by-category")
+    public ResponseEntity<?> getProductsByCategoryWithHierarchy(@RequestParam Long categoryId, @RequestParam int pageNumber, @RequestParam(defaultValue = "latest") String sort) {
+        try{
+            List<ProductsListDto> response = productService.getProductsByCategoryWithHierarchy(categoryId, pageNumber, sort);
+            return ResponseEntity.ok(new ApiResponse(true, "상품 조회 성공", response));
+        } catch(Exception ex){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(false, ex.getMessage(), null));
+        }
+    }
+
+    @GetMapping("/detail")
+    public ResponseEntity<?> getProductDetail(@RequestParam Long colorId) {
+        try{
+            ProductsDetailDto response = productService.getProductDetails(colorId);
+            return ResponseEntity.ok(new ApiResponse(true, "상품 상세 정보 조회 성공", response));
+        } catch(Exception ex){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(true, ex.getMessage(), null));
+        }
+    }
+}
