@@ -13,4 +13,8 @@ public interface ProductColorsMapper {
     void setOnSale(List<Long> productList);
     void setSoldOut(List<Long> productList);
     void setDiscontinued(List<Long> productList);
+
+    Long getProductIdByColor(Long colorId);
+
+    String getColorById(Long colorId);
 }

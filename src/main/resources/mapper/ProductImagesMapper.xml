@@ -12,4 +12,8 @@
         SELECT * FROM product_images
         WHERE product_color_id = #{productColorId};
     </select>
+    <select id="getImageUrlsById">
+        SELECT image_url FROM product_images
+        WHERE product_color_id = #{colorId};
+    </select>
 </mapper>
