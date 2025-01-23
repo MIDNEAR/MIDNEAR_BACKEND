@@ -1,5 +1,6 @@
 package com.midnear.midnearshopping.service.productManagement;
 import com.midnear.midnearshopping.domain.dto.productManagement.CancelProductDTO;
+import com.midnear.midnearshopping.domain.dto.productManagement.ParamDTO;
 import com.midnear.midnearshopping.mapper.productManagement.CancelProductMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,5 +24,18 @@ public class CancelProductServiceImpl implements CancelProductService {
     @Override
     public int count() {
         return cancelProductMapper.count();
+    }
+
+    @Override
+    public List<CancelProductDTO> filterSearch(ParamDTO paramDTO) {
+        int offset = (paramDTO.getPageNumber()- 1) * pageSize;
+        paramDTO.setOffset(offset);
+        paramDTO.setPageSize(pageSize);
+        return cancelProductMapper.filterSearch(paramDTO);
+    }
+
+    @Override
+    public int filterCount(ParamDTO paramDTO) {
+        return cancelProductMapper.filterCount(paramDTO);
     }
 }

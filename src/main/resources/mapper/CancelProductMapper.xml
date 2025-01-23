@@ -18,8 +18,8 @@
                 op.quantity,
                 op.product_price,
                 op.coupon_discount,
-                o.point_usage,
-                o.total_payment_amount,
+                op.point_discount,
+                o.all_payment,
                 op.delivery_charge,
                 o.all_payment,
                 o.order_name,
@@ -51,5 +51,159 @@
                      left join users u on o.user_id = u.user_id
             where cp.cancellation_request_date is not null
         </select>
+
+<!-- 취소상품 필터링 조회 -->
+    <select id="filterSearch">
+        select
+            o.order_number,
+            di.tracking_delivery,
+            cp.cancellation_status,
+            p.payment_date,
+            cp.cancellation_request_date,
+            cp.cancel_reason,
+            cp.cancellation_approval_date,
+            op.product_name,
+            op.color,
+            op.size,
+            op.quantity,
+            op.product_price,
+            op.coupon_discount,
+            op.point_discount,
+            o.all_payment,
+            op.delivery_charge,
+            o.all_payment,
+            o.order_name,
+            u.id,
+            o.recipient_name,
+            o.order_contact,
+            o.postal_code,
+            o.address,
+            o.detailed_address
+        from order_products op
+            inner join orders o on op.order_id = o.order_id
+            inner join canceled_products cp on cp.order_product_id = op.order_product_id
+            left join delivery_info di on op.delivery_id = di.delivery_id
+            left join payments p ON o.order_id = p.order_id
+            left join users u on o.user_id = u.user_id
+        where cp.cancellation_request_date is not null
+        <!-- 동적 날짜 조건 -->
+        <if test="searchPeriod != null and searchPeriod != ''">
+            <choose>
+                <when test="searchPeriod == '취소요청일'">
+                    and cp.cancellation_request_date >=
+                </when>
+                <when test="searchPeriod == '결제일'">
+                    and p.payment_date >=
+                </when>
+            </choose>
+            <choose>
+                <when test="dateFilter == '오늘'">
+                    CURDATE()
+                </when>
+                <when test="dateFilter == '일주일'">
+                    CURDATE() - INTERVAL 7 DAY
+                </when>
+                <when test="dateFilter == '1개월'">
+                    CURDATE() - INTERVAL 1 MONTH
+                </when>
+                <when test="dateFilter == '3개월'">
+                    CURDATE() - INTERVAL 3 MONTH
+                </when>
+                <when test="dateFilter == '6개월'">
+                    CURDATE() - INTERVAL 6 MONTH
+                </when>
+                <when test="dateFilter == '기간'">
+                    #{startDate} AND #{endDate}
+                </when>
+            </choose>
+        </if>
+        <if test="searchCondition == '주문상태'">
+            and di.tracking_delivery like CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchCondition == '취소처리상태'">
+            and cp.cancellation_status like CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchCondition == '결제일'">
+            and  p.payment_date like CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchCondition == '구매자명'">
+            and  o.order_name like CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchCondition == '구매자ID'">
+            and  u.id like CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchCondition == '수취인명'">
+            and  o.recipient_name like CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchCondition == '구매자연락처'">
+            and o.order_contact like CONCAT('%', #{searchValue}, '%')
+        </if>
+        order by op.order_product_id
+        LIMIT #{pageSize} OFFSET #{offset}
+    </select>
+
+    <!--  필터링 검색 개수 -->
+    <select id="filterCount">
+        select count(*)
+        from order_products op
+        inner join orders o on op.order_id = o.order_id
+        inner join canceled_products cp on cp.order_product_id = op.order_product_id
+        left join delivery_info di on op.delivery_id = di.delivery_id
+        left join payments p ON o.order_id = p.order_id
+        left join users u on o.user_id = u.user_id
+        where cp.cancellation_request_date is not null
+        <!-- 동적 날짜 조건 -->
+        <if test="searchPeriod != null and searchPeriod != ''">
+            <choose>
+                <when test="searchPeriod == '취소요청일'">
+                    and cp.cancellation_request_date >=
+                </when>
+                <when test="searchPeriod == '결제일'">
+                    and p.payment_date >=
+                </when>
+            </choose>
+            <choose>
+                <when test="dateFilter == '오늘'">
+                    CURDATE()
+                </when>
+                <when test="dateFilter == '일주일'">
+                    CURDATE() - INTERVAL 7 DAY
+                </when>
+                <when test="dateFilter == '1개월'">
+                    CURDATE() - INTERVAL 1 MONTH
+                </when>
+                <when test="dateFilter == '3개월'">
+                    CURDATE() - INTERVAL 3 MONTH
+                </when>
+                <when test="dateFilter == '6개월'">
+                    CURDATE() - INTERVAL 6 MONTH
+                </when>
+                <when test="dateFilter == '기간'">
+                    #{startDate} AND #{endDate}
+                </when>
+            </choose>
+        </if>
+        <if test="searchCondition == '주문상태'">
+            and di.tracking_delivery like CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchCondition == '취소처리상태'">
+            and cp.cancellation_status like CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchCondition == '결제일'">
+            and  p.payment_date like CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchCondition == '구매자명'">
+            and  o.order_name like CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchCondition == '구매자ID'">
+            and  u.id like CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchCondition == '수취인명'">
+            and  o.recipient_name like CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchCondition == '구매자연락처'">
+            and o.order_contact like CONCAT('%', #{searchValue}, '%')
+        </if>
+    </select>
 
 </mapper>
