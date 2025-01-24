@@ -18,4 +18,10 @@ public interface CancelProductMapper {
 // 필터링 검색
     List<CancelProductDTO>filterSearch(ParamDTO paramDTO);
     int filterCount(ParamDTO paramDTO);
+
+// 선택 상품 취소처리
+    void confirmCancel(List<Long> canceledProductId);
+
+// 선택 상품 취소거부 처리
+    void denayCancel(List<Long> canceledProductId);
 }

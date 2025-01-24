@@ -206,4 +206,26 @@
         </if>
     </select>
 
+    <!-- 선택내역 취소 승인처리 -->
+    <update id="confirmCancel">
+        update canceled_products
+        set cancellation_status = '취소완료',
+        cancellation_approval_date = current_timestamp
+        where canceled_product_id in
+        <foreach item="id" index="index" collection="canceledProductId" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+
+    <!-- 선택내역 취소 거부처리 -->
+    <update id="denayCancel">
+        update canceled_products
+        set cancellation_status = '취소거부',
+        cancellation_approval_date = '-'
+        where canceled_product_id in
+        <foreach item="id" index="index" collection="canceledProductId" open="" separator="," close="">
+            #{id}
+        </foreach>
+    </update>
 </mapper>

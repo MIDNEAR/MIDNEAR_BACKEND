@@ -17,4 +17,10 @@ public interface CancelProductService {
     List<CancelProductDTO> filterSearch(ParamDTO paramDTO);
     int filterCount(ParamDTO paramDTO);
 
+//  선택내역 취소 승인처리
+    void confirmCancel(List<Long> canceledProductId);
+
+//  선택내역 취소 거부처리
+    void denayCancel(List<Long> canceledProductId);
+
 }

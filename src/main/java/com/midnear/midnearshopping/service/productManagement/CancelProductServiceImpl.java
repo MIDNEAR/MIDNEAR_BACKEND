@@ -26,6 +26,7 @@ public class CancelProductServiceImpl implements CancelProductService {
         return cancelProductMapper.count();
     }
 
+//  필터링 검색
     @Override
     public List<CancelProductDTO> filterSearch(ParamDTO paramDTO) {
         int offset = (paramDTO.getPageNumber()- 1) * pageSize;
@@ -37,5 +38,16 @@ public class CancelProductServiceImpl implements CancelProductService {
     @Override
     public int filterCount(ParamDTO paramDTO) {
         return cancelProductMapper.filterCount(paramDTO);
+    }
+
+//  선택내역 취소 승인처리
+    @Override
+    public void confirmCancel(List<Long> canceledProductId) {
+        cancelProductMapper.confirmCancel(canceledProductId);
+    }
+
+    @Override
+    public void denayCancel(List<Long> canceledProductId) {
+        cancelProductMapper.denayCancel(canceledProductId);
     }
 }

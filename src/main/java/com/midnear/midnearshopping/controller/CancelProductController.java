@@ -27,7 +27,7 @@ public class CancelProductController {
 
     @GetMapping("/selectAll")
     @Transactional
-    public ResponseEntity<ApiResponse>  selectAll(@RequestParam(value = "pageNumber", defaultValue = "1") int pageNumber){
+    public ResponseEntity<ApiResponse> selectAll(@RequestParam(value = "pageNumber", defaultValue = "1") int pageNumber) {
         try {
             //      페이징 번호에 맞는 List
             List<CancelProductDTO> cancelProduct = cancelProductService.selectAll(pageNumber);
@@ -56,7 +56,7 @@ public class CancelProductController {
     // 필터링 검색
     @GetMapping("/filterSearch")
     @Transactional
-    public ResponseEntity<ApiResponse>  filterSearch(@ModelAttribute @Valid ParamDTO ParamDTO){
+    public ResponseEntity<ApiResponse> filterSearch(@ModelAttribute @Valid ParamDTO ParamDTO) {
         try {
             //      페이징 번호에 맞는 List
             List<CancelProductDTO> cancelProduct = cancelProductService.filterSearch(ParamDTO);
@@ -82,5 +82,36 @@ public class CancelProductController {
         }
     }
 
+    //  선택내역 취소 승인처리
+    @PutMapping("/confirmCancel")
+    public ResponseEntity<ApiResponse> confirmCancel(@RequestBody List<Long> canceledProductId) {
+        try {
+            cancelProductService.confirmCancel(canceledProductId);
+            // 200 OK 응답으로 JSON 반환
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "성공적으로 승인되었습니다.", null));
 
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
+
+    //  선택내역 취소 거부처리
+    @PutMapping("/denayCancel")
+    public ResponseEntity<ApiResponse> denayCancel(@RequestBody List<Long> canceledProductId) {
+        try {
+            cancelProductService.denayCancel(canceledProductId);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "성공적으로 승인되었습니다.", null));
+
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
 }
+
+
+
+
