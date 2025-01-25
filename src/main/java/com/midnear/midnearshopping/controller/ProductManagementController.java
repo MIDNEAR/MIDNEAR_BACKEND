@@ -53,9 +53,14 @@ public class ProductManagementController {
 
     // 상품 관리 목록 불러오기
     @GetMapping("/productList")
-    public ResponseEntity<ApiResponse> getProductList() {
+    public ResponseEntity<ApiResponse> getProductList(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "23") int size,
+            @RequestParam(defaultValue = "최신순") String sortOrder,
+            @RequestParam(defaultValue = "전체") String dateRange
+    ) {
         try {
-            List<ProductManagementListDto> productColorsList = productManagementService.getProductList();
+            List<ProductManagementListDto> productColorsList = productManagementService.getProductList(page, size, sortOrder, dateRange);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "상품 리스트 조회 성공", productColorsList));
         } catch (Exception e) {

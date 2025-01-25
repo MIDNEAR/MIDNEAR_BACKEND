@@ -134,12 +134,14 @@ public class ProductManagementService {
         }
     }
 
-    public List<ProductManagementListDto> getProductList() {
+    public List<ProductManagementListDto> getProductList(int page, int size, String sortOrder, String dateRange) {
         List<ProductManagementListDto> productList = new ArrayList<>();
 
+        int offset = (page - 1) * size;
+        String orderBy = sortOrder.equals("최신순") ? "DESC" : "ASC";
 
         // 모든 상품 불러오기
-        List<ProductsVo> productsVoList = productsMapper.findAll();
+        List<ProductsVo> productsVoList = productsMapper.getProductPaging(offset, size, orderBy, dateRange);
         for (ProductsVo product : productsVoList) {
             List<ProductColorsListDto> colors = new ArrayList<>();
             // 1. 부모 카테고리까지 찾아서 문자열로 변환
@@ -176,6 +178,7 @@ public class ProductManagementService {
         }
         return productList;
     }
+
     public String getCategoryName(Long categoryId) {
         return getCategoryHierarchy(categoryId, "");
     }
