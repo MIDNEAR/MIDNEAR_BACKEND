@@ -134,14 +134,24 @@ public class ProductManagementService {
         }
     }
 
-    public List<ProductManagementListDto> getProductList(int page, int size, String sortOrder, String dateRange) {
+    public List<ProductManagementListDto> getProductList(int page, int size, String sortOrder, String dateRange, String searchRange, String searchText) {
         List<ProductManagementListDto> productList = new ArrayList<>();
+
+        if (searchText == null || searchText.isBlank()) {
+            searchText = null; // 검색 안 하고 필터링만 하는 경우
+        }
+
+        // 아 잠만 판매 상태로 검색하려면... 컬러별로 해야하는데...^^..
+        if (!isValidSearchRange(searchRange)) {
+            searchRange = null;
+            System.out.println("searchRange: " + searchRange);
+        }
 
         int offset = (page - 1) * size;
         String orderBy = sortOrder.equals("최신순") ? "DESC" : "ASC";
 
-        // 모든 상품 불러오기
-        List<ProductsVo> productsVoList = productsMapper.getProductPaging(offset, size, orderBy, dateRange);
+        // 페이지에 맞는 상품 불러오기
+        List<ProductsVo> productsVoList = productsMapper.getProductPaging(offset, size, orderBy, dateRange, searchRange, searchText);
         for (ProductsVo product : productsVoList) {
             List<ProductColorsListDto> colors = new ArrayList<>();
             // 1. 부모 카테고리까지 찾아서 문자열로 변환
@@ -178,6 +188,25 @@ public class ProductManagementService {
         }
         return productList;
     }
+
+    // 검색 범위 제한
+    private boolean isValidSearchRange(String searchRange) {
+        List<String> validColumns = Arrays.asList("상품명", "판매상태"); // 카테고리, 등록일시, 사이즈별 재고 수량 대기중...
+        return validColumns.contains(searchRange);
+    }
+    // 컬럼명으로 변환
+    private String getColumnForSearchRange(String searchRange) {
+        switch (searchRange) {
+            case "상품명":
+                return "product_name";
+            case "판매상태":
+                return "sale_status";
+            default:
+                return null;
+        }
+    }
+
+
 
     public String getCategoryName(Long categoryId) {
         return getCategoryHierarchy(categoryId, "");

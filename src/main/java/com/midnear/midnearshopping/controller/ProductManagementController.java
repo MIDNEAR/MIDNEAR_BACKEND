@@ -57,10 +57,12 @@ public class ProductManagementController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "23") int size,
             @RequestParam(defaultValue = "최신순") String sortOrder,
-            @RequestParam(defaultValue = "전체") String dateRange
+            @RequestParam(defaultValue = "전체") String dateRange,
+            @RequestParam(defaultValue = "") String searchRange,
+            @RequestParam(defaultValue = "") String searchText
     ) {
         try {
-            List<ProductManagementListDto> productColorsList = productManagementService.getProductList(page, size, sortOrder, dateRange);
+            List<ProductManagementListDto> productColorsList = productManagementService.getProductList(page, size, sortOrder, dateRange, searchRange, searchText);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "상품 리스트 조회 성공", productColorsList));
         } catch (Exception e) {
