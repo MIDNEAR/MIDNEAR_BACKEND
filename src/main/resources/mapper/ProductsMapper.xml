@@ -11,6 +11,25 @@
     <select id="findAll" resultType="ProductsVo">
         SELECT * FROM products;
     </select>
+    <select id="getProductById" resultType="ProductsVo">
+        SELECT * FROM products
+        WHERE product_id = #{productId};
+    </select>
+    <update id="updateProduct">
+        UPDATE products
+        SET
+            product_name = #{productName},
+            price = #{price},
+            discount_price = #{discountPrice},
+            detail = #{detail},
+            discount_rate = #{discountRate},
+            size_guide = #{sizeGuide},
+            registered_date = NOW(),
+            discount_start_date = #{discountStartDate},
+            discount_end_date = #{discountEndDate},
+            category_id = #{categoryId}
+        WHERE product_id = #{productId}
+    </update>
     <delete id="deleteProducts">
         DELETE FROM products
         WHERE product_id IN

@@ -9,14 +9,13 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
-@RequestMapping("/product")
+@RequestMapping("/productManagement")
 public class ProductManagementController {
     private final ProductManagementService productManagementService;
 
@@ -67,7 +66,7 @@ public class ProductManagementController {
     }
 
     // 판매중으로 변경
-    @PutMapping("/setOnSale")
+    @PatchMapping("/setOnSale")
     public ResponseEntity<ApiResponse> setOnSale(@RequestBody List<Long> saleList) {
         try {
             productManagementService.setOnSale(saleList);
@@ -80,7 +79,7 @@ public class ProductManagementController {
         }
     }
 
-    @PutMapping("/setSoldOut")
+    @PatchMapping("/setSoldOut")
     public ResponseEntity<ApiResponse> setSoldOut(@RequestBody List<Long> soldOutList) {
         try {
             productManagementService.setSoldOut(soldOutList);
@@ -94,7 +93,7 @@ public class ProductManagementController {
     }
 
     // 판매 중단(숨김 처리로 변경)
-    @PutMapping("/setDiscontinued")
+    @PatchMapping("/setDiscontinued")
     public ResponseEntity<ApiResponse> setDiscontinued(@RequestBody List<Long> discontinuedList) {
         try {
             productManagementService.setDiscontinued(discontinuedList);
@@ -120,4 +119,58 @@ public class ProductManagementController {
                     .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
         }
     }
+
+    // 수정할 상품 창 로드
+    @GetMapping("/modify/{productId}")
+    public ResponseEntity<ApiResponse> getProduct(@PathVariable Long productId) {
+        try {
+            ProductsDto productsDto = productManagementService.getProduct(productId);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "상품 정보 가져오기 성공", productsDto));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
+
+    @PutMapping("/modify")
+    public ResponseEntity<ApiResponse> modifyProduct(@ModelAttribute ProductsDto productsDto) {
+        try {
+            productManagementService.modifyProduct(productsDto);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "상품을 성공적으로 수정하였습니다.", null));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
+
+    @DeleteMapping("/deleteColors")
+    public ResponseEntity<ApiResponse> deleteColors(@RequestBody List<Long> deleteList) {
+        try {
+            productManagementService.deleteColors(deleteList);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "컬러 삭제 완료.", null));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
+
+    @DeleteMapping("/deleteSizes")
+    public ResponseEntity<ApiResponse> deleteSizes(@RequestBody List<Long> deleteList) {
+        try {
+            productManagementService.deleteSizes(deleteList);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "사이즈 삭제 완료.", null));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
+
 }

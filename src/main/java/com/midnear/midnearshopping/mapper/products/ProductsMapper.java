@@ -11,5 +11,9 @@ public interface ProductsMapper {
 
     List<ProductsVo> findAll();
 
-    void deleteProducts(List<Long> productList);
+    ProductsVo getProductById(Long productId);
+
+    void updateProduct(ProductsVo productsVo);
+
+    void deleteProducts(List<Long> deleteList);
 }

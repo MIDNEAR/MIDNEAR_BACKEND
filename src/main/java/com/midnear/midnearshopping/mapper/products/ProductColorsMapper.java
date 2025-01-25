@@ -2,7 +2,6 @@ package com.midnear.midnearshopping.mapper.products;
 
 import com.midnear.midnearshopping.domain.vo.products.ProductColorsVo;
 import org.apache.ibatis.annotations.Mapper;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -13,4 +12,7 @@ public interface ProductColorsMapper {
     void setOnSale(List<Long> productList);
     void setSoldOut(List<Long> productList);
     void setDiscontinued(List<Long> productList);
+    void deleteColors(List<Long> productList);
+    boolean existsByProductColorId(Long productColorId);
+    void updateProductColor(ProductColorsVo productColorsVo);
 }
