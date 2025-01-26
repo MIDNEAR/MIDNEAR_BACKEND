@@ -1,6 +1,7 @@
 package com.midnear.midnearshopping.mapper.productManagement;
 
 import com.midnear.midnearshopping.domain.dto.productManagement.ExchangeDTO;
+import com.midnear.midnearshopping.domain.dto.productManagement.ExchangeParamDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.ParamDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -23,5 +24,5 @@ public interface ExchangeMapper {
     void ExchangeToRefund(@Param("orderProductId")List<Long> orderProductId);
 
     // 선택내역 교환 거부처리
-    void denayExchange(@Param("exchangeId")List<Long> exchangeId);
+    void denayExchange(@Param("exchangeParamDTO") ExchangeParamDTO exchangeParamDTO);
 }

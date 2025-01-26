@@ -98,9 +98,9 @@ public class ExchangeController {
     }
     // 선택상품 교환 거부 처리
     @PutMapping("/denayExchange")
-    public ResponseEntity<ApiResponse>exchangeId(@RequestBody List<Long> exchangeId){
+    public ResponseEntity<ApiResponse>exchangeId(@RequestBody ExchangeParamDTO exchangeParamDTO){
         try {
-            exchangeService.denayExchange(exchangeId);
+            exchangeService.denayExchange(exchangeParamDTO);
 
             // 200 OK 응답으로 JSON 반환
             return ResponseEntity.status(HttpStatus.OK)

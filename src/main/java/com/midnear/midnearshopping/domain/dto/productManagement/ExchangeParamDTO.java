@@ -14,4 +14,5 @@ import java.util.List;
 public class ExchangeParamDTO {
     List<Long> exchangeId;
     List<Long> orderProductId;
+    String exchangeDenayReason;
 }

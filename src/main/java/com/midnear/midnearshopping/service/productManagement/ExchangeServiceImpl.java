@@ -53,7 +53,7 @@ public class ExchangeServiceImpl implements ExchangeService {
 
     // 선택상품 교환 거부처리
     @Override
-    public void denayExchange(List<Long> exchangeId) {
-        exchangeMapper.denayExchange(exchangeId);
+    public void denayExchange(ExchangeParamDTO exchangeParamDTO) {
+        exchangeMapper.denayExchange(exchangeParamDTO);
     }
 }

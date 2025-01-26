@@ -282,9 +282,10 @@
     <!-- 선택내역 교환 거부처리 -->
     <update id="denayExchange">
         update exchange
-        set exchange_status = '교환거부'
+        set exchange_status = '교환거부',
+            exchange_denay_reason = #{exchangeParamDTO.exchangeDenayReason}
         where exchange_id in
-        <foreach item="id" index="index" collection="exchangeId" open="(" separator="," close=")">
+        <foreach item="id" index="index" collection="exchangeParamDTO.exchangeId" open="(" separator="," close=")">
             #{id}
         </foreach>
     </update>
