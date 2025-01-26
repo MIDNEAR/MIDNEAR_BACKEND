@@ -7,7 +7,7 @@
     <select id="selectAll">
         select
             e.exchange_id,
-            op.order__product_id,
+            op.order_product_id,
             o.order_number,
             di.tracking_delivery,
             e.exchange_status,
@@ -73,7 +73,7 @@
     <select id="filterSearch">
         select
             e.exchange_id,
-            op.order__product_id,
+            op.order_product_id,
             o.order_number,
             di.tracking_delivery,
             e.exchange_status,

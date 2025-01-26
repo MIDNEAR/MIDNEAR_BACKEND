@@ -39,7 +39,7 @@ public class ExchangeDTO {
     Long invoiceNumber;
     String pickupCourier;
     Long pickupInvoice;
-    Long resendCourier;
+    String resendCourier;
     Long resendInvoiceNumber;
     Date redeliveryDate;
     String orderContact;
