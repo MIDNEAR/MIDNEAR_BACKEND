@@ -279,13 +279,12 @@
         </foreach>
     </insert>
 
-    <!-- 선택내역 취소 거부처리 -->
-    <update id="denayCancel">
-        update canceled_products
-        set cancellation_status = '취소거부',
-        cancellation_approval_date = null
-        where canceled_product_id in
-        <foreach item="id" index="index" collection="orderProductId" open="(" separator="," close=")">
+    <!-- 선택내역 교환 거부처리 -->
+    <update id="denayExchange">
+        update exchange
+        set exchange_status = '교환거부'
+        where exchange_id in
+        <foreach item="id" index="index" collection="exchangeId" open="(" separator="," close=")">
             #{id}
         </foreach>
     </update>

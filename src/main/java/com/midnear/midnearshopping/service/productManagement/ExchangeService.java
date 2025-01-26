@@ -21,4 +21,6 @@ public interface ExchangeService {
 //  선택내역 반품으로 변경
     void updateExchange(ExchangeParamDTO exchangeParamDTO);
 
+//  선택내역 교환 거부처리
+    void denayExchange(List<Long> exchangeId);
 }

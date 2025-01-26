@@ -21,4 +21,7 @@ public interface ExchangeMapper {
     // 선택내역 반품으로 변경
     void updateExchange(@Param("exchangeId")List<Long> exchangeId);
     void ExchangeToRefund(@Param("orderProductId")List<Long> orderProductId);
+
+    // 선택내역 교환 거부처리
+    void denayExchange(@Param("exchangeId")List<Long> exchangeId);
 }

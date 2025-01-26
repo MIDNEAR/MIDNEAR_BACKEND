@@ -50,4 +50,10 @@ public class ExchangeServiceImpl implements ExchangeService {
         exchangeMapper.updateExchange(exchangeParamDTO.getExchangeId());
         exchangeMapper.ExchangeToRefund(exchangeParamDTO.getOrderProductId());
     }
+
+    // 선택상품 교환 거부처리
+    @Override
+    public void denayExchange(List<Long> exchangeId) {
+        exchangeMapper.denayExchange(exchangeId);
+    }
 }
