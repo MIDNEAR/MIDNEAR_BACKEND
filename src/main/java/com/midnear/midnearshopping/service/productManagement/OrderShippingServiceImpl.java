@@ -1,8 +1,6 @@
 package com.midnear.midnearshopping.service.productManagement;
 
-import com.midnear.midnearshopping.domain.dto.productManagement.InvoiceInsertDTO;
-import com.midnear.midnearshopping.domain.dto.productManagement.OrderShippingDTO;
-import com.midnear.midnearshopping.domain.dto.productManagement.ParamDTO;
+import com.midnear.midnearshopping.domain.dto.productManagement.*;
 
 import com.midnear.midnearshopping.mapper.productManagement.OrderShippingMapper;
 import lombok.RequiredArgsConstructor;
@@ -67,5 +65,17 @@ public class OrderShippingServiceImpl implements OrderShippingService {
     @Override
     public void directCancel(List<Long> orderProductId) {
         orderShippingMapper.directCancel(orderProductId);
+    }
+
+//  선택건 옵션별 주문수량 엑셀로
+    @Override
+    public List<OptionQuantityDTO> selectOptionQuantity(List<Long> orderProductId) {
+        return orderShippingMapper.selectOptionQuantity(orderProductId);
+    }
+
+//  선택건 주문서 출력
+    @Override
+    public List<OrderReciptDTO> selectOrderRecipt(List<Long> orderProductId) {
+        return orderShippingMapper.selectOrderRecipt(orderProductId);
     }
 }
