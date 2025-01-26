@@ -12,4 +12,22 @@
         SELECT * FROM sizes
         WHERE product_color_id = #{productColorId}
     </select>
+    <select id="existsBySizeId" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM sizes
+            WHERE size_id = #{sizeId}
+        )
+    </select>
+    <update id="updateSize">
+        UPDATE sizes
+        SET
+            size = #{size},
+            stock = #{stock}
+            WHERE size_id = #{sizeId}
+    </update>
+    <delete id="deleteSize">
+        DELETE FROM sizes
+        WHERE size_id = #{sizeId}
+    </delete>
 </mapper>

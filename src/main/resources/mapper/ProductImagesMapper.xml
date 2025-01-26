@@ -12,4 +12,8 @@
         SELECT * FROM product_images
         WHERE product_color_id = #{productColorId};
     </select>
+    <delete id="deleteProductImages">
+        DELETE FROM product_images
+        WHERE product_color_id = #{productColorId}
+    </delete>
 </mapper>

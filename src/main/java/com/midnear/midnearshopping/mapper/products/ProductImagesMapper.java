@@ -10,4 +10,6 @@ public interface ProductImagesMapper {
     void uploadProductImage(ProductImagesVo productImagesVo);
 
     List<ProductImagesVo> getImagesById(Long id);
+
+    void deleteProductImages(Long productColorId);
 }

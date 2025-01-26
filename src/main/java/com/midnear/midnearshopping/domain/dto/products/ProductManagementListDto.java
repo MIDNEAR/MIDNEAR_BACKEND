@@ -12,6 +12,7 @@ import java.util.List;
 @Setter
 @Builder
 public class ProductManagementListDto {
+    private Long productId;
     private String category;
     private String productName;
     private BigDecimal price;

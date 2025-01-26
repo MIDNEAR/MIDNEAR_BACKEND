@@ -9,7 +9,11 @@ import java.util.List;
 public interface ProductsMapper {
     void registerProducts(ProductsVo productsVo);
 
-    List<ProductsVo> findAll();
+    ProductsVo getProductById(Long productId);
 
-    void deleteProducts(List<Long> productList);
+    void updateProduct(ProductsVo productsVo);
+
+    void deleteProducts(List<Long> deleteList);
+
+    List<ProductsVo> getProductPaging(int offset, int size, String orderBy, String dateRange, String searchRange, String searchText);
 }
