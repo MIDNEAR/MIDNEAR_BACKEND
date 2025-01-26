@@ -1,4 +1,4 @@
-package com.midnear.midnearshopping.controller;
+package com.midnear.midnearshopping.controller.productManage;
 
 import com.midnear.midnearshopping.domain.dto.productManagement.CancelProductDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.ParamDTO;
