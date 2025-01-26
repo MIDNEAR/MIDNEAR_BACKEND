@@ -227,5 +227,14 @@
         </if>
     </select>
 
-
+    <!-- 선택주문 반품처리 -->
+    <update id="confirmReturn">
+        update returns
+        set return_status = '환불완료',
+            return_complete_date = current_timestamp
+        where return_id in
+        <foreach item="id" index="index" collection="returnId" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
 </mapper>

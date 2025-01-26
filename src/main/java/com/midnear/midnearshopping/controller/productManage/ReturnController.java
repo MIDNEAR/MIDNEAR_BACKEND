@@ -27,7 +27,7 @@ public class ReturnController {
 
     @GetMapping("/getAll")
     @Transactional
-    public ResponseEntity<ApiResponse> sellectAll(@RequestParam(value = "pageNumber", defaultValue = "1") int pageNumber){
+    public ResponseEntity<ApiResponse> sellectAll(@RequestParam(value = "pageNumber", defaultValue = "1") int pageNumber) {
         try {
             //      페이징 번호에 맞는 List
             List<ReturnDTO> returns = returnService.selectAll(pageNumber);
@@ -81,5 +81,20 @@ public class ReturnController {
                     .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
         }
     }
+    // 선택상품 반품처리
 
+    @GetMapping("/confirmReturn")
+    @Transactional
+    public ResponseEntity<ApiResponse> confirmReturn(@RequestParam List<Long> returnId) {
+        try {
+            returnService.confirmReturn(returnId);
+            // 200 OK 응답으로 JSON 반환
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "성공적으로 조회되었습니다.", null));
+
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
 }

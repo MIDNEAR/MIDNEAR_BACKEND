@@ -17,4 +17,6 @@ public interface ReturnMapper {
     List<ReturnDTO> filterSearch(ParamDTO paramDTO);
     int filterCount(ParamDTO paramDTO);
 
+    // 선택주문 반품처리
+    void confirmReturn(List<Long> returnId);
 }

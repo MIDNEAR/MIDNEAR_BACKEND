@@ -27,6 +27,7 @@ public class ReturnServiceImpl implements ReturnService {
         return returnMapper.count();
     }
 
+    // 필터링 검색
     @Override
     public List<ReturnDTO> filterSearch(ParamDTO paramDTO) {
         int offset = (paramDTO.getPageNumber()- 1) * pageSize;
@@ -38,5 +39,11 @@ public class ReturnServiceImpl implements ReturnService {
     @Override
     public int filterCount(ParamDTO paramDTO) {
         return returnMapper.filterCount(paramDTO);
+    }
+
+    // 선택상품 반품처리
+    @Override
+    public void confirmReturn(List<Long> returnId) {
+        returnMapper.confirmReturn(returnId);
     }
 }

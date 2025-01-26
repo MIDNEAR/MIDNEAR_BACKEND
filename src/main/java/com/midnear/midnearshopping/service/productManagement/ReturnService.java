@@ -17,4 +17,6 @@ public interface ReturnService {
     List<ReturnDTO> filterSearch(ParamDTO paramDTO);
     int filterCount(ParamDTO paramDTO);
 
+    // 선택상품 반품 처리
+    void confirmReturn(List<Long> returnId);
 }
