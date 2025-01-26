@@ -222,9 +222,9 @@
     <update id="denayCancel">
         update canceled_products
         set cancellation_status = '취소거부',
-        cancellation_approval_date = '-'
+        cancellation_approval_date = null
         where canceled_product_id in
-        <foreach item="id" index="index" collection="canceledProductId" open="" separator="," close="">
+        <foreach item="id" index="index" collection="canceledProductId" open="(" separator="," close=")">
             #{id}
         </foreach>
     </update>
