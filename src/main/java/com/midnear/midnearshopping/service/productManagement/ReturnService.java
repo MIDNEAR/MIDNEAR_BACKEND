@@ -3,6 +3,7 @@ package com.midnear.midnearshopping.service.productManagement;
 import com.midnear.midnearshopping.domain.dto.productManagement.OrderShippingDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.ParamDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.ReturnDTO;
+import com.midnear.midnearshopping.domain.dto.productManagement.ReturnParamDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,4 +20,7 @@ public interface ReturnService {
 
     // 선택상품 반품 처리
     void confirmReturn(List<Long> returnId);
+
+    // 선택상품 반품 거부처리
+    void denayReturn(ReturnParamDTO returnParamDTO);
 }

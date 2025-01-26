@@ -2,6 +2,7 @@ package com.midnear.midnearshopping.controller.productManage;
 import com.midnear.midnearshopping.domain.dto.productManagement.CancelProductDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.ParamDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.ReturnDTO;
+import com.midnear.midnearshopping.domain.dto.productManagement.ReturnParamDTO;
 import com.midnear.midnearshopping.exception.ApiResponse;
 import com.midnear.midnearshopping.service.productManagement.ReturnService;
 import jakarta.validation.Valid;
@@ -81,16 +82,30 @@ public class ReturnController {
                     .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
         }
     }
-    // 선택상품 반품처리
 
-    @GetMapping("/confirmReturn")
-    @Transactional
+    // 선택상품 반품처리
+    @PutMapping("/confirmReturn")
     public ResponseEntity<ApiResponse> confirmReturn(@RequestParam List<Long> returnId) {
         try {
             returnService.confirmReturn(returnId);
             // 200 OK 응답으로 JSON 반환
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ApiResponse(true, "성공적으로 조회되었습니다.", null));
+                    .body(new ApiResponse(true, "성공적으로 수정되었습니다.", null));
+
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
+
+    // 선택상품 반품 거부처리
+    @PutMapping("/denayReturn")
+    public ResponseEntity<ApiResponse> denayReturn(@RequestBody ReturnParamDTO returnParamDTO) {
+        try {
+            returnService.denayReturn(returnParamDTO);
+            // 200 OK 응답으로 JSON 반환
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "성공적으로 수정되었습니다.", null));
 
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

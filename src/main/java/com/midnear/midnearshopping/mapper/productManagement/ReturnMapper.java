@@ -2,6 +2,7 @@ package com.midnear.midnearshopping.mapper.productManagement;
 
 import com.midnear.midnearshopping.domain.dto.productManagement.ParamDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.ReturnDTO;
+import com.midnear.midnearshopping.domain.dto.productManagement.ReturnParamDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -19,4 +20,7 @@ public interface ReturnMapper {
 
     // 선택주문 반품처리
     void confirmReturn(List<Long> returnId);
+
+    // 선택주문 반품 거부처리
+    void denayReturn(String returnDenayReason, List<Long> returnId);
 }

@@ -237,4 +237,15 @@
             #{id}
         </foreach>
     </update>
+
+    <!-- 선택주문 반품 거부처리 -->
+    <update id="denayReturn">
+        update returns
+        set return_status = '반품거부',
+        return_denay_reason = #{returnDenayReason}
+        where return_id in
+        <foreach item="id" index="index" collection="returnId" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
 </mapper>
