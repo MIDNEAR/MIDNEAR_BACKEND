@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.midnear.midnearshopping.mapper.productManagement.ExchangeMapper">
+    <!-- 교환상품 최신순 조회 -->
+    <select id="selectAll">
+        select
+            o.order_number,
+            di.tracking_delivery,
+            e.exchange_status,
+            epd.pickup_status,
+            p.payment_date,
+            e.exchange_request_date,
+            e.exchange_reason,
+            epd.pickup_complete_date,
+            e.exchange_delivery_fee,
+            e.exchange_payment_status,
+            op.product_name,
+            op.color,
+            op.size,
+            op.quantity,
+            op.product_price,
+            op.coupon_discount,
+            op.point_discount,
+            o.all_payment,
+            op.delivery_charge,
+            o.order_name,
+            u.id,
+            o.recipient_name,
+            di.courier,
+            di.invoice_number,
+            epd.pickup_courier,
+            epd.pickup_invoice,
+            ed.resend_courier,
+            ed.resend_invoice_number,
+            ed.redelivery_date,
+            o.order_contact,
+            o.postal_code,
+            o.address,
+            o.detailed_address
+        from order_products op
+                 inner join orders o on op.order_id = o.order_id
+                 inner join exchange e on op.order_product_id = e.order_product_id
+                 left join exchange_delivery ed on ed.exchange_id = e.exchange_id
+                 left join exchange_pickup_delivery epd on epd.exchange_id = e.exchange_id
+                 left join delivery_info di on op.delivery_id = di.delivery_id
+                 left join payments p ON o.order_id = p.order_id
+                 left join users u on o.user_id = u.user_id
+        where e.exchange_id is not null
+        order by e.exchange_id
+            LIMIT #{pageSize} OFFSET #{offset}
+
+    </select>
+
+    <select id="count">
+        select count(*)
+        from order_products op
+                 inner join orders o on op.order_id = o.order_id
+                 inner join exchange e on op.order_product_id = e.order_product_id
+                 left join exchange_delivery ed on ed.exchange_id = e.exchange_id
+                 left join exchange_pickup_delivery epd on epd.exchange_id = e.exchange_id
+                 left join delivery_info di on op.delivery_id = di.delivery_id
+                 left join payments p ON o.order_id = p.order_id
+                 left join users u on o.user_id = u.user_id
+        where e.exchange_id is not null
+    </select>
+
+
+</mapper>

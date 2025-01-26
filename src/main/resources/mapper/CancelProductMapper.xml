@@ -36,7 +36,7 @@
                      left join payments p ON o.order_id = p.order_id
                      left join users u on o.user_id = u.user_id
             where cp.cancellation_request_date is not null
-            order by op.order_product_id
+            order by cp.canceled_product_id
                 LIMIT #{pageSize} OFFSET #{offset}
 
         </select>
@@ -138,7 +138,7 @@
         <if test="searchCondition == '구매자연락처'">
             and o.order_contact like CONCAT('%', #{searchValue}, '%')
         </if>
-        order by op.order_product_id
+        order by cp.canceled_product_id
         LIMIT #{pageSize} OFFSET #{offset}
     </select>
 
