@@ -23,4 +23,7 @@ public interface ReturnService {
 
     // 선택상품 반품 거부처리
     void denayReturn(ReturnParamDTO returnParamDTO);
+
+    // 선택상품 교환처리
+    void updateEx(List<Long> returnId);
 }

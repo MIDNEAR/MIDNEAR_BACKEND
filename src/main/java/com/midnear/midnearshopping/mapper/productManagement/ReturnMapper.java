@@ -23,4 +23,9 @@ public interface ReturnMapper {
 
     // 선택주문 반품 거부처리
     void denayReturn(String returnDenayReason, List<Long> returnId);
+
+    // 선택주문 교환처리
+    void updateEx(List<Long> returnId);
+
+    void insertRetoEx(List<Long> returnId);
 }

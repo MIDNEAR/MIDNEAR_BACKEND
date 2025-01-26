@@ -248,4 +248,27 @@
             #{id}
         </foreach>
     </update>
+
+    <!-- 선택주문 교환으로 변경  -->
+    <update id="updateEx">
+        update returns
+        set return_status = '반품거부'
+        where return_id in
+        <foreach item="id" index="index" collection="returnId" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <insert id="insertRetoEx">
+        insert into exchange (exchange_status,exchange_reason,order_product_id)
+        select
+            '교환완료',
+            '판매자 직접 교환',
+            r.order_product_id
+        from returns r
+        where  return_id in
+        <foreach item="id" index="index" collection="returnId" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </insert>
 </mapper>

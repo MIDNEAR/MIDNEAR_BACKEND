@@ -112,4 +112,19 @@ public class ReturnController {
                     .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
         }
     }
+
+    // 선택상품 교환처리
+    @PostMapping ("/returnToExchange")
+    public ResponseEntity<ApiResponse> returnToExchange(@RequestBody List<Long> returnId) {
+        try {
+            returnService.updateEx(returnId);
+            // 200 OK 응답으로 JSON 반환
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "성공적으로 수정되었습니다.", null));
+
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
 }

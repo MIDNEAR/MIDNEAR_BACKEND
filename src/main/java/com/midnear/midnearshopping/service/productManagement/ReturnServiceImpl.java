@@ -6,6 +6,7 @@ import com.midnear.midnearshopping.domain.dto.productManagement.ReturnParamDTO;
 import com.midnear.midnearshopping.mapper.productManagement.ReturnMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 @Service
@@ -51,5 +52,12 @@ public class ReturnServiceImpl implements ReturnService {
     @Override
     public void denayReturn(ReturnParamDTO returnParamDTO) {
         returnMapper.denayReturn(returnParamDTO.getReturnDenayReason(),returnParamDTO.getReturnId());
+    }
+
+    @Override
+    @Transactional
+    public void updateEx(List<Long> returnId) {
+        returnMapper.updateEx(returnId);
+        returnMapper.insertRetoEx(returnId);
     }
 }
