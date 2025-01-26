@@ -1,5 +1,6 @@
 package com.midnear.midnearshopping.service.productManagement;
 
+import com.midnear.midnearshopping.domain.dto.productManagement.ParamDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.ReturnDTO;
 import com.midnear.midnearshopping.mapper.productManagement.ReturnMapper;
 import lombok.RequiredArgsConstructor;
@@ -24,5 +25,18 @@ public class ReturnServiceImpl implements ReturnService {
     @Override
     public int count() {
         return returnMapper.count();
+    }
+
+    @Override
+    public List<ReturnDTO> filterSearch(ParamDTO paramDTO) {
+        int offset = (paramDTO.getPageNumber()- 1) * pageSize;
+        paramDTO.setOffset(offset);
+        paramDTO.setPageSize(pageSize);
+        return returnMapper.filterSearch(paramDTO);
+    }
+
+    @Override
+    public int filterCount(ParamDTO paramDTO) {
+        return returnMapper.filterCount(paramDTO);
     }
 }
