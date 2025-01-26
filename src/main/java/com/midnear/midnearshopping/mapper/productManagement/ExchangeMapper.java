@@ -25,4 +25,8 @@ public interface ExchangeMapper {
 
     // 선택내역 교환 거부처리
     void denayExchange(@Param("exchangeParamDTO") ExchangeParamDTO exchangeParamDTO);
+
+    // 선택내역 배송처리
+    void updateStatus(@Param("exchangeId")List<Long> exchangeId);
+    void insertResendInfo(@Param("exchangeId")List<Long>exchangeId,@Param("resendCourier")String resendCourier,@Param("resendInvoiceNumber")Long resendInvoiceNumber);
 }

@@ -23,4 +23,7 @@ public interface ExchangeService {
 
 //  선택내역 교환 거부처리
     void denayExchange(ExchangeParamDTO exchangeParamDTO);
+
+//  선택내역 배송처리
+    void updatedelivery(ExchangeParamDTO exchangeParamDTO);
 }

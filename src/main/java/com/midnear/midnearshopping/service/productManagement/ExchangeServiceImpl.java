@@ -56,4 +56,11 @@ public class ExchangeServiceImpl implements ExchangeService {
     public void denayExchange(ExchangeParamDTO exchangeParamDTO) {
         exchangeMapper.denayExchange(exchangeParamDTO);
     }
+
+    @Transactional
+    @Override
+    public void updatedelivery(ExchangeParamDTO exchangeParamDTO) {
+        exchangeMapper.updateStatus(exchangeParamDTO.getExchangeId());
+        exchangeMapper.insertResendInfo(exchangeParamDTO.getExchangeId(),exchangeParamDTO.getResendCourier(),exchangeParamDTO.getResendInvoiceNumber());
+    }
 }

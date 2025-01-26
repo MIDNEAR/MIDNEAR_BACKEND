@@ -96,11 +96,12 @@ public class ExchangeController {
                     .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
         }
     }
-    // 선택상품 교환 거부 처리
-    @PutMapping("/denayExchange")
-    public ResponseEntity<ApiResponse>exchangeId(@RequestBody ExchangeParamDTO exchangeParamDTO){
+
+    // 선택상품 배송처리
+    @PostMapping("/selectDelivery")
+    public ResponseEntity<ApiResponse>selectDelivery(@RequestBody ExchangeParamDTO exchangeParamDTO){
         try {
-            exchangeService.denayExchange(exchangeParamDTO);
+            exchangeService.updatedelivery(exchangeParamDTO);
 
             // 200 OK 응답으로 JSON 반환
             return ResponseEntity.status(HttpStatus.OK)

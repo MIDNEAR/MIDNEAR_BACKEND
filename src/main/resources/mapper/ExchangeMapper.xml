@@ -290,4 +290,31 @@
         </foreach>
     </update>
 
+    <!-- 선택내역 배송처리 -->
+    <update id="updateStatus">
+        update exchange
+        set exchange_status = '상품재배송'
+        where exchange_id in
+        <foreach item="id" index="index" collection="exchangeId" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <insert id="insertResendInfo">
+        insert into exchange_delivery( resend_courier,resend_invoice_number,redelivery_date, exchange_id,delivery_address_id)
+        select
+            #{resendCourier},
+            #{resendInvoiceNumber},
+            current_timestamp,
+            e.exchange_id,
+            o.delivery_address_id
+        from exchange e
+            inner join order_products op on e.order_product_id = op.order_product_id
+            inner join orders o on op.order_id = o.order_id
+        where e.exchange_id in
+        <foreach item="id" index="index" collection="exchangeId" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </insert>
+
 </mapper>

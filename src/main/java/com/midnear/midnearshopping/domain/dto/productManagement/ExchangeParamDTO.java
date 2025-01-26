@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -15,4 +16,6 @@ public class ExchangeParamDTO {
     List<Long> exchangeId;
     List<Long> orderProductId;
     String exchangeDenayReason;
+    String resendCourier;
+    Long resendInvoiceNumber;
 }
