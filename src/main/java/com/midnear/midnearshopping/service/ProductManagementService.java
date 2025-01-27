@@ -139,26 +139,34 @@ public class ProductManagementService {
 
         if (searchText == null || searchText.isBlank()) {
             searchText = null; // 검색 안 하고 필터링만 하는 경우
-        }
-
-        // 아 잠만 판매 상태로 검색하려면... 컬러별로 해야하는데...^^..
-        if (!isValidSearchRange(searchRange)) {
-            searchRange = null;
-            System.out.println("searchRange: " + searchRange);
+        } else if (!isValidSearchRange(searchRange)) { // 잘못된 검색 범위가 들어온 경우 검색x
+            searchText = null;
         }
 
         int offset = (page - 1) * size;
         String orderBy = sortOrder.equals("최신순") ? "DESC" : "ASC";
 
         // 페이지에 맞는 상품 불러오기
-        List<ProductsVo> productsVoList = productsMapper.getProductPaging(offset, size, orderBy, dateRange, searchRange, searchText);
+        // 1. 정렬만 해서 불러오는 경우
+        // 2. 정렬 + 검색(상품명)
+        // 3. 정렬 + 검색(판매상태)
+        // 4. 정렬 + 등록일시
+        // 5. 정렬 + 카테고리
+
+        List<ProductsVo> productsVoList = new ArrayList<>();
+        if (searchRange.equals("상품명") || searchRange.equals("등록일시")) {
+            productsVoList = productsMapper.getProductPaging(offset, size, orderBy, dateRange, searchRange, searchText);
+        } else if (searchRange.equals("판매상태")) {
+            searchText = switchText(searchText); // row 값에 맞게 변환
+            productsVoList = productsMapper.getProductsBySaleStatus(offset, size, orderBy, dateRange, searchRange, searchText);
+        }
         for (ProductsVo product : productsVoList) {
             List<ProductColorsListDto> colors = new ArrayList<>();
             // 1. 부모 카테고리까지 찾아서 문자열로 변환
             String category = getCategoryName(product.getCategoryId());
 
             // 2. 색상 정보 찾기
-            List<ProductColorsVo> productColorsVos = productColorsMapper.getProductColorsByProductId(product.getProductId());
+            List<ProductColorsVo> productColorsVos = productColorsMapper.getProductColorsByProductId(product.getProductId(), searchRange, searchText);
             for (ProductColorsVo productColorsVo : productColorsVos) {
                 // 3. 사이즈 정보 찾기
                 List<SizesDto> sizes = sizesMapper.getSizesByProductColorsId(productColorsVo.getProductColorId())
@@ -191,16 +199,18 @@ public class ProductManagementService {
 
     // 검색 범위 제한
     private boolean isValidSearchRange(String searchRange) {
-        List<String> validColumns = Arrays.asList("상품명", "판매상태"); // 카테고리, 등록일시, 사이즈별 재고 수량 대기중...
+        List<String> validColumns = Arrays.asList("상품명", "판매상태", "카테고리", "등록일시");
         return validColumns.contains(searchRange);
     }
     // 컬럼명으로 변환
-    private String getColumnForSearchRange(String searchRange) {
-        switch (searchRange) {
-            case "상품명":
-                return "product_name";
-            case "판매상태":
-                return "sale_status";
+    private String switchText(String searchText) {
+        switch (searchText) {
+            case "판매중":
+                return "ON_SALE";
+            case "품절":
+                return "OUT_OF_STOCK";
+            case "숨김":
+                return "HIDDEN";
             default:
                 return null;
         }
@@ -271,7 +281,7 @@ public class ProductManagementService {
         ProductsVo productsVo = productsMapper.getProductById(productId); // 상품 정보
         ProductsDto product = ProductsDto.toDto(productsVo);
 
-        List<ProductColorsVo> productColorsVoList = productColorsMapper.getProductColorsByProductId(productId); // 색상별 정보
+        List<ProductColorsVo> productColorsVoList = productColorsMapper.getProductColorsByProductId(productId, "", ""); // 색상별 정보 (검색X)
         for (ProductColorsVo productColorsVo : productColorsVoList) {
             List<SizesDto> sizesVoList = sizesMapper.getSizesByProductColorsId(productColorsVo.getProductColorId())
                     .stream()

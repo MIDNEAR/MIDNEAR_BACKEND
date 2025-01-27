@@ -16,4 +16,6 @@ public interface ProductsMapper {
     void deleteProducts(List<Long> deleteList);
 
     List<ProductsVo> getProductPaging(int offset, int size, String orderBy, String dateRange, String searchRange, String searchText);
+
+    List<ProductsVo> getProductsBySaleStatus(int offset, int size, String orderBy, String dateRange, String searchRange, String searchText);
 }

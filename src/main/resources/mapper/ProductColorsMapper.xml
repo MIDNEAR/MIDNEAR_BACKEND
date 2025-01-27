@@ -11,6 +11,9 @@
     <select id="getProductColorsByProductId" resultType="ProductColorsVo">
         SELECT * FROM product_colors
         WHERE product_id = #{productId}
+        <if test="searchRange == '판매상태'">
+            AND sale_status LIKE CONCAT('%', #{searchText}, '%')
+        </if>
     </select>
     <update id="setOnSale">
         UPDATE product_colors

@@ -54,12 +54,12 @@ public class ProductManagementController {
     // 상품 관리 목록 불러오기
     @GetMapping("/productList")
     public ResponseEntity<ApiResponse> getProductList(
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "23") int size,
-            @RequestParam(defaultValue = "최신순") String sortOrder,
-            @RequestParam(defaultValue = "전체") String dateRange,
-            @RequestParam(defaultValue = "") String searchRange,
-            @RequestParam(defaultValue = "") String searchText
+            @RequestParam(name = "page", defaultValue = "1") int page,
+            @RequestParam(name = "size", defaultValue = "23") int size,
+            @RequestParam(name = "sortOrder", defaultValue = "최신순") String sortOrder,
+            @RequestParam(name = "dateRange", defaultValue = "전체") String dateRange,
+            @RequestParam(name = "searchRange", defaultValue = "") String searchRange,
+            @RequestParam(name = "searchText", defaultValue = "") String searchText
     ) {
         try {
             List<ProductManagementListDto> productColorsList = productManagementService.getProductList(page, size, sortOrder, dateRange, searchRange, searchText);

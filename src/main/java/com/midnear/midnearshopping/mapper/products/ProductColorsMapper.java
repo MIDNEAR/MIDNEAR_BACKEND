@@ -8,7 +8,7 @@ import java.util.List;
 @Mapper
 public interface ProductColorsMapper {
     void registerProducts(ProductColorsVo productColorsVo);
-    List<ProductColorsVo> getProductColorsByProductId(Long productId);
+    List<ProductColorsVo> getProductColorsByProductId(Long productId, String searchRange, String searchText);
     void setOnSale(List<Long> productList);
     void setSoldOut(List<Long> productList);
     void setDiscontinued(List<Long> productList);
