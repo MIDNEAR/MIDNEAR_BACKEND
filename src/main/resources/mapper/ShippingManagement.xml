@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.midnear.midnearshopping.mapper.productManagement.ShippingManagementMapper">
+    <update id="updateShipping">
+        update delivery_charge
+        set
+            basic_delivery_cost = #{basicDeliveryCost},
+            free_delivery_condition = #{freeDeliveryCondition},
+            jeju_delivery_cost = #{jejuDeliveryCost},
+            island_mountain_delivery_cost = #{islandMountainDeliveryCost}
+        where charge_id = 1
+    </update>
+</mapper>
