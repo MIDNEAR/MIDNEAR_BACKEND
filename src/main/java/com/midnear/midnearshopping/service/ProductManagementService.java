@@ -158,11 +158,15 @@ public class ProductManagementService {
         // 5. 정렬 + 카테고리
 
         List<ProductsVo> productsVoList = new ArrayList<>();
-        if (searchRange.equals("상품명") || searchRange.equals("등록일시")) {
-            productsVoList = productsMapper.getProductPaging(offset, size, orderBy, dateRange, searchRange, searchText);
-        } else if (searchRange.equals("판매상태")) {
+        if (searchRange.equals("판매상태")) {
             searchText = switchText(searchText); // row 값에 맞게 변환
             productsVoList = productsMapper.getProductsBySaleStatus(offset, size, orderBy, dateRange, searchRange, searchText);
+        } else if (searchRange.equals("카테고리")) {
+            // 카테고리 id 찾고 그거에 해당하는 products 팢기
+            List<Long> categories = categoriesMapper.getCategoryIdByCategoryName(searchText);
+            productsVoList = productsMapper.getProductsByCategoryIds(categories);
+        } else { // searchRange가 상품명 or 등록일시 or 검색 안 하는 경우
+            productsVoList = productsMapper.getProductPaging(offset, size, orderBy, dateRange, searchRange, searchText);
         }
         for (ProductsVo product : productsVoList) {
             List<ProductColorsListDto> colors = new ArrayList<>();

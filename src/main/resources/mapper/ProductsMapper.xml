@@ -25,6 +25,14 @@
         ORDER BY registered_date ${orderBy}
     LIMIT #{size} OFFSET #{offset}
     </select>
+    <select id="getProductsByCategoryIds" resultType="ProductsVo">
+        SELECT *
+        FROM products
+        WHERE category_id IN
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
     <select id="getProductsBySaleStatus" resultType="ProductsVo">
         SELECT p.product_id AS productId,
         p.product_name AS productName,

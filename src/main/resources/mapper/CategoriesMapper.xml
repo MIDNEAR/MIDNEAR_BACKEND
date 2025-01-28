@@ -9,4 +9,9 @@
         SELECT * FROM categories
         WHERE category_id = #{categoryId};
     </select>
+    <select id="getCategoryIdByCategoryName">
+        SELECT category_id
+        FROM categories
+        WHERE category_name = #{searchText}
+    </select>
 </mapper>
