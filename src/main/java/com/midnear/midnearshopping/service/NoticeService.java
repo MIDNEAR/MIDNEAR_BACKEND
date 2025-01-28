@@ -10,9 +10,12 @@ import lombok.RequiredArgsConstructor;
 import org.apache.ibatis.javassist.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import software.amazon.awssdk.services.s3.endpoints.internal.Not;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -132,11 +135,27 @@ public class NoticeService {
                 .collect(Collectors.toList());
     }
 
-    public List<NoticeDto> getNoticeList() {
-        return noticeMapper.getNotices()
+    public Map<String, Object> getNoticeList(int page, int size, String sortOrder, String dateRange, String searchRange, String searchText) {
+        Map<String, Object> result = new HashMap<>();
+
+        int count = (size > getFixedNoticeList().size()) ? size - getFixedNoticeList().size() : 0; // 고정글 빼고 페이지에 맞게 일반글 가지고 오기 위해 사이즈 계산
+        if (count == 0) { // 고정글로 한 페이지가 채워지는 경우...
+            result.put("totalPageSize", 1);
+            result.put("notices", null);
+            return result;
+        }
+        int offset = (page - 1) * count;
+        String orderBy = sortOrder.equals("최신순") ? "DESC" : "ASC";
+        Long pageSize = noticeMapper.count(dateRange, searchRange, searchText) / count + 1;
+
+        List<NoticeDto> noticeDtos = noticeMapper.getNotices(offset, count, orderBy, dateRange, searchRange, searchText)
                 .stream()
                 .map(NoticeDto::toDto)
                 .collect(Collectors.toList());
+
+        result.put("totalPageSize", pageSize);
+        result.put("notices", noticeDtos);
+        return result;
     }
 
     @Transactional
