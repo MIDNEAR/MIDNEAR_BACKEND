@@ -78,4 +78,9 @@ public class OrderShippingServiceImpl implements OrderShippingService {
     public List<OrderReciptDTO> selectOrderRecipt(List<Long> orderProductId) {
         return orderShippingMapper.selectOrderRecipt(orderProductId);
     }
+
+    @Override
+    public List<OptionQuantityDTO> selectOrderDetails(List<Long> orderProductId) {
+        return orderShippingMapper.selectOrderDetails(orderProductId);
+    }
 }

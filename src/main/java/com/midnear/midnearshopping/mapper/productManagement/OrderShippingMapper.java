@@ -34,4 +34,7 @@ public interface OrderShippingMapper {
 
 //  선택건 주문서 출력
     List<OrderReciptDTO> selectOrderRecipt(@Param("orderProductId")List<Long> orderProductId);
+
+//  선택건 옵션 보기
+    List<OptionQuantityDTO> selectOrderDetails(@Param("orderProductId")List<Long> orderProductId);
 }

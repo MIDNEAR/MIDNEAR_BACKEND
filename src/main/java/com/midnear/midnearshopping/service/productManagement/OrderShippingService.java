@@ -38,4 +38,7 @@ public interface OrderShippingService {
 
 // 선택건 주문서 출력
    List<OrderReciptDTO> selectOrderRecipt(List<Long> orderProductId);
+
+// 선택건 옵션보기
+   List<OptionQuantityDTO> selectOrderDetails(List<Long> orderProductId);
 }
