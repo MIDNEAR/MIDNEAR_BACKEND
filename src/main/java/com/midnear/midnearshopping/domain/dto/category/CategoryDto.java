@@ -12,11 +12,11 @@ import java.util.List;
 @Builder
 public class CategoryDto {
     private Long categoryId;
-    private String categoryName;
+    private String name;
     private List<CategoryDto> children = new ArrayList<>();
 
     public CategoryDto(Long categoryId, String categoryName) {
         this.categoryId = categoryId;
-        this.categoryName = categoryName;
+        this.name = categoryName;
     }
 }
