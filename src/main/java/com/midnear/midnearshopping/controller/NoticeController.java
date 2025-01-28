@@ -8,10 +8,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.ibatis.javassist.NotFoundException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 
 import java.util.List;
@@ -40,10 +38,11 @@ public class NoticeController {
     @GetMapping("/modify/{noticeId}")
     public ResponseEntity<ApiResponse> getNotice(@PathVariable("noticeId")  Long noticeId) {
         try {
-            NoticeVo noticeVo = NoticeVo.toEntity(noticeService.getNotice(noticeId));
+            NoticeDto notice = noticeService.getNotice(noticeId);
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ApiResponse(true, "수정할 공지사항 불러오기 성공.", noticeVo));
+                    .body(new ApiResponse(true, "수정할 공지사항 불러오기 성공.", notice));
         } catch (Exception ex) {
+            ex.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
         }

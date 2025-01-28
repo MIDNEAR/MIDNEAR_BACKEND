@@ -60,7 +60,10 @@ public class NoticeService {
     }
 
     public NoticeDto getNotice(Long noticeId) {
-        return NoticeDto.toDto(noticeMapper.findNoticeById(noticeId));
+        NoticeDto noticeDto = NoticeDto.toDto(noticeMapper.findNoticeById(noticeId));
+        NoticeImagesVo noticeImagesVo = noticeImagesMapper.getNoticeImageVo(noticeId);
+        noticeDto.setImageUrl(noticeImagesVo.getImageUrl());
+        return noticeDto;
     }
 
     @Transactional
@@ -75,10 +78,9 @@ public class NoticeService {
             noticeMapper.updateNotice(noticeVo);
 
             // 기존 이미지 삭제
-            List<NoticeImagesVo> noticeImagesVoList = noticeImagesMapper.getNoticeImageVo(noticeDto.getNoticeId());
-            for (NoticeImagesVo imagesVo : noticeImagesVoList) {
-                s3Service.deleteFile(imagesVo.getImageUrl());
-            }
+            NoticeImagesVo imagesVo = noticeImagesMapper.getNoticeImageVo(noticeDto.getNoticeId());
+            s3Service.deleteFile(imagesVo.getImageUrl());
+
 
             // 새로운 파일 업로드
             fileInfo = s3Service.uploadFiles("notices", noticeDto.getFiles());
@@ -86,7 +88,7 @@ public class NoticeService {
             // DB에 이미지 정보 변경
             noticeImagesMapper.deleteNoticeImages(noticeDto.getNoticeId());
             for (FileDto file : fileInfo) {
-                NoticeImagesVo imagesVo = NoticeImagesVo.builder()
+                NoticeImagesVo newImagesVo = NoticeImagesVo.builder()
                         .noticeImageId(null)
                         .imageUrl(file.getFileUrl())
                         .fileSize(file.getFileSize())
@@ -94,27 +96,16 @@ public class NoticeService {
                         .imageCreationDate(null)
                         .noticeId(noticeVo.getNoticeId())
                         .build();
-                noticeImagesMapper.uploadNoticeImages(imagesVo);
+                noticeImagesMapper.uploadNoticeImages(newImagesVo);
             }
 
         } catch (S3Exception s3Ex) {
             throw new RuntimeException("S3 처리 중 오류가 발생했습니다.", s3Ex);
-
-            // 예외 처리를 어느 정도로 자세하게 하면 좋을까요..,~ 커스텀은 코드 재활용성이 떨어져보임.,
-//        } catch (DatabaseException dbEx) {
-//            // S3에 업로드된 파일 삭제
-//            if (fileInfo != null) {
-//                for (FileDto file : fileInfo) {
-//                    s3Service.deleteFile(file.getFileUrl());
-//                }
-//            }
-//            throw new RuntimeException("DB 처리 중 오류가 발생했습니다.", dbEx);
-//
-          } catch (Exception ex) {
+        }  catch (Exception ex) {
             if (fileInfo != null) {
-                 for (FileDto file : fileInfo) {
-                     s3Service.deleteFile(file.getFileUrl());
-                 }
+                for (FileDto file : fileInfo) {
+                    s3Service.deleteFile(file.getFileUrl());
+                }
             }
             throw new RuntimeException("DB 업데이트 중 오류가 발생했습니다", ex);
         }
@@ -126,10 +117,9 @@ public class NoticeService {
         // 관련 이미지 삭제
         for (Long id : deleteList) {
             // 버킷에서 삭제
-            List<NoticeImagesVo> noticeImagesVoList = noticeImagesMapper.getNoticeImageVo(id);
-            for (NoticeImagesVo imagesVo : noticeImagesVoList) {
-                s3Service.deleteFile(imagesVo.getImageUrl());
-            }
+            NoticeImagesVo imagesVo = noticeImagesMapper.getNoticeImageVo(id);
+            s3Service.deleteFile(imagesVo.getImageUrl());
+
             // 테이블에서 이미지 정보 삭제
             noticeImagesMapper.deleteNoticeImages(id);
         }

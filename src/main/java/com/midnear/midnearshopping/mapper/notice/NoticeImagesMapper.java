@@ -9,6 +9,6 @@ import java.util.List;
 @Mapper
 public interface NoticeImagesMapper {
     void uploadNoticeImages(NoticeImagesVo noticeImagesVo);
-    List<NoticeImagesVo> getNoticeImageVo(Long noticeId);
+    NoticeImagesVo getNoticeImageVo(Long noticeId);
     void deleteNoticeImages(Long noticeId);
 }
