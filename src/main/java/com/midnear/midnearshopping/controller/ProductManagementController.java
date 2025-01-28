@@ -3,6 +3,8 @@ package com.midnear.midnearshopping.controller;
 import com.midnear.midnearshopping.domain.dto.category.CategoryDto;
 import com.midnear.midnearshopping.domain.dto.products.ProductManagementListDto;
 import com.midnear.midnearshopping.domain.dto.products.ProductsDto;
+import com.midnear.midnearshopping.domain.dto.shipping_returns.ShippingReturnsDto;
+import com.midnear.midnearshopping.domain.vo.shipping_returns.ShippingReturnsVo;
 import com.midnear.midnearshopping.exception.ApiResponse;
 import com.midnear.midnearshopping.service.ProductManagementService;
 import jakarta.validation.Valid;
@@ -173,6 +175,48 @@ public class ProductManagementController {
             productManagementService.deleteSizes(deleteList);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "사이즈 삭제 완료.", null));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
+
+    // shipping & returns 데이터 불러오기
+    @GetMapping("/shippingReturns")
+    public ResponseEntity<ApiResponse> getShippingInfo() {
+        try {
+            ShippingReturnsVo shippingReturnsVo = productManagementService.getShippingReturnsVo();
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "데이터 불러오기 성공", shippingReturnsVo));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
+
+    // shipping & returns (택배사 및 번호, 배송관련 유의사항) 수정
+    @PatchMapping("/updateShippingReturns")
+    public ResponseEntity<ApiResponse> updateShippingInfo(@RequestBody ShippingReturnsDto shippingReturnsDto) {
+        try {
+            productManagementService.updateShippingReturns(shippingReturnsDto);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "shipping & returns (택배사 및 번호, 배송관련 유의사항) 수정 완료", null));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
+
+    // shipping & returns 세부 약관 수정
+    @PatchMapping("/updateShippingPolicy")
+    public ResponseEntity<ApiResponse> updateShippingPolicy(@RequestBody ShippingReturnsDto shippingReturnsDto) {
+        try {
+            productManagementService.updateShippingPolicy(shippingReturnsDto);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "shipping & returns 세부 약관 수정 완료", null));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

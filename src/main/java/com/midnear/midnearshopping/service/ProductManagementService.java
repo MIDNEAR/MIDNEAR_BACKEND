@@ -3,12 +3,15 @@ package com.midnear.midnearshopping.service;
 import com.midnear.midnearshopping.domain.dto.FileDto;
 import com.midnear.midnearshopping.domain.dto.category.CategoryDto;
 import com.midnear.midnearshopping.domain.dto.products.*;
+import com.midnear.midnearshopping.domain.dto.shipping_returns.ShippingReturnsDto;
 import com.midnear.midnearshopping.domain.vo.category.CategoryVo;
 import com.midnear.midnearshopping.domain.vo.products.ProductColorsVo;
 import com.midnear.midnearshopping.domain.vo.products.ProductImagesVo;
 import com.midnear.midnearshopping.domain.vo.products.ProductsVo;
 import com.midnear.midnearshopping.domain.vo.products.SizesVo;
+import com.midnear.midnearshopping.domain.vo.shipping_returns.ShippingReturnsVo;
 import com.midnear.midnearshopping.mapper.Category.CategoriesMapper;
+import com.midnear.midnearshopping.mapper.ShippingReturns.ShippingReturnsMapper;
 import com.midnear.midnearshopping.mapper.products.ProductColorsMapper;
 import com.midnear.midnearshopping.mapper.products.ProductImagesMapper;
 import com.midnear.midnearshopping.mapper.products.ProductsMapper;
@@ -31,6 +34,7 @@ public class ProductManagementService {
     private final ProductColorsMapper productColorsMapper;
     private final SizesMapper sizesMapper;
     private final ProductImagesMapper productImagesMapper;
+    private final ShippingReturnsMapper shippingReturnsMapper;
     private final S3Service s3Service;
 
     public List<CategoryDto> getCategories() {
@@ -395,6 +399,24 @@ public class ProductManagementService {
             }
         }
     }
+
+    @Transactional
+    public ShippingReturnsVo getShippingReturnsVo() {
+        return shippingReturnsMapper.getShippingReturns();
+    }
+
+    @Transactional
+    public void updateShippingReturns(ShippingReturnsDto shippingReturnsDto) {
+        ShippingReturnsVo shippingReturnsVo = ShippingReturnsVo.toEntity(shippingReturnsDto);
+        shippingReturnsMapper.updateShippingReturns(shippingReturnsVo);
+    }
+
+    @Transactional
+    public void updateShippingPolicy(ShippingReturnsDto shippingReturnsDto) {
+        ShippingReturnsVo shippingReturnsVo = ShippingReturnsVo.toEntity(shippingReturnsDto);
+        shippingReturnsMapper.updateShippingPolicy(shippingReturnsVo);
+    }
+
 }
 
 
