@@ -85,6 +85,7 @@
         </foreach>
     </delete>
 
+
     <!--여기서부터 사용자 파트-->
     <select id="getProductsByCategory">
         SELECT
