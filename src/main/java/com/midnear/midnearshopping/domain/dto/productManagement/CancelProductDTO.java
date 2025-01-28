@@ -1,36 +1,37 @@
 package com.midnear.midnearshopping.domain.dto.productManagement;
 
 import lombok.*;
-import org.apache.ibatis.annotations.Mapper;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class ConfirmPurchaseDTO {
+@NoArgsConstructor
+public class CancelProductDTO {
     Long orderNumber;
-    Date buyConfirmDate;
+    String trackingDelivery;
+    String cancellationStatus;
     Date paymentDate;
-    String orderName;
-    String recipientName;
-    String orderContact;
-    String recipientContact;
-    String postalCode;
-    String address;
-    String detailedAddress;
-    String courier;
-    Long invoiceNumber;
+    Date cancellationRequestDate;
+    String cancelReason;
+    Date cancellationApprovalDate;
     String productName;
     String color;
     String size;
     int quantity;
-    BigDecimal price;
-    BigDecimal pointDiscount;
+    BigDecimal productPrice;
     BigDecimal couponDiscount;
+    BigDecimal pointUsage;
     BigDecimal totalPaymentAmount;
     BigDecimal deliveryCharge;
     BigDecimal allPayment;
+    String order_name;
+    String id;
+    String recipientName;
+    String orderContact;
+    String postalCode;
+    String address;
+    String detailedAddress;
 }

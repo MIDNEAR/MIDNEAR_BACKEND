@@ -16,4 +16,8 @@
         DELETE FROM product_images
         WHERE product_color_id = #{productColorId}
     </delete>
+    <select id="getImageUrlsById">
+        SELECT image_url FROM product_images
+        WHERE product_color_id = #{colorId};
+    </select>
 </mapper>

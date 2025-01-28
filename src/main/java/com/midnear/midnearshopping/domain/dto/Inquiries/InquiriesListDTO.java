@@ -4,7 +4,6 @@ import lombok.Data;
 import org.springframework.stereotype.Component;
 
 import java.sql.Date;
-@Component
 @Data
 public class InquiriesListDTO {
     private Long inquiryId;

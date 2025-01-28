@@ -81,7 +81,7 @@ public class MagazinesController {
         }
     }
 
-//  매거진 전체/부분 삭제
+    //  매거진 전체/부분 삭제
 //  수정필요 매거진 삭제시 매거진 이미지도 트렌젝션으로 삭제하도록
     @DeleteMapping("/deleteMagazines")
     public ResponseEntity<ApiResponse> deleteMagazine(@RequestBody List<Long> magazineId){
@@ -97,7 +97,7 @@ public class MagazinesController {
         }
     }
 
-//  매거진 작성
+    //  매거진 작성
     @PostMapping(value = "/insertMagazine")
     public ResponseEntity<ApiResponse> insertMagazine(@ModelAttribute  MagazinesDTO magazinesDTO){
         try {
@@ -110,7 +110,7 @@ public class MagazinesController {
         }
     }
 
-// 작성한 매거진 가져오기
+    // 작성한 매거진 가져오기
     @Transactional
     @GetMapping("/selectMagazine/{magazineId}")
     public ResponseEntity<ApiResponse> selectMagazine(@PathVariable("magazineId")  Long magazineId){
@@ -131,7 +131,7 @@ public class MagazinesController {
         }
     }
 
-// 작성한 메거진 수정하기
+    // 작성한 메거진 수정하기
     @PutMapping("/updateMagazine")
     public ResponseEntity<ApiResponse> updateMagazine(@ModelAttribute  MagazinesDTO magazinesDTO){
         try {

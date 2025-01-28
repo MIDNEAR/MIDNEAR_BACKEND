@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 
 import java.sql.Date;
 
-@Component
 @Data
 public class Inquiry_commentsDTO {
     private Long commentId;

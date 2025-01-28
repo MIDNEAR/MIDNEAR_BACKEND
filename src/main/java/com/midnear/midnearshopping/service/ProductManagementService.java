@@ -170,7 +170,7 @@ public class ProductManagementService {
             String category = getCategoryName(product.getCategoryId());
 
             // 2. 색상 정보 찾기
-            List<ProductColorsVo> productColorsVos = productColorsMapper.getProductColorsByProductId(product.getProductId(), searchRange, searchText);
+            List<ProductColorsVo> productColorsVos = productColorsMapper.searchingProductColorsByProductId(product.getProductId(), searchRange, searchText);
             for (ProductColorsVo productColorsVo : productColorsVos) {
                 // 3. 사이즈 정보 찾기
                 List<SizesDto> sizes = sizesMapper.getSizesByProductColorsId(productColorsVo.getProductColorId())
@@ -219,8 +219,6 @@ public class ProductManagementService {
                 return null;
         }
     }
-
-
 
     public String getCategoryName(Long categoryId) {
         return getCategoryHierarchy(categoryId, "");
@@ -285,7 +283,7 @@ public class ProductManagementService {
         ProductsVo productsVo = productsMapper.getProductById(productId); // 상품 정보
         ProductsDto product = ProductsDto.toDto(productsVo);
 
-        List<ProductColorsVo> productColorsVoList = productColorsMapper.getProductColorsByProductId(productId, "", ""); // 색상별 정보 (검색X)
+        List<ProductColorsVo> productColorsVoList = productColorsMapper.getProductColorsByProductId(productId); // 색상별 정보 (검색X)
         for (ProductColorsVo productColorsVo : productColorsVoList) {
             List<SizesDto> sizesVoList = sizesMapper.getSizesByProductColorsId(productColorsVo.getProductColorId())
                     .stream()
