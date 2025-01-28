@@ -1,5 +1,6 @@
 package com.midnear.midnearshopping.domain.vo.products;
 
+import com.midnear.midnearshopping.domain.dto.products.ProductsDto;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -21,4 +22,19 @@ public class ProductsVo {
     private Date discountEndDate;
     private Long categoryId;
 
+    public static ProductsVo toEntity(ProductsDto productsDto) {
+        return ProductsVo.builder()
+                .productId(productsDto.getProductId())
+                .productName(productsDto.getProductName())
+                .price(productsDto.getPrice())
+                .discountPrice(productsDto.getDiscountPrice())
+                .detail(productsDto.getDetail())
+                .discountRate(productsDto.getDiscountRate())
+                .sizeGuide(productsDto.getSizeGuide())
+                .registeredDate(productsDto.getRegisteredDate())
+                .discountStartDate(productsDto.getDiscountStartDate())
+                .discountEndDate(productsDto.getDiscountEndDate())
+                .categoryId(productsDto.getCategoryId())
+                .build();
+    }
 }

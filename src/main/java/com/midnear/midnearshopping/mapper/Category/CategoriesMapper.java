@@ -9,4 +9,5 @@ import java.util.List;
 public interface CategoriesMapper {
     List<CategoryVo> getCategories();
     CategoryVo getCategoryById(Long categoryId);
+    List<Long> getCategoryIdByCategoryName(String searchText);
 }
