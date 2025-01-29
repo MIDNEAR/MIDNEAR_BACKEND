@@ -33,7 +33,36 @@
     </select>
     <select id="getNotices" resultType="NoticeVo">
         SELECT * FROM notices
-        WHERE fix = FALSE;
+        WHERE fix = FALSE
+        <include refid="dateCondition" />
+        <if test="searchRange != null">
+            <choose>
+                <when test="searchRange == '제목'">
+                    AND title LIKE CONCAT('%', #{searchText}, '%')
+                </when>
+                <when test="searchRange == '내용'">
+                    AND contents LIKE CONCAT('%', #{searchText}, '%')
+                </when>
+            </choose>
+        </if>
+        ORDER BY created_date ${orderBy}
+        LIMIT #{count} OFFSET #{offset}
+    </select>
+    <!--전체 페이지 개수 세기-->
+    <select id="count">
+        SELECT count(*) FROM notices
+        WHERE fix = FALSE
+        <include refid="dateCondition" />
+        <if test="searchRange != null">
+            <choose>
+                <when test="searchRange == '제목'">
+                    AND title LIKE CONCAT('%', #{searchText}, '%')
+                </when>
+                <when test="searchRange == '내용'">
+                    AND contents LIKE CONCAT('%', #{searchText}, '%')
+                </when>
+            </choose>
+        </if>
     </select>
     <update id="fixNotices">
         UPDATE notices
@@ -53,4 +82,26 @@
             #{id}
         </foreach>
     </update>
+    <sql id="dateCondition">
+        <choose>
+            <when test="dateRange == '오늘'">
+                DATE(created_date) = CURDATE()
+            </when>
+            <when test="dateRange == '일주일'">
+                created_date >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+            </when>
+            <when test="dateRange == '1개월'">
+                created_date >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH)
+            </when>
+            <when test="dateRange == '3개월'">
+                created_date >= DATE_SUB(CURDATE(), INTERVAL 3 MONTH)
+            </when>
+            <when test="dateRange == '1년'">
+                created_date >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR)
+            </when>
+            <when test="dateRange == '전체'">
+
+            </when>
+        </choose>
+    </sql>
 </mapper>
