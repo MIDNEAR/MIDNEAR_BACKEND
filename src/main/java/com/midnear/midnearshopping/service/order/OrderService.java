@@ -207,6 +207,7 @@ public class OrderService {
                 .orderId(order.getOrderId())
                 .orderNumber(order.getOrderNumber())
                 .orderDate(order.getOrderDate())
+                .postalCode(order.getPostalCode())
                 .recipientContact(order.getRecipientContact())
                 .recipientName(order.getRecipientName())
                 .address(order.getAddress())

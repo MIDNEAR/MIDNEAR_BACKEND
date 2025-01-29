@@ -15,7 +15,7 @@ public class OrderDetailsDto {
     String orderNumber;
     Date orderDate;
     String recipientName;
-    //String postalCode; 필요없어보이는데 혹시 달라할까봐 주석처리
+    String postalCode; //필요했군.
     String recipientContact;
     String address;
     String detailedAddress;
