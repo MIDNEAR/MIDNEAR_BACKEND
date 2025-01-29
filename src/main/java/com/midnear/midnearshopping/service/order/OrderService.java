@@ -119,7 +119,7 @@ public class OrderService {
                     .claimStatus("0")
                     .pointDiscount(dto.getPointDiscount())
                     .deliveryId(null)
-                    .productPrice(dto.getPrice())
+                    .productPrice(dto.getProductPrice())
                     .productName(productVO.getProductName())
                     .color(color)
                     .deliveryCharge(dto.getDeliveryCharge())
