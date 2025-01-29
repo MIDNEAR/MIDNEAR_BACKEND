@@ -18,4 +18,5 @@ public interface ProductsMapper {
     List<ProductsListDto> getProductsByCategoryWithHierarchy(@Param("categoryId")Long categoryId, @Param("sort") String sort,@Param("offset") int offset, @Param("pageSize") int pageSize);
     ProductsVo findByProductId(Long colorId);
     List<ProductsVo> getProductsByCategoryIds(List<Long> categories);
+    Long count(@Param("dateRange")String dateRange, @Param("searchRange")String searchRange, @Param("searchText")String searchText);
 }

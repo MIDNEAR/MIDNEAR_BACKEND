@@ -25,6 +25,21 @@
         ORDER BY registered_date ${orderBy}
     LIMIT #{size} OFFSET #{offset}
     </select>
+    <select id="count">
+        SELECT count(*)
+        FROM products
+        WHERE <include refid="dateCondition" />
+        <if test="searchText != null">
+            <choose>
+                <when test="searchRange == '상품명'">
+                    AND product_name LIKE CONCAT('%', #{searchText}, '%')
+                </when>
+                <when test="searchRange == '등록일시'">
+                    AND registered_date LIKE CONCAT('%', #{searchText}, '%')
+                </when>
+            </choose>
+        </if>
+    </select>
     <select id="getProductsByCategoryIds" resultType="ProductsVo">
         SELECT *
         FROM products

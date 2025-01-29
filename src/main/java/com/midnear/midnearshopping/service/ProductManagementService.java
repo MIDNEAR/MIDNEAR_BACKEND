@@ -138,14 +138,9 @@ public class ProductManagementService {
         }
     }
 
-    public List<ProductManagementListDto> getProductList(int page, int size, String sortOrder, String dateRange, String searchRange, String searchText) {
+    public Map<String, Object> getProductList(int page, int size, String sortOrder, String dateRange, String searchRange, String searchText) {
+        Map<String, Object> result = new HashMap<>();
         List<ProductManagementListDto> productList = new ArrayList<>();
-
-        if (searchText == null || searchText.isBlank()) {
-            searchText = null; // 검색 안 하고 필터링만 하는 경우
-        } else if (!isValidSearchRange(searchRange)) { // 잘못된 검색 범위가 들어온 경우 검색x
-            searchText = null;
-        }
 
         int offset = (page - 1) * size;
         String orderBy = sortOrder.equals("최신순") ? "DESC" : "ASC";
@@ -156,18 +151,25 @@ public class ProductManagementService {
         // 3. 정렬 + 검색(판매상태)
         // 4. 정렬 + 등록일시
         // 5. 정렬 + 카테고리
-
         List<ProductsVo> productsVoList = new ArrayList<>();
         if (searchRange.equals("판매상태")) {
-            searchText = switchText(searchText); // row 값에 맞게 변환
             productsVoList = productsMapper.getProductsBySaleStatus(offset, size, orderBy, dateRange, searchRange, searchText);
         } else if (searchRange.equals("카테고리")) {
-            // 카테고리 id 찾고 그거에 해당하는 products 팢기
+            // 카테고리 id 찾고 해당하는 products 찾기
             List<Long> categories = categoriesMapper.getCategoryIdByCategoryName(searchText);
-            productsVoList = productsMapper.getProductsByCategoryIds(categories);
-        } else { // searchRange가 상품명 or 등록일시 or 검색 안 하는 경우
+            if (!categories.isEmpty())
+                productsVoList = productsMapper.getProductsByCategoryIds(categories);
+        } else { // searchRange가 상품명 or 등록일시
             productsVoList = productsMapper.getProductPaging(offset, size, orderBy, dateRange, searchRange, searchText);
         }
+
+        // 상품이 없는 경우
+        if (productsVoList.isEmpty()) {
+            result.put("totalPageSize", 1);
+            result.put("productList", null);
+            return result;
+        }
+        Long pageSize = (long) (productsVoList.size() / size + 1);
         for (ProductsVo product : productsVoList) {
             List<ProductColorsListDto> colors = new ArrayList<>();
             // 1. 부모 카테고리까지 찾아서 문자열로 변환
@@ -202,26 +204,9 @@ public class ProductManagementService {
                     .build();
             productList.add(productManagementListDto);
         }
-        return productList;
-    }
-
-    // 검색 범위 제한
-    private boolean isValidSearchRange(String searchRange) {
-        List<String> validColumns = Arrays.asList("상품명", "판매상태", "카테고리", "등록일시");
-        return validColumns.contains(searchRange);
-    }
-    // 컬럼명으로 변환
-    private String switchText(String searchText) {
-        switch (searchText) {
-            case "판매중":
-                return "ON_SALE";
-            case "품절":
-                return "OUT_OF_STOCK";
-            case "숨김":
-                return "HIDDEN";
-            default:
-                return null;
-        }
+        result.put("totalPageSize", pageSize);
+        result.put("productList", productList);
+        return result;
     }
 
     public String getCategoryName(Long categoryId) {

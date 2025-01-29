@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -60,13 +61,14 @@ public class ProductManagementController {
             @RequestParam(name = "size", defaultValue = "23") int size,
             @RequestParam(name = "sortOrder", defaultValue = "최신순") String sortOrder,
             @RequestParam(name = "dateRange", defaultValue = "전체") String dateRange,
-            @RequestParam(name = "searchRange", defaultValue = "") String searchRange,
+            @RequestParam(name = "searchRange", required = false) String searchRange,
             @RequestParam(name = "searchText", defaultValue = "") String searchText
     ) {
         try {
-            List<ProductManagementListDto> productColorsList = productManagementService.getProductList(page, size, sortOrder, dateRange, searchRange, searchText);
+            //List<ProductsListDto> + 전체 페이지 수
+            Map<String, Object> response = productManagementService.getProductList(page, size, sortOrder, dateRange, searchRange, searchText);
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ApiResponse(true, "상품 리스트 조회 성공", productColorsList));
+                    .body(new ApiResponse(true, "상품 리스트 조회 성공", response));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
