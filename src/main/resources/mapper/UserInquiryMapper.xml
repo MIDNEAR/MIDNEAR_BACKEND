@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.midnear.midnearshopping.mapper.inquiry.UserInquiriesMapper">
+
+    <insert id="insertInquiry">
+        INSERT INTO inquiries (
+            title,
+            content,
+            created_at,
+            is_private,
+            view_count,
+            has_reply,
+            user_id
+        ) VALUES (
+            #{title},
+            #{content},
+            #{createdAt},
+            #{isPrivate},
+            #{viewCount},
+            #{hasReply},
+            #{userId}
+        )
+    </insert>
+
+</mapper>
