@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.midnear.midnearshopping.mapper.productManagement.ExchangeMapper">
+
+    <!-- 교환상품 최신순 조회 -->
+    <select id="selectAll">
+        select
+            e.exchange_id,
+            op.order_product_id,
+            o.order_number,
+            di.tracking_delivery,
+            e.exchange_status,
+            epd.pickup_status,
+            p.payment_date,
+            e.exchange_request_date,
+            e.exchange_reason,
+            epd.pickup_complete_date,
+            e.exchange_delivery_fee,
+            e.exchange_payment_status,
+            op.product_name,
+            op.color,
+            op.size,
+            op.quantity,
+            op.product_price,
+            op.coupon_discount,
+            op.point_discount,
+            o.all_payment,
+            op.delivery_charge,
+            o.order_name,
+            u.id,
+            o.recipient_name,
+            di.courier,
+            di.invoice_number,
+            epd.pickup_courier,
+            epd.pickup_invoice,
+            ed.resend_courier,
+            ed.resend_invoice_number,
+            ed.redelivery_date,
+            o.order_contact,
+            o.postal_code,
+            o.address,
+            o.detailed_address
+        from order_products op
+                 inner join orders o on op.order_id = o.order_id
+                 inner join exchange e on op.order_product_id = e.order_product_id
+                 left join exchange_delivery ed on ed.exchange_id = e.exchange_id
+                 left join exchange_pickup_delivery epd on epd.exchange_id = e.exchange_id
+                 left join delivery_info di on op.delivery_id = di.delivery_id
+                 left join payments p ON o.order_id = p.order_id
+                 left join users u on o.user_id = u.user_id
+        where e.exchange_id is not null
+        order by e.exchange_id
+            LIMIT #{pageSize} OFFSET #{offset}
+
+    </select>
+
+    <select id="count">
+        select count(*)
+        from order_products op
+                 inner join orders o on op.order_id = o.order_id
+                 inner join exchange e on op.order_product_id = e.order_product_id
+                 left join exchange_delivery ed on ed.exchange_id = e.exchange_id
+                 left join exchange_pickup_delivery epd on epd.exchange_id = e.exchange_id
+                 left join delivery_info di on op.delivery_id = di.delivery_id
+                 left join payments p ON o.order_id = p.order_id
+                 left join users u on o.user_id = u.user_id
+        where e.exchange_id is not null
+    </select>
+
+
+    <!-- 취소상품 필터링 조회 -->
+    <select id="filterSearch">
+        select
+            e.exchange_id,
+            op.order_product_id,
+            o.order_number,
+            di.tracking_delivery,
+            e.exchange_status,
+            epd.pickup_status,
+            p.payment_date,
+            e.exchange_request_date,
+            e.exchange_reason,
+            epd.pickup_complete_date,
+            e.exchange_delivery_fee,
+            e.exchange_payment_status,
+            op.product_name,
+            op.color,
+            op.size,
+            op.quantity,
+            op.product_price,
+            op.coupon_discount,
+            op.point_discount,
+            o.all_payment,
+            op.delivery_charge,
+            o.order_name,
+            u.id,
+            o.recipient_name,
+            di.courier,
+            di.invoice_number,
+            epd.pickup_courier,
+            epd.pickup_invoice,
+            ed.resend_courier,
+            ed.resend_invoice_number,
+            ed.redelivery_date,
+            o.order_contact,
+            o.postal_code,
+            o.address,
+            o.detailed_address
+        from order_products op
+            inner join orders o on op.order_id = o.order_id
+            inner join exchange e on op.order_product_id = e.order_product_id
+            left join exchange_delivery ed on ed.exchange_id = e.exchange_id
+            left join exchange_pickup_delivery epd on epd.exchange_id = e.exchange_id
+            left join delivery_info di on op.delivery_id = di.delivery_id
+            left join payments p ON o.order_id = p.order_id
+            left join users u on o.user_id = u.user_id
+        where e.exchange_id is not null
+        <!-- 동적 날짜 조건 -->
+        <if test="searchPeriod != null and searchPeriod != ''">
+            <choose>
+                <when test="searchPeriod == '교환요청일'">
+                    and cp.cancellation_request_date >=
+                </when>
+                <when test="searchPeriod == '수거완료일'">
+                    and cp.cancellation_request_date >=
+                </when>
+                <when test="searchPeriod == '결제일'">
+                    and p.payment_date >=
+                </when>
+            </choose>
+            <choose>
+                <when test="dateFilter == '오늘'">
+                    CURDATE()
+                </when>
+                <when test="dateFilter == '일주일'">
+                    CURDATE() - INTERVAL 7 DAY
+                </when>
+                <when test="dateFilter == '1개월'">
+                    CURDATE() - INTERVAL 1 MONTH
+                </when>
+                <when test="dateFilter == '3개월'">
+                    CURDATE() - INTERVAL 3 MONTH
+                </when>
+                <when test="dateFilter == '6개월'">
+                    CURDATE() - INTERVAL 6 MONTH
+                </when>
+                <when test="dateFilter == '기간'">
+                    #{startDate} AND #{endDate}
+                </when>
+            </choose>
+        </if>
+        <if test="searchCondition == '주문상태'">
+            and di.tracking_delivery like CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchCondition == '교환처리상태'">
+            and cp.cancellation_status like CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchCondition == '결제일'">
+            and  p.payment_date like CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchCondition == '구매자명'">
+            and  o.order_name like CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchCondition == '구매자ID'">
+            and  u.id like CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchCondition == '수취인명'">
+            and  o.recipient_name like CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchCondition == '송장번호'">
+            and  di.invoice_number like CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchCondition == '수거송장번호'">
+            and  epd.pickup_invoice, like CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchCondition == '재배송 송장번호'">
+            and  ed.resend_invoice_number like CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchCondition == '구매자연락처'">
+            and o.order_contact like CONCAT('%', #{searchValue}, '%')
+        </if>
+        order by e.exchange_id
+        LIMIT #{pageSize} OFFSET #{offset}
+    </select>
+
+    <!--  필터링 검색 개수 -->
+    <select id="filterCount">
+        select count(*)
+        from order_products op
+        inner join orders o on op.order_id = o.order_id
+        inner join exchange e on op.order_product_id = e.order_product_id
+        left join exchange_delivery ed on ed.exchange_id = e.exchange_id
+        left join exchange_pickup_delivery epd on epd.exchange_id = e.exchange_id
+        left join delivery_info di on op.delivery_id = di.delivery_id
+        left join payments p ON o.order_id = p.order_id
+        left join users u on o.user_id = u.user_id
+        where e.exchange_id is not null
+        <!-- 동적 날짜 조건 -->
+        <if test="searchPeriod != null and searchPeriod != ''">
+            <choose>
+                <when test="searchPeriod == '교환요청일'">
+                    and cp.cancellation_request_date >=
+                </when>
+                <when test="searchPeriod == '수거완료일'">
+                    and cp.cancellation_request_date >=
+                </when>
+                <when test="searchPeriod == '결제일'">
+                    and p.payment_date >=
+                </when>
+            </choose>
+            <choose>
+                <when test="dateFilter == '오늘'">
+                    CURDATE()
+                </when>
+                <when test="dateFilter == '일주일'">
+                    CURDATE() - INTERVAL 7 DAY
+                </when>
+                <when test="dateFilter == '1개월'">
+                    CURDATE() - INTERVAL 1 MONTH
+                </when>
+                <when test="dateFilter == '3개월'">
+                    CURDATE() - INTERVAL 3 MONTH
+                </when>
+                <when test="dateFilter == '6개월'">
+                    CURDATE() - INTERVAL 6 MONTH
+                </when>
+                <when test="dateFilter == '기간'">
+                    #{startDate} AND #{endDate}
+                </when>
+            </choose>
+        </if>
+        <if test="searchCondition == '주문상태'">
+            and di.tracking_delivery like CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchCondition == '교환처리상태'">
+            and cp.cancellation_status like CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchCondition == '결제일'">
+            and  p.payment_date like CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchCondition == '구매자명'">
+            and  o.order_name like CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchCondition == '구매자ID'">
+            and  u.id like CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchCondition == '수취인명'">
+            and  o.recipient_name like CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchCondition == '송장번호'">
+            and  di.invoice_number like CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchCondition == '수거송장번호'">
+            and  epd.pickup_invoice, like CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchCondition == '재배송 송장번호'">
+            and  ed.resend_invoice_number like CONCAT('%', #{searchValue}, '%')
+        </if>
+        <if test="searchCondition == '구매자연락처'">
+            and o.order_contact like CONCAT('%', #{searchValue}, '%')
+        </if>
+    </select>
+
+    <!-- 선택내역 반품으로 변경 -->
+    <update id="updateExchange">
+        update exchange
+        set exchange_status = '교환거부'
+        where exchange_id in
+        <foreach item="id" index="index" collection="exchangeId" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+    <insert id="ExchangeToRefund">
+        insert into refunds(refund_reason,refund_status,refund_complete_date,order_product_id)
+        values
+        <foreach item="id" index="index" collection="orderProductId" separator=",">
+            ('판매자 직접 반품', '환불 완료', current_timestamp, #{id})
+        </foreach>
+    </insert>
+
+    <!-- 선택내역 교환 거부처리 -->
+    <update id="denayExchange">
+        update exchange
+        set exchange_status = '교환거부',
+            exchange_denay_reason = #{exchangeParamDTO.exchangeDenayReason}
+        where exchange_id in
+        <foreach item="id" index="index" collection="exchangeParamDTO.exchangeId" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <!-- 선택내역 배송처리 -->
+    <update id="updateStatus">
+        update exchange
+        set exchange_status = '상품재배송'
+        where exchange_id in
+        <foreach item="id" index="index" collection="exchangeId" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <insert id="insertResendInfo">
+        insert into exchange_delivery( resend_courier,resend_invoice_number,redelivery_date, exchange_id,delivery_address_id)
+        select
+            #{resendCourier},
+            #{resendInvoiceNumber},
+            current_timestamp,
+            e.exchange_id,
+            o.delivery_address_id
+        from exchange e
+            inner join order_products op on e.order_product_id = op.order_product_id
+            inner join orders o on op.order_id = o.order_id
+        where e.exchange_id in
+        <foreach item="id" index="index" collection="exchangeId" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </insert>
+
+</mapper>

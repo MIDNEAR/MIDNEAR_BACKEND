@@ -8,9 +8,71 @@
         #{productName}, #{price}, #{discountPrice}, #{discountRate}, #{discountStartDate}, #{discountEndDate}, #{detail}, #{sizeGuide}, NOW(), #{categoryId}
         )
     </insert>
-    <select id="findAll" resultType="ProductsVo">
-        SELECT * FROM products;
+    <select id="getProductPaging" resultType="ProductsVo">
+        SELECT *
+        FROM products
+        WHERE <include refid="dateCondition" />
+        <if test="searchText != null">
+            <choose>
+                <when test="searchRange == '상품명'">
+                    AND product_name LIKE CONCAT('%', #{searchText}, '%')
+                </when>
+                <when test="searchRange == '등록일시'">
+                    AND registered_date LIKE CONCAT('%', #{searchText}, '%')
+                </when>
+            </choose>
+        </if>
+        ORDER BY registered_date ${orderBy}
+    LIMIT #{size} OFFSET #{offset}
     </select>
+    <select id="getProductsByCategoryIds" resultType="ProductsVo">
+        SELECT *
+        FROM products
+        WHERE category_id IN
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+    <select id="getProductsBySaleStatus" resultType="ProductsVo">
+        SELECT p.product_id AS productId,
+        p.product_name AS productName,
+        p.price,
+        p.discount_price AS discountPrice,
+        p.detail,
+        p.discount_rate AS discountRate,
+        p.size_guide AS sizeGuide,
+        p.registered_date AS registeredDate,
+        p.discount_start_date AS discountStartDate,
+        p.discount_end_date AS discountEndDate,
+        p.category_id AS categoryId
+        FROM products p
+        left JOIN product_colors pc ON p.product_id = pc.product_id
+        WHERE pc.sale_status = #{searchText} <!-- 판매상태에 맞는 조건 -->
+        <include refid="dateCondition" />
+        GROUP BY p.product_id
+        ORDER BY p.registered_date ${orderBy}
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="getProductById" resultType="ProductsVo">
+        SELECT * FROM products
+        WHERE product_id = #{productId};
+    </select>
+    <update id="updateProduct">
+        UPDATE products
+        SET
+            product_name = #{productName},
+            price = #{price},
+            discount_price = #{discountPrice},
+            detail = #{detail},
+            discount_rate = #{discountRate},
+            size_guide = #{sizeGuide},
+            registered_date = NOW(),
+            discount_start_date = #{discountStartDate},
+            discount_end_date = #{discountEndDate},
+            category_id = #{categoryId}
+        WHERE product_id = #{productId}
+    </update>
     <select id="findByProductId" resultType="ProductsVo">
         SELECT * FROM products
         WHERE product_id = #{productId}
@@ -22,6 +84,7 @@
             #{id}
         </foreach>
     </delete>
+
 
     <!--여기서부터 사용자 파트-->
     <select id="getProductsByCategory">
@@ -100,4 +163,27 @@
         </choose>
         LIMIT #{pageSize} OFFSET #{offset}
     </select>
+    <sql id="dateCondition">
+        <choose>
+            <when test="dateRange == '오늘'">
+                DATE(registered_date) = CURDATE()
+            </when>
+            <when test="dateRange == '일주일'">
+                registered_date >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+            </when>
+            <when test="dateRange == '1개월'">
+                registered_date >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH)
+            </when>
+            <when test="dateRange == '3개월'">
+                registered_date >= DATE_SUB(CURDATE(), INTERVAL 3 MONTH)
+            </when>
+            <when test="dateRange == '1년'">
+                registered_date >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR)
+            </when>
+            <otherwise>
+                1=1
+            </otherwise>
+        </choose>
+    </sql>
+
 </mapper>

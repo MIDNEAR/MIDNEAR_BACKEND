@@ -10,9 +10,12 @@ import lombok.RequiredArgsConstructor;
 import org.apache.ibatis.javassist.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import software.amazon.awssdk.services.s3.endpoints.internal.Not;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -60,7 +63,10 @@ public class NoticeService {
     }
 
     public NoticeDto getNotice(Long noticeId) {
-        return NoticeDto.toDto(noticeMapper.findNoticeById(noticeId));
+        NoticeDto noticeDto = NoticeDto.toDto(noticeMapper.findNoticeById(noticeId));
+        NoticeImagesVo noticeImagesVo = noticeImagesMapper.getNoticeImageVo(noticeId);
+        noticeDto.setImageUrl(noticeImagesVo.getImageUrl());
+        return noticeDto;
     }
 
     @Transactional
@@ -75,10 +81,9 @@ public class NoticeService {
             noticeMapper.updateNotice(noticeVo);
 
             // 기존 이미지 삭제
-            List<NoticeImagesVo> noticeImagesVoList = noticeImagesMapper.getNoticeImageVo(noticeDto.getNoticeId());
-            for (NoticeImagesVo imagesVo : noticeImagesVoList) {
-                s3Service.deleteFile(imagesVo.getImageUrl());
-            }
+            NoticeImagesVo imagesVo = noticeImagesMapper.getNoticeImageVo(noticeDto.getNoticeId());
+            s3Service.deleteFile(imagesVo.getImageUrl());
+
 
             // 새로운 파일 업로드
             fileInfo = s3Service.uploadFiles("notices", noticeDto.getFiles());
@@ -86,7 +91,7 @@ public class NoticeService {
             // DB에 이미지 정보 변경
             noticeImagesMapper.deleteNoticeImages(noticeDto.getNoticeId());
             for (FileDto file : fileInfo) {
-                NoticeImagesVo imagesVo = NoticeImagesVo.builder()
+                NoticeImagesVo newImagesVo = NoticeImagesVo.builder()
                         .noticeImageId(null)
                         .imageUrl(file.getFileUrl())
                         .fileSize(file.getFileSize())
@@ -94,27 +99,16 @@ public class NoticeService {
                         .imageCreationDate(null)
                         .noticeId(noticeVo.getNoticeId())
                         .build();
-                noticeImagesMapper.uploadNoticeImages(imagesVo);
+                noticeImagesMapper.uploadNoticeImages(newImagesVo);
             }
 
         } catch (S3Exception s3Ex) {
             throw new RuntimeException("S3 처리 중 오류가 발생했습니다.", s3Ex);
-
-            // 예외 처리를 어느 정도로 자세하게 하면 좋을까요..,~ 커스텀은 코드 재활용성이 떨어져보임.,
-//        } catch (DatabaseException dbEx) {
-//            // S3에 업로드된 파일 삭제
-//            if (fileInfo != null) {
-//                for (FileDto file : fileInfo) {
-//                    s3Service.deleteFile(file.getFileUrl());
-//                }
-//            }
-//            throw new RuntimeException("DB 처리 중 오류가 발생했습니다.", dbEx);
-//
-          } catch (Exception ex) {
+        }  catch (Exception ex) {
             if (fileInfo != null) {
-                 for (FileDto file : fileInfo) {
-                     s3Service.deleteFile(file.getFileUrl());
-                 }
+                for (FileDto file : fileInfo) {
+                    s3Service.deleteFile(file.getFileUrl());
+                }
             }
             throw new RuntimeException("DB 업데이트 중 오류가 발생했습니다", ex);
         }
@@ -126,10 +120,9 @@ public class NoticeService {
         // 관련 이미지 삭제
         for (Long id : deleteList) {
             // 버킷에서 삭제
-            List<NoticeImagesVo> noticeImagesVoList = noticeImagesMapper.getNoticeImageVo(id);
-            for (NoticeImagesVo imagesVo : noticeImagesVoList) {
-                s3Service.deleteFile(imagesVo.getImageUrl());
-            }
+            NoticeImagesVo imagesVo = noticeImagesMapper.getNoticeImageVo(id);
+            s3Service.deleteFile(imagesVo.getImageUrl());
+
             // 테이블에서 이미지 정보 삭제
             noticeImagesMapper.deleteNoticeImages(id);
         }
@@ -142,11 +135,27 @@ public class NoticeService {
                 .collect(Collectors.toList());
     }
 
-    public List<NoticeDto> getNoticeList() {
-        return noticeMapper.getNotices()
+    public Map<String, Object> getNoticeList(int page, int size, String sortOrder, String dateRange, String searchRange, String searchText) {
+        Map<String, Object> result = new HashMap<>();
+
+        int count = (size > getFixedNoticeList().size()) ? size - getFixedNoticeList().size() : 0; // 고정글 빼고 페이지에 맞게 일반글 가지고 오기 위해 사이즈 계산
+        if (count == 0) { // 고정글로 한 페이지가 채워지는 경우...
+            result.put("totalPageSize", 1);
+            result.put("notices", null);
+            return result;
+        }
+        int offset = (page - 1) * count;
+        String orderBy = sortOrder.equals("최신순") ? "DESC" : "ASC";
+        Long pageSize = noticeMapper.count(dateRange, searchRange, searchText) / count + 1;
+
+        List<NoticeDto> noticeDtos = noticeMapper.getNotices(offset, count, orderBy, dateRange, searchRange, searchText)
                 .stream()
                 .map(NoticeDto::toDto)
                 .collect(Collectors.toList());
+
+        result.put("totalPageSize", pageSize);
+        result.put("notices", noticeDtos);
+        return result;
     }
 
     @Transactional

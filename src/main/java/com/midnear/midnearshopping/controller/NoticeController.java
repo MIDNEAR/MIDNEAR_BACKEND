@@ -8,13 +8,12 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.ibatis.javassist.NotFoundException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -40,10 +39,11 @@ public class NoticeController {
     @GetMapping("/modify/{noticeId}")
     public ResponseEntity<ApiResponse> getNotice(@PathVariable("noticeId")  Long noticeId) {
         try {
-            NoticeVo noticeVo = NoticeVo.toEntity(noticeService.getNotice(noticeId));
+            NoticeDto notice = noticeService.getNotice(noticeId);
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ApiResponse(true, "수정할 공지사항 불러오기 성공.", noticeVo));
+                    .body(new ApiResponse(true, "수정할 공지사항 불러오기 성공.", notice));
         } catch (Exception ex) {
+            ex.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
         }
@@ -96,12 +96,21 @@ public class NoticeController {
 
     // 일반 글 불러오기
     @GetMapping("/all")
-    public ResponseEntity<ApiResponse> getNoticeList() {
+    public ResponseEntity<ApiResponse> getNoticeList(
+            @RequestParam(name = "page", defaultValue = "1") int page,
+            @RequestParam(name = "size", defaultValue = "23") int size,
+            @RequestParam(name = "sortOrder", defaultValue = "최신순") String sortOrder,
+            @RequestParam(name = "dateRange", defaultValue = "전체") String dateRange,
+            @RequestParam(name = "searchRange", required = false) String searchRange, // search 범위 없으면 검색 x
+            @RequestParam(name = "searchText", defaultValue = "") String searchText
+    ) {
         try {
-            List<NoticeDto> noticeList = noticeService.getNoticeList();
+            // List<noticeDto> + 전체 페이지 수
+            Map<String, Object> response = noticeService.getNoticeList(page, size, sortOrder, dateRange, searchRange, searchText);
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ApiResponse(true, "데이터 불러오기 성공.", noticeList));
+                    .body(new ApiResponse(true, "데이터 불러오기 성공.", response));
         } catch (Exception ex) {
+            ex.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
         }

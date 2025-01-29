@@ -12,6 +12,13 @@
         SELECT * FROM product_colors
         WHERE product_id = #{productId}
     </select>
+    <select id="searchingProductColorsByProductId" resultType="ProductColorsVo">
+        SELECT * FROM product_colors
+        WHERE product_id = #{productId}
+        <if test="searchRange == '판매상태'">
+            AND sale_status LIKE CONCAT('%', #{searchText}, '%')
+        </if>
+    </select>
     <update id="setOnSale">
         UPDATE product_colors
         SET
@@ -39,7 +46,26 @@
             #{id}
         </foreach>
     </update>
-
+    <delete id="deleteColors">
+        DELETE FROM product_colors
+        WHERE product_color_id IN
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <update id="updateProductColor" useGeneratedKeys="true" keyProperty="productColorId">
+        UPDATE product_colors
+        SET
+            color = #{color}
+        WHERE product_color_id = #{productColorId}
+    </update>
+    <select id="existsByProductColorId" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM product_colors
+            WHERE product_color_id = #{productColorId}
+        )
+    </select>
     <select id="getProductIdByColor">
         SELECT product_id FROM product_colors
         WHERE product_color_id= #{colorId}
@@ -48,5 +74,4 @@
         SELECT color FROM product_colors
         WHERE product_color_id= #{colorId}
     </select>
-
 </mapper>

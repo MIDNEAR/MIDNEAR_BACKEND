@@ -3,6 +3,7 @@ package com.midnear.midnearshopping.domain.dto.notice;
 import com.midnear.midnearshopping.domain.vo.notice.NoticeVo;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import net.minidev.json.annotate.JsonIgnore;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
@@ -27,6 +28,8 @@ public class NoticeDto {
     private Boolean fix;
 
     private List<MultipartFile> files;
+
+    private String imageUrl;
 
     public static NoticeDto toDto(NoticeVo notice) {
         return NoticeDto.builder()
