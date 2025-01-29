@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.midnear.midnearshopping.mapper.cart.CartProductsMapper">
+    <insert id="addProduct">
+        INSERT INTO cart_products (
+            cart_id, product_color_id, size, product_quantity
+        ) VALUES (#{cartId}, #{productColorId}, #{size}, #{quantity})
+    </insert>
+    <select id="getCartProducts">
+        SELECT
+            cp.cart_id,
+            cp.product_color_id,
+            cp.product_quantity,
+            cp.size,
+            cp.cart_products_id,
+            p.product_name,
+            p.price,
+            (SELECT pi.image_url
+             FROM product_images pi
+             WHERE pi.product_color_id = pc.product_color_id
+             ORDER BY pi.image_created_date ASC
+                LIMIT 1) AS product_image
+        FROM cart_products cp
+            JOIN product_colors pc ON cp.product_color_id = pc.product_color_id
+            JOIN products p ON pc.product_id = p.product_id
+        WHERE cp.cart_id = #{cartId}
+    </select>
+    <delete id="deleteCartProduct">
+        DELETE FROM cart_producs
+        WHERE cart_products_id = #{cartProductId}
+    </delete>
+
+    <update id="updateQuantity">
+        UPDATE cart_products
+        SET product_quantity = #{quantity}
+        WHERE cart_products_id = #{cartProductId}
+    </update>
+
+</mapper>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.midnear.midnearshopping.mapper.order.UserOrderProductsMapper">
+
+    <select id="getOrderProductById">
+        SELECT * FROM order_products WHERE order_product_id = #{orderProductId}
+    </select>
+
+    <!-- 특정 주문에 속한 모든 주문 상품 조회 -->
+    <select id="getOrderProductsByOrderId">
+        SELECT * FROM order_products WHERE order_id = #{orderId}
+    </select>
+
+    <insert id="insertOrderProduct" >
+        INSERT INTO order_products (
+            size, quantity, coupon_discount, buy_confirm_date, claim_status,
+            point_discount, delivery_id, order_id, product_price, product_name, color,
+            delivery_charge, product_main_image
+        ) VALUES (
+                     #{size}, #{quantity}, #{couponDiscount}, #{buyConfirmDate}, #{claimStatus},
+                     #{pointDiscount}, #{deliveryId}, #{orderId}, #{price}, #{productName}, #{color},
+                     #{deliveryCharge}, #{productMainImage}
+                 )
+    </insert>
+</mapper>
