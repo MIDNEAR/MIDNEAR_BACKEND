@@ -30,4 +30,17 @@
         DELETE FROM sizes
         WHERE size_id = #{sizeId}
     </delete>
+
+    <update id="updateSizeByColorAndSize">
+        UPDATE sizes
+        SET
+            stock = stock - #{quantity}
+        WHERE product_color_id= #{productColorId} AND size = #{size}
+    </update>
+    <!--이거 업데이트 전에만 호출해야합니다 꼭 아니면 락걸려요-->
+    <select id="getStockByColorAndSize" resultType="int">
+        SELECT stock
+        FROM sizes
+        WHERE product_color_id = #{productColorId} AND size = #{size} FOR UPDATE
+    </select>
 </mapper>
