@@ -14,6 +14,6 @@ public class OrderProductsRequestDto {
     private int quantity;// 받아야됨
     private BigDecimal couponDiscount; //받아야됨
     private BigDecimal pointDiscount; //받아야됨
-    private BigDecimal price; // 받아야됨
+    private BigDecimal productPrice; // 받아야됨
     private BigDecimal deliveryCharge; // 받아야됨
 }

@@ -22,7 +22,7 @@ public class OrderProductsVO {
    private BigDecimal pointDiscount;
    private Long deliveryId; //배송정보 id
    private Long orderId;
-   private BigDecimal price;
+   private BigDecimal productPrice;
    private String productName;
    private String color;
    private BigDecimal deliveryCharge;

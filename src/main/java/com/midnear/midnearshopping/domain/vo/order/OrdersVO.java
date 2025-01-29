@@ -21,6 +21,7 @@ public class OrdersVO {
     String address;
     String detailedAddress;
     String orderNumber;
+    String recipientContact;
     Integer userId;
     BigDecimal allPayment;
 }
