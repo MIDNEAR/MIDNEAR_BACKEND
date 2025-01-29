@@ -10,4 +10,10 @@ public interface SizesMapper {
     void registerProducts(SizesVo sizesVo);
 
     List<SizesVo> getSizesByProductColorsId(Long productColorId);
+
+    boolean existsBySizeId(Long sizeId);
+
+    void updateSize(SizesVo sizesVo);
+
+    void deleteSize(Long sizeId);
 }
