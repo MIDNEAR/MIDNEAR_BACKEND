@@ -1,6 +1,7 @@
 package com.midnear.midnearshopping.service;
 
 import com.midnear.midnearshopping.domain.dto.FileDto;
+import com.midnear.midnearshopping.domain.dto.Statistics.StatisticsDto;
 import com.midnear.midnearshopping.domain.dto.category.CreateCategoryDto;
 import com.midnear.midnearshopping.domain.dto.policies_info.PoliciesAndInfoDto;
 import com.midnear.midnearshopping.domain.dto.storeImages.StoreImagesDto;
@@ -9,13 +10,18 @@ import com.midnear.midnearshopping.domain.vo.policies_info.PoliciesAndInfoVo;
 import com.midnear.midnearshopping.domain.vo.storeImages.StoreImagesVo;
 import com.midnear.midnearshopping.mapper.Category.CategoriesMapper;
 import com.midnear.midnearshopping.mapper.policies_info.PoliciesAndInfoMapper;
+import com.midnear.midnearshopping.mapper.storeManagement.StatisticsMapper;
 import com.midnear.midnearshopping.mapper.storeManagement.StoreImagesMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.sql.Date;
 import java.util.List;
 
 @Service
@@ -24,6 +30,7 @@ public class StoreManagementService {
     private final StoreImagesMapper storeImagesMapper;
     private final CategoriesMapper categoriesMapper;
     private final PoliciesAndInfoMapper policiesAndInfoMapper;
+    private final StatisticsMapper statisticsMapper;
     private final S3Service s3Service;
 
     public StoreImagesDto getMainImage() {
@@ -160,4 +167,68 @@ public class StoreManagementService {
                 .build();
         policiesAndInfoMapper.insertData(policiesAndInfoVo);
     }
+
+    public List<StatisticsDto> getDailySales(Date startDate) {
+        List<StatisticsDto> response = new ArrayList<>();
+
+        LocalDate localStartDate = startDate.toLocalDate();
+
+        for (int i = 0; i < 7; i++) {
+            LocalDate targetDate = localStartDate.plusDays(i);
+            Date date = Date.valueOf(targetDate);
+
+            // 결제 금액
+            Long paymentAmount = statisticsMapper.getDailySales(date);
+            if (paymentAmount == null) paymentAmount = 0L;
+
+            // 환불 금액
+            Long refundAmount = statisticsMapper.getRefundedTotalPrice(date);
+            if (refundAmount == null) refundAmount = 0L;
+
+            StatisticsDto statisticsDto = StatisticsDto.builder()
+                    .date(date)
+                    .refundAmount(refundAmount)
+                    .paymentAmount(paymentAmount)
+                    .build();
+
+            response.add(statisticsDto);
+        }
+
+        return response;
+    }
+
+    public List<StatisticsDto> getMonthlySales(Date startDate) {
+        List<StatisticsDto> response = new ArrayList<>();
+
+        LocalDate localStartDate = startDate.toLocalDate();
+
+        // 4개월
+        for (int i = 0; i < 4; i++) {
+            String yearMonth = localStartDate.format(DateTimeFormatter.ofPattern("yyyy-MM"));
+
+            // 결제 금액
+            Long paymentAmount = statisticsMapper.getMonthlySales(yearMonth);
+            if (paymentAmount == null) paymentAmount = 0L; // null인 경우 0으로 반환
+
+            // 환불 금액
+            Long refundAmount = statisticsMapper.getMonthlyRefundedTotalPrice(yearMonth);
+            if (refundAmount == null) refundAmount = 0L; // null인 경우 0으로 반환
+
+            Date date = Date.valueOf(localStartDate.withDayOfMonth(1));
+
+            StatisticsDto statisticsDto = StatisticsDto.builder()
+                    .date(date)
+                    .paymentAmount(paymentAmount)
+                    .refundAmount(refundAmount)
+                    .build();
+
+            response.add(statisticsDto);
+
+            // 다음 달
+            localStartDate = localStartDate.plusMonths(1);
+        }
+
+        return response;
+    }
+
 }

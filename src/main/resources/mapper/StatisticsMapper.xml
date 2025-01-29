@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.midnear.midnearshopping.mapper.storeManagement.StatisticsMapper">
+    <select id="getDailySales" resultType="Long">
+        SELECT
+        SUM(op.product_price - op.coupon_discount - op.point_discount)
+        -
+        (SELECT SUM(op2.product_price - op2.coupon_discount - op2.point_discount)
+        FROM canceled_products cp
+        LEFT JOIN order_products op2
+        ON cp.order_product_id = op2.order_product_id
+        WHERE cp.cancellation_status = '취소완료'
+        AND op2.buy_confirm_date = #{date}) AS final_sales
+        FROM order_products op
+        WHERE op.buy_confirm_date = #{date};
+    </select>
+    <select id="getRefundedTotalPrice" resultType="Long">
+        SELECT
+        SUM(op.product_price - op.coupon_discount - op.point_discount)
+        FROM returns r
+        LEFT JOIN order_products op ON r.order_product_id = op.order_product_id
+        WHERE r.return_status = '환불완료'
+        AND DATE(r.return_complete_date) = #{date}
+    </select>
+    <select id="getMonthlySales" resultType="Long">
+        SELECT
+        SUM(op.product_price - op.coupon_discount - op.point_discount)
+        -
+        (SELECT SUM(op2.product_price - op2.coupon_discount - op2.point_discount)
+        FROM canceled_products cp
+        LEFT JOIN order_products op2
+        ON cp.order_product_id = op2.order_product_id
+        WHERE cp.cancellation_status = '취소완료'
+        AND DATE_FORMAT(op2.buy_confirm_date, '%Y-%m') = #{month}) AS final_sales
+        FROM order_products op
+        WHERE DATE_FORMAT(op.buy_confirm_date, '%Y-%m') = #{month};
+    </select>
+    <select id="getMonthlyRefundedTotalPrice" resultType="Long">
+        SELECT SUM(op.product_price - op.coupon_discount - op.point_discount)
+        FROM order_products op
+        LEFT JOIN returns r ON op.order_product_id = r.order_product_id
+        WHERE r.return_status = '환불완료'
+        AND DATE_FORMAT(op.buy_confirm_date, '%Y-%m') = #{month}
+    </select>
+</mapper>
