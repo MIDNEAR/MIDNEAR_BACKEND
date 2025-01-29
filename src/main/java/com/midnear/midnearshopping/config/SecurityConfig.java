@@ -26,6 +26,7 @@ public class SecurityConfig {
             "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html", "/api/v1/auth/**","/oauth/**",
             "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html", "/api/v1/auth/**","user/signup", "user/login","user/find-id", "disruptive/**","/sms/**","/inquirie/**"
             ,"/magazine/**", "/email/**", "/user/is-duplicate", "/user/find-by-email", "/user/change-password", "/user/change-user-info", "/user/user-info", "/product/**", "/productManagement/**" , "/notice/**"
+            ,"/actuator/health"
     }; //더 열어둘 엔드포인트 여기에 추가
 
     @Bean
