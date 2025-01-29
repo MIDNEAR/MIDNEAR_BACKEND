@@ -1,6 +1,7 @@
 package com.midnear.midnearshopping.controller;
 
 import com.midnear.midnearshopping.domain.dto.category.CreateCategoryDto;
+import com.midnear.midnearshopping.domain.dto.policies_info.PoliciesAndInfoDto;
 import com.midnear.midnearshopping.domain.dto.storeImages.StoreImagesDto;
 import com.midnear.midnearshopping.exception.ApiResponse;
 import com.midnear.midnearshopping.service.StoreManagementService;
@@ -87,6 +88,114 @@ public class StoreManagementController {
             storeManagementService.createNewCategory(createCategoryDtoList);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "카테고리 생성 완료", null));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
+
+    @GetMapping("/getPrivacyPolicy")
+    public ResponseEntity<ApiResponse> getPrivacyPolicy() {
+        try {
+            PoliciesAndInfoDto policiesAndInfoDto = storeManagementService.getPrivacyPolicy();
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "데이터 불러오기 성공", policiesAndInfoDto));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
+
+    @GetMapping("/getTermsOfService")
+    public ResponseEntity<ApiResponse> getTermsOfService() {
+        try {
+            PoliciesAndInfoDto policiesAndInfoDto = storeManagementService.getTermsOfService();
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "데이터 불러오기 성공", policiesAndInfoDto));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
+
+    @GetMapping("/getBusinessInfo")
+    public ResponseEntity<ApiResponse> getBusinessInfo() {
+        try {
+            PoliciesAndInfoDto policiesAndInfoDto = storeManagementService.getBusinessInfo();
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "데이터 불러오기 성공", policiesAndInfoDto));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
+
+    @GetMapping("/getDataUsage")
+    public ResponseEntity<ApiResponse> getDataUsage() {
+        try {
+            PoliciesAndInfoDto policiesAndInfoDto = storeManagementService.getDataUsage();
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "데이터 불러오기 성공", policiesAndInfoDto));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
+
+    @PostMapping("/updatePrivacyPolicy")
+    public ResponseEntity<ApiResponse> updatePrivacyPolicy(PoliciesAndInfoDto policiesAndInfoDto) {
+        try {
+            policiesAndInfoDto.setType("privacy_policy");
+            storeManagementService.insertData(policiesAndInfoDto);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "개인정보처리방침 관리 수정 완료", null));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
+
+    @PostMapping("/updateTermsOfService")
+    public ResponseEntity<ApiResponse> updateTermsOfService(PoliciesAndInfoDto policiesAndInfoDto) {
+        try {
+            policiesAndInfoDto.setType("terms_of_service");
+            storeManagementService.insertData(policiesAndInfoDto);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "이용 약관 관리 수정 완료", null));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
+
+    @PostMapping("/updateBusinessInfo")
+    public ResponseEntity<ApiResponse> updateBusinessInfo(PoliciesAndInfoDto policiesAndInfoDto) {
+        try {
+            policiesAndInfoDto.setType("business_info");
+            storeManagementService.insertData(policiesAndInfoDto);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "주소 및 사업자 정보 관리 수정 완료", null));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
+
+    @PostMapping("/updateDataUsage")
+    public ResponseEntity<ApiResponse> updateDataUsage(PoliciesAndInfoDto policiesAndInfoDto) {
+        try {
+            policiesAndInfoDto.setType("data_usage");
+            storeManagementService.insertData(policiesAndInfoDto);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "개인정보 수집 및 이용 목적 관리 수정 완료", null));
         } catch (Exception ex) {
             ex.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

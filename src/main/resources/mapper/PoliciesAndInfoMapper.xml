@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.midnear.midnearshopping.mapper.policies_info.PoliciesAndInfoMapper">
+    <select id="getPrivacyPolicy" resultType="PoliciesAndInfoVo">
+        SELECT * FROM policies_and_info
+        WHERE type = 'privacy_policy'
+    </select>
+    <select id="getTermsOfService" resultType="PoliciesAndInfoVo">
+        SELECT * FROM policies_and_info
+        WHERE type = 'terms_of_service'
+    </select>
+    <select id="getBusinessInfo" resultType="PoliciesAndInfoVo">
+        SELECT * FROM policies_and_info
+        WHERE type = 'business_info'
+    </select>
+    <select id="getDataUsage" resultType="PoliciesAndInfoVo">
+        SELECT * FROM policies_and_info
+        WHERE type = 'data_usage'
+    </select>
+    <insert id="insertData">
+        INSERT INTO policies_and_info (
+        text, type
+        ) VALUES (
+        #{text}, #{type}
+        )
+    </insert>
+    <delete id="deleteData">
+        DELETE FROM policies_and_info
+        WHERE type = #{type}
+    </delete>
+</mapper>

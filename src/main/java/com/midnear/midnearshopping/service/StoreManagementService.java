@@ -2,10 +2,13 @@ package com.midnear.midnearshopping.service;
 
 import com.midnear.midnearshopping.domain.dto.FileDto;
 import com.midnear.midnearshopping.domain.dto.category.CreateCategoryDto;
+import com.midnear.midnearshopping.domain.dto.policies_info.PoliciesAndInfoDto;
 import com.midnear.midnearshopping.domain.dto.storeImages.StoreImagesDto;
 import com.midnear.midnearshopping.domain.vo.category.CategoryVo;
+import com.midnear.midnearshopping.domain.vo.policies_info.PoliciesAndInfoVo;
 import com.midnear.midnearshopping.domain.vo.storeImages.StoreImagesVo;
 import com.midnear.midnearshopping.mapper.Category.CategoriesMapper;
+import com.midnear.midnearshopping.mapper.policies_info.PoliciesAndInfoMapper;
 import com.midnear.midnearshopping.mapper.storeManagement.StoreImagesMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +23,7 @@ import java.util.List;
 public class StoreManagementService {
     private final StoreImagesMapper storeImagesMapper;
     private final CategoriesMapper categoriesMapper;
+    private final PoliciesAndInfoMapper policiesAndInfoMapper;
     private final S3Service s3Service;
 
     public StoreImagesDto getMainImage() {
@@ -123,5 +127,37 @@ public class StoreManagementService {
                     .build();
             categoriesMapper.insertCategory(categoryVo);
         }
+    }
+
+    public PoliciesAndInfoDto getPrivacyPolicy() {
+        PoliciesAndInfoVo policiesAndInfoVo = policiesAndInfoMapper.getPrivacyPolicy();
+        return PoliciesAndInfoDto.toEntity(policiesAndInfoVo);
+    }
+
+    public PoliciesAndInfoDto getTermsOfService() {
+        PoliciesAndInfoVo policiesAndInfoVo = policiesAndInfoMapper.getTermsOfService();
+        return PoliciesAndInfoDto.toEntity(policiesAndInfoVo);
+    }
+
+    public PoliciesAndInfoDto getBusinessInfo() {
+        PoliciesAndInfoVo policiesAndInfoVo = policiesAndInfoMapper.getBusinessInfo();
+        return PoliciesAndInfoDto.toEntity(policiesAndInfoVo);
+    }
+
+    public PoliciesAndInfoDto getDataUsage() {
+        PoliciesAndInfoVo policiesAndInfoVo = policiesAndInfoMapper.getDataUsage();
+        return PoliciesAndInfoDto.toEntity(policiesAndInfoVo);
+    }
+
+    public void insertData(PoliciesAndInfoDto policiesAndInfoDto) {
+        // 기존 데이터 삭제
+        policiesAndInfoMapper.deleteData(policiesAndInfoDto.getType());
+
+        // 새로운 데이터 삽입
+        PoliciesAndInfoVo policiesAndInfoVo = PoliciesAndInfoVo.builder()
+                .text(policiesAndInfoDto.getText())
+                .type(policiesAndInfoDto.getType())
+                .build();
+        policiesAndInfoMapper.insertData(policiesAndInfoVo);
     }
 }
