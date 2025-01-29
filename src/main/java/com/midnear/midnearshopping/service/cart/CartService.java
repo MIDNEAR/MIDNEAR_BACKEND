@@ -59,5 +59,9 @@ public class CartService {
         Long cartId = cartMapper.findCartIdByUserId(userId);
         return cartProductsMapper.getCartProducts(cartId);
     }
+    @Transactional
+    public void updateQuantity(Long cartProductId, int quantity) {
+        cartProductsMapper.updateQuantity(cartProductId, quantity);
+    }
 
 }

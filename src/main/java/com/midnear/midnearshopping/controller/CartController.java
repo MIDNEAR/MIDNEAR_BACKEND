@@ -63,6 +63,15 @@ public class CartController {
             return ResponseEntity.badRequest().body(new ApiResponse(false, e.getMessage(), null));
         }
     }
+    @PatchMapping("/update")
+    public ResponseEntity<ApiResponse> updateQuantity(@RequestParam Long cartProductId, @RequestParam int quantity) {
+        try {
+            cartService.updateQuantity(cartProductId, quantity);
+            return ResponseEntity.ok(new ApiResponse(true, "장바구니에서 상품 수향 변경 완료", null));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse(false, e.getMessage(), null));
+        }
+    }
 
     /**
      * 장바구니 조회

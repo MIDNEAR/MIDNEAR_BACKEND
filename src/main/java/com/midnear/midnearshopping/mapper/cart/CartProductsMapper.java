@@ -11,4 +11,5 @@ public interface CartProductsMapper {
     void addProduct(@Param("cartId") Long cartId, @Param("productColorId") Long productColorId, @Param("quantity") int quantity, @Param("size") String size);
     List<CartProductDto> getCartProducts(@Param("cartId") Long cartId);
     void deleteCartProduct(Long cartProductId);
+    void updateQuantity(@Param("cartProductId") Long cartProductId,@Param("quantity") int quantity);
 }

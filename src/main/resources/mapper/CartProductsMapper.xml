@@ -12,6 +12,7 @@
             cp.product_color_id,
             cp.product_quantity,
             cp.size,
+            cp.cart_products_id,
             p.product_name,
             p.price,
             (SELECT pi.image_url
@@ -25,8 +26,14 @@
         WHERE cp.cart_id = #{cartId}
     </select>
     <delete id="deleteCartProduct">
-        DELETE FROM cart_product
+        DELETE FROM cart_producs
         WHERE cart_products_id = #{cartProductId}
     </delete>
+
+    <update id="updateQuantity">
+        UPDATE cart_products
+        SET product_quantity = #{quantity}
+        WHERE cart_products_id = #{cartProductId}
+    </update>
 
 </mapper>

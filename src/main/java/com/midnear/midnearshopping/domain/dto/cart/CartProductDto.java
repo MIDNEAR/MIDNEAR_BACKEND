@@ -11,6 +11,7 @@ public class CartProductDto {
     private Long productColorId;
     private Integer productQuantity;
     private String size;
+    private Long cartProductsId;
     //여기까지는 cart_product테이블에서 가져와야하고
     //여기서부터
     private String productName;
