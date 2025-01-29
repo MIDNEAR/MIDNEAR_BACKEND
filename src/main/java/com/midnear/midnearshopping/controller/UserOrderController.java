@@ -1,6 +1,7 @@
 package com.midnear.midnearshopping.controller;
 
 import com.midnear.midnearshopping.domain.dto.order.OrderDetailsDto;
+import com.midnear.midnearshopping.domain.dto.order.OrderProductDto;
 import com.midnear.midnearshopping.domain.dto.order.UserOrderCheckDto;
 import com.midnear.midnearshopping.domain.dto.order.UserOrderDto;
 import com.midnear.midnearshopping.domain.vo.users.CustomUserDetails;
@@ -46,6 +47,17 @@ public class UserOrderController {
         try {
             OrderDetailsDto orderDetails = orderService.getOrderDetails(orderId);
             return ResponseEntity.ok(new ApiResponse(true, "주문 조회 성공", orderDetails));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(new ApiResponse(false, "주문 조회 중 오류 발생: " + e.getMessage(), null));
+        }
+    }
+    //취소 페이지에서 필요한 api.....
+    @GetMapping("/forCancel")
+    public ResponseEntity<ApiResponse> getOrderProduct(@RequestParam Long orderProductId) {
+        try {
+            OrderProductDto orderProduct = orderService.getOrderProductDetail(orderProductId);
+            return ResponseEntity.ok(new ApiResponse(true, "주문 조회 성공", orderProduct));
         } catch (Exception e) {
             return ResponseEntity.internalServerError()
                     .body(new ApiResponse(false, "주문 조회 중 오류 발생: " + e.getMessage(), null));

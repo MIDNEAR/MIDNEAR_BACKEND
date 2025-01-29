@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.midnear.midnearshopping.mapper.claim.UserExchangeMapper">
+
+    <insert id="insertExchange">
+        INSERT INTO exchange (
+            exchange_status,
+            exchange_reason,
+            exchange_detail_reason,
+            exchange_requested_option,
+            exchange_requested_size,
+            exchange_request_date,
+            collection_method,
+            order_product_id
+        ) VALUES (
+                     #{exchangeStatus},
+                     #{exchangeReason},
+                     #{exchangeDetailReason},
+                     #{exchangeRequestedOption},
+                     #{exchangeRequestedSize},
+                     #{exchangeRequestDate},
+                     #{collectionMethod},
+                     #{orderProductId}
+                 )
+    </insert>
+
+</mapper>

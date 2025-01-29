@@ -22,4 +22,10 @@
                      #{deliveryCharge}, #{productMainImage}
                  )
     </insert>
+
+    <update id="updateOrderStatus">
+        update order_products
+        set claim_status = #{status},
+        WHERE order_product_id = #{orderProductId}
+    </update>
 </mapper>

@@ -1,10 +1,7 @@
 package com.midnear.midnearshopping.service.order;
 
 import com.midnear.midnearshopping.domain.dto.delivery.DeliveryAddrDto;
-import com.midnear.midnearshopping.domain.dto.order.OrderDetailsDto;
-import com.midnear.midnearshopping.domain.dto.order.UserOrderCheckDto;
-import com.midnear.midnearshopping.domain.dto.order.UserOrderDto;
-import com.midnear.midnearshopping.domain.dto.order.UserOrderProductCheckDto;
+import com.midnear.midnearshopping.domain.dto.order.*;
 import com.midnear.midnearshopping.domain.vo.order.OrderProductsVO;
 import com.midnear.midnearshopping.domain.vo.order.OrdersVO;
 import com.midnear.midnearshopping.domain.vo.products.ProductsVo;
@@ -213,6 +210,23 @@ public class OrderService {
                 .address(order.getAddress())
                 .detailedAddress(order.getDetailedAddress())
                 .userOrderProductCheckDtos(userOrderProductCheckDtos)
+                .build();
+    }
+
+    public OrderProductDto getOrderProductDetail(Long orderProductId) {
+        OrderProductsVO product = orderProductsMapper.getOrderProductById(orderProductId);
+        if (product == null) {
+            throw new IllegalArgumentException("해당 주문 상품 정보가 존재하지 않습니다.");
+        }
+        return OrderProductDto.builder()
+                .orderProductId(product.getOrderProductId())
+                .size(product.getSize())
+                .quantity(product.getQuantity())
+                .claimStatus(product.getClaimStatus())
+                .pointDiscount(product.getPointDiscount())
+                .productPrice(product.getProductPrice()) // 계산된 값 설정
+                .productName(product.getProductName())
+                .productMainImage(product.getProductMainImage())
                 .build();
     }
 
