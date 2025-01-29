@@ -1,5 +1,6 @@
 package com.midnear.midnearshopping.controller;
 
+import com.midnear.midnearshopping.domain.dto.category.CreateCategoryDto;
 import com.midnear.midnearshopping.domain.dto.storeImages.StoreImagesDto;
 import com.midnear.midnearshopping.exception.ApiResponse;
 import com.midnear.midnearshopping.service.StoreManagementService;
@@ -7,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -71,6 +74,19 @@ public class StoreManagementController {
             storeManagementService.modifyLogoImage(storeImagesDto);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "로고 이미지를 수정하였습니다.", null));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
+
+    @PostMapping("/createNewCategory")
+    public ResponseEntity<ApiResponse> createNewCategory(@RequestBody List<CreateCategoryDto> createCategoryDtoList) {
+        try {
+            storeManagementService.createNewCategory(createCategoryDtoList);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "카테고리 생성 완료", null));
         } catch (Exception ex) {
             ex.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

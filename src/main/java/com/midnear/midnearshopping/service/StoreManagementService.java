@@ -1,8 +1,11 @@
 package com.midnear.midnearshopping.service;
 
 import com.midnear.midnearshopping.domain.dto.FileDto;
+import com.midnear.midnearshopping.domain.dto.category.CreateCategoryDto;
 import com.midnear.midnearshopping.domain.dto.storeImages.StoreImagesDto;
+import com.midnear.midnearshopping.domain.vo.category.CategoryVo;
 import com.midnear.midnearshopping.domain.vo.storeImages.StoreImagesVo;
+import com.midnear.midnearshopping.mapper.Category.CategoriesMapper;
 import com.midnear.midnearshopping.mapper.storeManagement.StoreImagesMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StoreManagementService {
     private final StoreImagesMapper storeImagesMapper;
+    private final CategoriesMapper categoriesMapper;
     private final S3Service s3Service;
 
     public StoreImagesDto getMainImage() {
@@ -107,6 +111,17 @@ public class StoreManagementService {
                 }
             }
             throw new RuntimeException("DB 업데이트 중 오류가 발생했습니다", ex);
+        }
+    }
+
+    @Transactional
+    public void createNewCategory(List<CreateCategoryDto> createCategoryDtoList) {
+        for (CreateCategoryDto createCategoryDto : createCategoryDtoList) {
+            CategoryVo categoryVo = CategoryVo.builder()
+                    .parentCategoryId(createCategoryDto.getParentCategoryId())
+                    .categoryName(createCategoryDto.getCategoryName())
+                    .build();
+            categoriesMapper.insertCategory(categoryVo);
         }
     }
 }
