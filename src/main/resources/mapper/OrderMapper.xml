@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.midnear.midnearshopping.mapper.order.OrderMapper">
+
+    <!-- 주문 정보 조회 -->
+    <select id="getOrderById" parameterType="long" resultType="com.midnear.midnearshopping.domain.vo.order.OrdersVO">
+        SELECT * FROM orders WHERE order_id = #{orderId}
+    </select>
+
+    <!-- 주문 정보 전체 조회 -->
+    <select id="getAllOrders">
+        SELECT * FROM orders
+    </select>
+
+    <!-- 주문 추가 -->
+    <insert id="insertOrder">
+        INSERT INTO orders (
+            order_name, order_contact, order_email, total_order_quantity,
+            total_payment_amount, order_date, recipient_name, postal_code,
+            address, detailed_address, point_usage, order_number, user_id,
+            delivery_id, all_payment
+        ) VALUES (
+                     #{orderName}, #{orderContact}, #{orderEmail}, #{totalOrderQuantity},
+                     #{totalPaymentAmount}, #{orderDate}, #{recipientName}, #{postalCode},
+                     #{address}, #{detailedAddress}, #{pointUsage}, #{orderNumber}, #{userId},
+                     #{deliveryId}, #{allPayment}
+                 )
+    </insert>
+
+    <!-- 주문 정보 수정 -->
+    <update id="updateOrder">
+        UPDATE orders SET
+                          order_name = #{orderName},
+                          order_contact = #{orderContact},
+                          order_email = #{orderEmail},
+                          total_order_quantity = #{totalOrderQuantity},
+                          total_payment_amount = #{totalPaymentAmount},
+                          order_date = #{orderDate},
+                          recipient_name = #{recipientName},
+                          postal_code = #{postalCode},
+                          address = #{address},
+                          detailed_address = #{detailedAddress},
+                          point_usage = #{pointUsage},
+                          order_number = #{orderNumber},
+                          user_id = #{userId},
+                          delivery_id = #{deliveryId},
+                          all_payment = #{allPayment}
+        WHERE order_id = #{orderId}
+    </update>
+
+    <!-- 주문 삭제 -->
+    <delete id="deleteOrderById">
+        DELETE FROM orders WHERE order_id = #{orderId}
+    </delete>
+
+</mapper>

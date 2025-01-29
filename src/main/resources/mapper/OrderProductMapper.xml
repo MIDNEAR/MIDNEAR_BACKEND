@@ -188,4 +188,26 @@
             and o.order_contact like CONCAT('%', #{searchValue}, '%')
         </if>
     </select>
+
+    <select id="getOrderProductById">
+        SELECT * FROM order_products WHERE order_product_id = #{orderProductId}
+    </select>
+
+    <!-- 특정 주문에 속한 모든 주문 상품 조회 -->
+    <select id="getOrderProductsByOrderId">
+        SELECT * FROM order_products WHERE order_id = #{orderId}
+    </select>
+
+    <!-- 주문 상품 추가 -->
+    <insert id="insertOrderProduct" >
+        INSERT INTO order_products (
+            size, quantity, order_status, coupon_discount,
+            claim_status, buy_confirm_date, point_j_discount,
+            product_id, order_id
+        ) VALUES (
+                     #{size}, #{quantity}, #{orderStatus}, #{couponDiscount},
+                     #{claimStatus}, #{buyConfirmDate}, #{pointJDiscount},
+                     #{productId}, #{orderId}
+                 )
+    </insert>
 </mapper>
