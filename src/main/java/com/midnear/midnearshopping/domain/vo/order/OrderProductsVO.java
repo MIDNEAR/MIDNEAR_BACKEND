@@ -13,14 +13,19 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 public class OrderProductsVO {
-   Long orderProductId;
-   String size;
-   int quantity;
-   String orderStatus;
-   BigDecimal couponDiscount;
-   String claimStatus;
-   Date buyConfirmDate;
-   BigDecimal pointJDiscount;
-   Long productId;
-   Long orderId;
+   private Long orderProductId;
+   private String size;
+   private int quantity;
+   private BigDecimal couponDiscount;
+   private Date buyConfirmDate;
+   private String claimStatus;
+   private BigDecimal pointDiscount;
+   private Long deliveryId; //배송정보 id
+   private Long orderId;
+   private BigDecimal price;
+   private String productName;
+   private String color;
+   private BigDecimal deliveryCharge;
+   private String productMainImage;
+
 }

@@ -1,9 +1,6 @@
 package com.midnear.midnearshopping.domain.vo.order;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -12,21 +9,18 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Setter
 public class OrdersVO {
     Long orderId;
     String orderName;
     String orderContact;
     String orderEmail;
-    int totalOrderQuantity;
-    BigDecimal totalPaymentAmount;
     Date orderDate;
     String recipientName;
     String postalCode;
     String address;
     String detailedAddress;
-    BigDecimal pointUsage;
-    Long orderNumber;
-    Long userId;
-    Long deliveryId;
+    String orderNumber;
+    Integer userId;
     BigDecimal allPayment;
 }

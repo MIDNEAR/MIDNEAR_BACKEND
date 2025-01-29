@@ -12,19 +12,10 @@ import java.util.List;
 public class UserOrderDto {
     Long orderId;
     String orderName;
+    Integer deliveryAddrId;
     String orderContact;
     String orderEmail;
-    int totalOrderQuantity;
-    BigDecimal totalPaymentAmount;
-    Date orderDate;
-    String recipientName;
-    String postalCode;
-    String address;
-    String detailedAddress;
-    BigDecimal pointUsage;
-    Long orderNumber;
     Long userId;
-    Long deliveryId;
     BigDecimal allPayment;
-    List<UserOrderProductsDto> userOrderProductsDto;
+    List<OrderProductsRequestDto> oderProductsRequestDtos;
 }

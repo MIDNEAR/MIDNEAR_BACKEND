@@ -8,6 +8,9 @@
     <select id="getOrderById" parameterType="long" resultType="com.midnear.midnearshopping.domain.vo.order.OrdersVO">
         SELECT * FROM orders WHERE order_id = #{orderId}
     </select>
+    <select id="getOrderIdByOrderNumber" parameterType="long" >
+        SELECT order_id FROM orders WHERE order_number = #{orderNumber}
+    </select>
 
     <!-- 주문 정보 전체 조회 -->
     <select id="getAllOrders">
@@ -15,17 +18,16 @@
     </select>
 
     <!-- 주문 추가 -->
-    <insert id="insertOrder">
+    <insert id="insertOrder" useGeneratedKeys="true" keyProperty="orderId" >
         INSERT INTO orders (
-            order_name, order_contact, order_email, total_order_quantity,
-            total_payment_amount, order_date, recipient_name, postal_code,
-            address, detailed_address, point_usage, order_number, user_id,
-            delivery_id, all_payment
+            order_name, order_contact, order_email,
+             order_date, recipient_name, postal_code,
+            address, detailed_address, order_number, user_id, all_payment
         ) VALUES (
-                     #{orderName}, #{orderContact}, #{orderEmail}, #{totalOrderQuantity},
-                     #{totalPaymentAmount}, #{orderDate}, #{recipientName}, #{postalCode},
-                     #{address}, #{detailedAddress}, #{pointUsage}, #{orderNumber}, #{userId},
-                     #{deliveryId}, #{allPayment}
+                     #{orderName}, #{orderContact}, #{orderEmail},
+                      #{orderDate}, #{recipientName}, #{postalCode},
+                     #{address}, #{detailedAddress},  #{orderNumber}, #{userId},
+                      #{allPayment}
                  )
     </insert>
 
@@ -35,7 +37,7 @@
                           order_name = #{orderName},
                           order_contact = #{orderContact},
                           order_email = #{orderEmail},
-                          total_order_quantity = #{totalOrderQuantity},
+                          total_order_quantity = #{quantity},
                           total_payment_amount = #{totalPaymentAmount},
                           order_date = #{orderDate},
                           recipient_name = #{recipientName},
