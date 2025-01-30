@@ -12,6 +12,14 @@
         SELECT * FROM product_colors
         WHERE product_id = #{productId}
     </select>
+    <select id="getProductColorById" resultType="ProductColorsVo">
+        SELECT * FROM product_colors
+        WHERE product_color_id = #{productColorId}
+    </select>
+    <select id="getCategoryId" resultType="Long">
+        SELECT * FROM product_colors
+        WHERE product_color_id = #{productColorId}
+    </select>
     <select id="searchingProductColorsByProductId" resultType="ProductColorsVo">
         SELECT * FROM product_colors
         WHERE product_id = #{productId}

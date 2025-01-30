@@ -1,6 +1,9 @@
 package com.midnear.midnearshopping.controller;
 
 import com.midnear.midnearshopping.domain.dto.category.CategoryDto;
+import com.midnear.midnearshopping.domain.dto.coordinate.CoordinateDto;
+import com.midnear.midnearshopping.domain.dto.coordinate.CoordinatedProductDto;
+import com.midnear.midnearshopping.domain.dto.coordinate.MainProductDto;
 import com.midnear.midnearshopping.domain.dto.products.ProductManagementListDto;
 import com.midnear.midnearshopping.domain.dto.products.ProductsDto;
 import com.midnear.midnearshopping.domain.dto.shipping_returns.ShippingReturnsDto;
@@ -61,8 +64,8 @@ public class ProductManagementController {
             @RequestParam(name = "size", defaultValue = "23") int size,
             @RequestParam(name = "sortOrder", defaultValue = "최신순") String sortOrder,
             @RequestParam(name = "dateRange", defaultValue = "전체") String dateRange,
-            @RequestParam(name = "searchRange", required = false) String searchRange,
-            @RequestParam(name = "searchText", defaultValue = "") String searchText
+            @RequestParam(name = "searchRange", defaultValue = "") String searchRange,
+            @RequestParam(name = "searchText", required = false) String searchText
     ) {
         try {
             //List<ProductsListDto> + 전체 페이지 수
@@ -184,6 +187,8 @@ public class ProductManagementController {
         }
     }
 
+
+
     // shipping & returns 데이터 불러오기
     @GetMapping("/shippingReturns")
     public ResponseEntity<ApiResponse> getShippingInfo() {
@@ -219,6 +224,82 @@ public class ProductManagementController {
             productManagementService.updateShippingPolicy(shippingReturnsDto);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "shipping & returns 세부 약관 수정 완료", null));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
+
+    @GetMapping("/getCoordinatedList")
+    public ResponseEntity<ApiResponse> getCoordinatedList(
+            @RequestParam(name = "page", defaultValue = "1") int page,
+            @RequestParam(name = "size", defaultValue = "4") int size,
+            @RequestParam(name = "sortOrder", defaultValue = "최신순") String sortOrder,
+            @RequestParam(name = "dateRange", defaultValue = "전체") String dateRange,
+            @RequestParam(name = "searchRange", defaultValue = "") String searchRange,
+            @RequestParam(name = "searchText", required = false) String searchText
+    ) {
+        try {
+            Map<String, Object> response = productManagementService.getCoordinatedList(page, size, sortOrder, dateRange, searchRange, searchText);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "코디 상품 리스트 불러오기 성공", response));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
+
+    @GetMapping("/getCoordinatedProduct")
+    public ResponseEntity<ApiResponse> getCoordinatedProduct(
+            @RequestParam(name = "productColorId") Long productColorId
+    ) {
+        try {
+            MainProductDto mainProductDto = productManagementService.getCoordinatedProduct(productColorId);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "코디 상품 불러오기 성공", mainProductDto));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
+
+    @GetMapping("/searchCoordinatedProduct")
+    public ResponseEntity<ApiResponse> searchCoordinatedProduct(
+            @RequestParam(name = "productName", defaultValue = "") String productName
+    ) {
+        try {
+            List<CoordinatedProductDto> response = productManagementService.searchCoordinatedProduct(productName);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "코디 상품 검색 성공", response));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
+
+    @PostMapping("/createCoordinate")
+    public ResponseEntity<ApiResponse> createCoordinate(@RequestBody List<CoordinateDto> coordinateDtoList) {
+        try {
+            productManagementService.createCoordinate(coordinateDtoList);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "코디 상품 등록 성공", null));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
+
+    @DeleteMapping("/deleteCoordinate")
+    public ResponseEntity<ApiResponse> deleteCoordinate(@RequestBody List<CoordinateDto> deleteList) {
+        try {
+            productManagementService.deleteCoordinate(deleteList);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "코디 상품 삭제 성공", null));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

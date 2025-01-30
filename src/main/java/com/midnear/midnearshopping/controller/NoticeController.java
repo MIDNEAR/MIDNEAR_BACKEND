@@ -101,8 +101,8 @@ public class NoticeController {
             @RequestParam(name = "size", defaultValue = "23") int size,
             @RequestParam(name = "sortOrder", defaultValue = "최신순") String sortOrder,
             @RequestParam(name = "dateRange", defaultValue = "전체") String dateRange,
-            @RequestParam(name = "searchRange", required = false) String searchRange, // search 범위 없으면 검색 x
-            @RequestParam(name = "searchText", defaultValue = "") String searchText
+            @RequestParam(name = "searchRange", defaultValue = "") String searchRange, // search 범위 없으면 검색 x
+            @RequestParam(name = "searchText", required = false) String searchText
     ) {
         try {
             // List<noticeDto> + 전체 페이지 수

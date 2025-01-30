@@ -2,6 +2,10 @@ package com.midnear.midnearshopping.service;
 
 import com.midnear.midnearshopping.domain.dto.FileDto;
 import com.midnear.midnearshopping.domain.dto.category.CategoryDto;
+import com.midnear.midnearshopping.domain.dto.coordinate.ColorDto;
+import com.midnear.midnearshopping.domain.dto.coordinate.CoordinatedProductDto;
+import com.midnear.midnearshopping.domain.dto.coordinate.CoordinateDto;
+import com.midnear.midnearshopping.domain.dto.coordinate.MainProductDto;
 import com.midnear.midnearshopping.domain.dto.products.*;
 import com.midnear.midnearshopping.domain.dto.shipping_returns.ShippingReturnsDto;
 import com.midnear.midnearshopping.domain.vo.category.CategoryVo;
@@ -23,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 
+import java.sql.Date;
 import java.util.*;
 
 @Service
@@ -404,6 +409,230 @@ public class ProductManagementService {
         shippingReturnsMapper.updateShippingPolicy(shippingReturnsVo);
     }
 
+    public Map<String, Object> getCoordinatedList(int page, int size, String sortOrder, String dateRange, String searchRange, String searchText) {
+        Map<String, Object> result = new HashMap<>();
+        List<MainProductDto> productList = new ArrayList<>();
+
+        int offset = (page - 1) * size;
+        String orderBy = sortOrder.equals("최신순") ? "DESC" : "ASC";
+
+        List<ProductsVo> productsVoList = new ArrayList<>();
+        if (searchRange.equals("카테고리")) {
+            // 카테고리 id 찾고 해당하는 products 찾기
+            List<Long> categories = categoriesMapper.getCategoryIdByCategoryName(searchText);
+            if (!categories.isEmpty())
+                productsVoList = productsMapper.getProductsByCategoryIds(categories);
+        } else { // searchRange가 상품명 or 등록일시
+            productsVoList = productsMapper.getProductPaging(offset, size, orderBy, dateRange, searchRange, searchText);
+        }
+
+        Long pageSize = (long) (productsVoList.size() / size + 1);
+
+        // 상품이 없는 경우
+        if (productsVoList.isEmpty()) {
+            result.put("totalPageSize", 1);
+            result.put("productList", null);
+            return result;
+        }
+
+        for (ProductsVo product : productsVoList) {
+            List<ColorDto> colors = new ArrayList<>();
+            // 1. 부모 카테고리까지 찾아서 문자열로 변환
+            String category = getCategoryName(product.getCategoryId());
+
+            // 2. 색상 정보 찾기
+            List<ProductColorsVo> productColorsVos = productColorsMapper.searchingProductColorsByProductId(product.getProductId(), searchRange, searchText);
+            for (ProductColorsVo productColorsVo : productColorsVos) {
+                // 3. 사이즈 정보 찾기
+                List<SizesDto> sizes = sizesMapper.getSizesByProductColorsId(productColorsVo.getProductColorId())
+                        .stream()
+                        .map(SizesDto::toDto)
+                        .toList();
+
+                // 대표 이미지 url
+                String imageUrl = productImagesMapper.getImageUrlsById(productColorsVo.getProductColorId())
+                        .stream()
+                        .findFirst()
+                        .orElse(null);
+
+                // 색상 정보 묶기
+                ColorDto colorDto = ColorDto.builder()
+                        .color(productColorsVo.getColor())
+                        .sizesDtoList(sizes)
+                        .imageUrl(imageUrl)
+                        .productColorId(productColorsVo.getProductColorId())
+                        .build();
+                colors.add(colorDto);
+
+                // 코디 상품 찾기
+                List<CoordinatedProductDto> coordinatedProductList =  new ArrayList<>();
+                List<Long> coordinateProductIds = productsMapper.getCoordinatedProductIds(productColorsVo.getProductColorId());
+                if (!coordinateProductIds.isEmpty()) {
+                    for (Long id : coordinateProductIds) {
+                        ProductColorsVo color = productColorsMapper.getProductColorById(id);
+                        // 상품의 공통 정보 불러오기
+                        ProductsVo productsVo = productsMapper.getProductById(color.getProductId());
+                        // 카테고리
+                        String coordinatedCategory = getCategoryName(productsVo.getCategoryId());
+                        // 대표 이미지 url
+                        String coordinatedImageUrl = productImagesMapper.getImageUrlsById(color.getProductColorId())
+                                .stream()
+                                .findFirst()
+                                .orElse(null);
+                        // 사이즈 정보
+                        List<SizesDto> coordinatedSizes = sizesMapper.getSizesByProductColorsId(color.getProductColorId())
+                                .stream()
+                                .map(SizesDto::toDto)
+                                .toList();
+                        CoordinatedProductDto coordinatedProductDto = CoordinatedProductDto.builder()
+                                .category(coordinatedCategory)
+                                .productName(productsVo.getProductName())
+                                .color(color.getColor())
+                                .sizesDtoList(coordinatedSizes)
+                                .imageUrl(coordinatedImageUrl)
+                                .registeredDate(productsVo.getRegisteredDate())
+                                .build();
+
+                        coordinatedProductList.add(coordinatedProductDto);
+                    }
+                }
+
+                MainProductDto mainProductDto = MainProductDto.builder()
+                        .category(category)
+                        .productName(product.getProductName())
+                        .colorList(colors)
+                        .coordinatedProductDtoList(coordinatedProductList)
+                        .build();
+
+                productList.add(mainProductDto);
+            }
+        }
+
+        result.put("totalPageSize", pageSize);
+        result.put("productList", productList);
+        return result;
+    }
+
+    public MainProductDto getCoordinatedProduct(Long productColorId) {
+        ProductColorsVo productColor = productColorsMapper.getProductColorById(productColorId);
+        ProductsVo product = productsMapper.getProductById(productColor.getProductId());
+        List<ColorDto> colors = new ArrayList<>();
+        MainProductDto mainProductDto = null;
+
+        // 1. 부모 카테고리까지 찾아서 문자열로 변환
+        String category = getCategoryName(product.getCategoryId());
+
+        // 2. 색상 정보 찾기
+        List<ProductColorsVo> productColorsVos = productColorsMapper.getProductColorsByProductId(product.getProductId());
+        for (ProductColorsVo productColorsVo : productColorsVos) {
+            // 3. 사이즈 정보 찾기
+            List<SizesDto> sizes = sizesMapper.getSizesByProductColorsId(productColorsVo.getProductColorId())
+                    .stream()
+                    .map(SizesDto::toDto)
+                    .toList();
+            // 대표 이미지 url
+            String imageUrl = productImagesMapper.getImageUrlsById(productColorsVo.getProductColorId())
+                    .stream()
+                    .findFirst()
+                    .orElse(null);
+            // 색상 정보 묶기
+            ColorDto colorDto = ColorDto.builder()
+                    .color(productColorsVo.getColor())
+                    .sizesDtoList(sizes)
+                    .imageUrl(imageUrl)
+                    .productColorId(productColorsVo.getProductColorId())
+                    .build();
+            colors.add(colorDto);
+
+                // 코디 상품 찾기
+                List<CoordinatedProductDto> coordinatedProductList = new ArrayList<>();
+                List<Long> coordinateProductIds = productsMapper.getCoordinatedProductIds(productColorsVo.getProductColorId());
+                if (!coordinateProductIds.isEmpty()) {
+                    for (Long id : coordinateProductIds) {
+                        ProductColorsVo color = productColorsMapper.getProductColorById(id);
+                        // 상품의 공통 정보 불러오기
+                        ProductsVo productsVo = productsMapper.getProductById(color.getProductId());
+                        // 카테고리
+                        String coordinatedCategory = getCategoryName(productsVo.getCategoryId());
+                        // 대표 이미지 url
+                        String coordinatedImageUrl = productImagesMapper.getImageUrlsById(color.getProductColorId())
+                                .stream()
+                                .findFirst()
+                                .orElse(null);
+                        // 사이즈 정보
+                        List<SizesDto> coordinatedSizes = sizesMapper.getSizesByProductColorsId(color.getProductColorId())
+                                .stream()
+                                .map(SizesDto::toDto)
+                                .toList();
+                        CoordinatedProductDto coordinatedProductDto = CoordinatedProductDto.builder()
+                                .category(coordinatedCategory)
+                                .productName(productsVo.getProductName())
+                                .color(color.getColor())
+                                .sizesDtoList(coordinatedSizes)
+                                .imageUrl(coordinatedImageUrl)
+                                .registeredDate(productsVo.getRegisteredDate())
+                                .build();
+
+                        coordinatedProductList.add(coordinatedProductDto);
+                    }
+                }
+
+                mainProductDto = MainProductDto.builder()
+                        .category(category)
+                        .productName(product.getProductName())
+                        .colorList(colors)
+                        .coordinatedProductDtoList(coordinatedProductList)
+                        .build();
+            }
+        return mainProductDto;
+    }
+
+    //상품명으로 검색해서 보내기 List<CoordinatedProductDto>
+    public List<CoordinatedProductDto> searchCoordinatedProduct(String productName) {
+        List<CoordinatedProductDto> productList = new ArrayList<>();
+        List<ProductsVo> productsVoList = productsMapper.getProductByProductName(productName);
+
+        for (ProductsVo productsVo : productsVoList) {
+            List<ProductColorsVo> productColorsVos = productColorsMapper.getProductColorsByProductId(productsVo.getProductId());
+            for (ProductColorsVo productColorsVo : productColorsVos) {
+                String coordinatedCategory = getCategoryName(productsVo.getCategoryId());
+
+                List<SizesDto> sizes = sizesMapper.getSizesByProductColorsId(productColorsVo.getProductColorId())
+                        .stream()
+                        .map(SizesDto::toDto)
+                        .toList();
+                String coordinatedImageUrl = productImagesMapper.getImageUrlsById(productColorsVo.getProductColorId())
+                        .stream()
+                        .findFirst()
+                        .orElse(null);
+
+                CoordinatedProductDto coordinatedProductDto = CoordinatedProductDto.builder()
+                        .category(coordinatedCategory)
+                        .productName(productsVo.getProductName())
+                        .color(productColorsVo.getColor())
+                        .sizesDtoList(sizes)
+                        .imageUrl(coordinatedImageUrl)
+                        .registeredDate((Date) productsVo.getRegisteredDate())
+                        .build();
+                productList.add(coordinatedProductDto);
+
+            }
+        }
+
+        return productList;
+    }
+
+    // 코디 상품으로 추가
+    public void createCoordinate(List<CoordinateDto> coordinateList) {
+        // 존재하는 상품인지 검사 따로 해야하나요?
+        for (CoordinateDto coordinateDto : coordinateList)
+            productsMapper.createCoordinate(coordinateDto);
+    }
+
+    // 메인이랑 코디 상품 id 받아서 삭제 (여러 개 한 번에 삭제)
+    public void deleteCoordinate(List<CoordinateDto> deleteList) {
+        productsMapper.deleteCoordinates(deleteList);
+    }
 }
 
 

@@ -1,9 +1,11 @@
 package com.midnear.midnearshopping.mapper.products;
 
+import com.midnear.midnearshopping.domain.dto.coordinate.CoordinateDto;
 import com.midnear.midnearshopping.domain.dto.products.ProductsListDto;
 import com.midnear.midnearshopping.domain.vo.products.ProductsVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.security.access.method.P;
 
 import java.util.List;
 
@@ -19,4 +21,8 @@ public interface ProductsMapper {
     ProductsVo findByProductId(Long colorId);
     List<ProductsVo> getProductsByCategoryIds(List<Long> categories);
     Long count(@Param("dateRange")String dateRange, @Param("searchRange")String searchRange, @Param("searchText")String searchText);
+    List<Long> getCoordinatedProductIds(Long id);
+    List<ProductsVo> getProductByProductName(String productName);
+    void createCoordinate(CoordinateDto createCoordinateDto);
+    void deleteCoordinates(List<CoordinateDto> deleteList);
 }
