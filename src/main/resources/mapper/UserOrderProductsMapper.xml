@@ -11,6 +11,30 @@
         SELECT * FROM order_products WHERE order_id = #{orderId}
     </select>
 
+    <select id="getOrderProductsByOrderIdAndStatus" resultType="OrderProduct">
+        SELECT * FROM order_products
+        WHERE order_id = #{orderId}
+        <if test="status == 'cancel'">
+            AND order_product_id IN (SELECT order_product_id FROM cancel)
+        </if>
+        <if test="status == 'exchange'">
+            AND order_product_id IN (SELECT order_product_id FROM exchange)
+        </if>
+        <if test="status == 'returns'">
+            AND order_product_id IN (SELECT order_product_id FROM return)
+        </if>
+        <if test="status == 'all'">
+            AND order_product_id IN (
+            SELECT order_product_id FROM cancel
+            UNION
+            SELECT order_product_id FROM exchange
+            UNION
+            SELECT order_product_id FROM return
+            )
+        </if>
+    </select>
+
+
     <insert id="insertOrderProduct" >
         INSERT INTO order_products (
             size, quantity, coupon_discount, buy_confirm_date, claim_status,
