@@ -2,9 +2,8 @@ package com.midnear.midnearshopping.service;
 
 import com.midnear.midnearshopping.domain.dto.coupon_point.PointDto;
 import com.midnear.midnearshopping.domain.dto.coupon_point.PointToSelectedUserDto;
-import com.midnear.midnearshopping.domain.dto.coupon_point.SearchUserDto;
 import com.midnear.midnearshopping.domain.vo.coupon_point.PointVo;
-import com.midnear.midnearshopping.domain.vo.users.UsersVO;
+import com.midnear.midnearshopping.domain.vo.coupon_point.ReviewPointVo;
 import com.midnear.midnearshopping.mapper.coupon_point.PointMapper;
 import com.midnear.midnearshopping.mapper.users.UsersMapper;
 import lombok.RequiredArgsConstructor;
@@ -61,5 +60,13 @@ public class CouponPointService {
         response.put("searchResult", result);
         return response;
 
+    }
+
+    @Transactional
+    public void setReviewPointAmount(ReviewPointVo reviewPointVo) {
+        // 이전 데이터 지우고
+        pointMapper.deletePreviousData();
+        // 다시 등록
+        pointMapper.setReviewPointAmount(reviewPointVo);
     }
 }

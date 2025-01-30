@@ -1,9 +1,8 @@
 package com.midnear.midnearshopping.controller;
 
-import com.midnear.midnearshopping.domain.dto.claim.CancelRequestDto;
 import com.midnear.midnearshopping.domain.dto.coupon_point.PointDto;
 import com.midnear.midnearshopping.domain.dto.coupon_point.PointToSelectedUserDto;
-import com.midnear.midnearshopping.domain.dto.coupon_point.SearchUserDto;
+import com.midnear.midnearshopping.domain.vo.coupon_point.ReviewPointVo;
 import com.midnear.midnearshopping.exception.ApiResponse;
 import com.midnear.midnearshopping.service.CouponPointService;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +43,7 @@ public class CouponPointController {
         }
     }
 
-    // 사용자 id로 검색
+    // 사용자 id로 검색(개별 쿠폰, 포인트 지급에서 사용)
     @GetMapping("/point/searchUser")
     public ResponseEntity<ApiResponse> searchUser(@RequestParam("id") String id, @RequestParam("pageNumber")int pageNumber) {
         try {
@@ -56,5 +55,16 @@ public class CouponPointController {
         }
     }
 
+    // 리뷰 포인트 금액 설정
+    @PostMapping("/point/setReviewPointAmount")
+    public ResponseEntity<ApiResponse> setReviewPointAmount(@RequestBody ReviewPointVo reviewPointVo) {
+        try {
+            couponPointService.setReviewPointAmount(reviewPointVo);
+            return ResponseEntity.ok(new ApiResponse(true, "리뷰 포인트 금액 변경 완료.", null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
 
 }
