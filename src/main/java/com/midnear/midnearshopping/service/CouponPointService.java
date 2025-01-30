@@ -1,6 +1,7 @@
 package com.midnear.midnearshopping.service;
 
 import com.midnear.midnearshopping.domain.dto.coupon_point.CouponDto;
+import com.midnear.midnearshopping.domain.dto.coupon_point.CouponToSelectedUserDto;
 import com.midnear.midnearshopping.domain.dto.coupon_point.PointDto;
 import com.midnear.midnearshopping.domain.dto.coupon_point.PointToSelectedUserDto;
 import com.midnear.midnearshopping.domain.vo.coupon_point.CouponVo;
@@ -57,7 +58,9 @@ public class CouponPointService {
     public Map<String, Object> searchUser(String id, int pageNumber) {
         Map<String, Object> response = new HashMap<>();
         int offset = (pageNumber - 1) * 10;
+        // 전체 페이지 사이즈 계산
         Long pageSize = usersMapper.getPageSize(id) / 10 + 1;
+        // 아이디로 검색 결과
         List<String> result = usersMapper.findUserByIdPaging(id, offset);
 
         response.put("pageSize", pageSize);
@@ -87,9 +90,31 @@ public class CouponPointService {
                 .discountRate(couponDto.getDiscountRate())
                 .build();
         couponMapper.registerCoupon(couponVo);
+        // 전체 사용자에게 쿠폰 지급
         List<Long> userIds = usersMapper.getAllUserId(); // pk인 id 값
         for (Long id: userIds) {
             couponMapper.grantCoupon(id, couponVo.getCouponId());
+        }
+    }
+
+    @Transactional
+    public void grantCouponToSelectedUsers(CouponToSelectedUserDto couponDto) {
+        // 유효성 검사
+        if (couponDto.getDiscountRate() > 100 || couponDto.getDiscountRate() == 0)
+            throw new IllegalArgumentException();
+
+        // 쿠폰 등록
+        CouponVo couponVo = CouponVo.builder()
+                .couponId(null)
+                .couponName(couponDto.getCouponName())
+                .discountRate(couponDto.getDiscountRate())
+                .build();
+        couponMapper.registerCoupon(couponVo);
+        // 특정 사용자에게 쿠폰 지급
+        List<String> userIds = couponDto.getUserIdList(); // 사용자 아이디
+        for (String id: userIds) {
+            Integer userId = usersMapper.getUserIdById(id);
+            couponMapper.grantCoupon(Long.valueOf(userId), couponVo.getCouponId());
         }
     }
 }
