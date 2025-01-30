@@ -1,6 +1,7 @@
 package com.midnear.midnearshopping.service;
 
 import com.midnear.midnearshopping.domain.dto.coupon_point.PointDto;
+import com.midnear.midnearshopping.domain.dto.coupon_point.PointToSelectedUserDto;
 import com.midnear.midnearshopping.domain.vo.coupon_point.PointVo;
 import com.midnear.midnearshopping.domain.vo.users.UsersVO;
 import com.midnear.midnearshopping.mapper.coupon_point.PointMapper;
@@ -30,5 +31,20 @@ public class CouponPointService {
         }
     }
 
+    @Transactional
+    public void grantPointsToSelectedUsers(PointToSelectedUserDto pointToSelectedUserDto) {
+        // 포인트 내역 저장
+        PointVo pointVo = PointVo.builder()
+                .pointId(null)
+                .amount(pointToSelectedUserDto.getAmount())
+                .reason(pointToSelectedUserDto.getReason())
+                .build();
+        pointMapper.grantPoints(pointVo);
 
+        List<String> userIdList = pointToSelectedUserDto.getUserIdList();
+        // 특정 사용자에게 포인트 지급
+        for (String id : userIdList) {
+            usersMapper.addPointsToUser(id, pointToSelectedUserDto.getAmount());
+        }
+    }
 }
