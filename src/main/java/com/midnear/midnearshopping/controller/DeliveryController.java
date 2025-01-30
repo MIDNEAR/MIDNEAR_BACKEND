@@ -22,17 +22,17 @@ import java.util.List;
 public class DeliveryController {
     private final DeliveryService deliveryService;
 
-    @PostMapping("/create-addr")
+    @PostMapping("/createAddr")
     public ResponseEntity<?> createAddr(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody DeliveryAddrDto dto) {
         try {
             deliveryService.createDeliveryAddr(customUserDetails.getUsername(), dto);
             return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(true, "배송지 추가 성공", null));
-        } catch (UsernameNotFoundException ex){
-            return  ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse(false, ex.getMessage(), null));
+        } catch (Exception ex){
+            return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(false, ex.getMessage(), null));
         }
     }
 
-    @GetMapping("/get-default-addr")
+    @GetMapping("/getDefaultAddr")
     public ResponseEntity<?> getDefaultAddr(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         try {
             DeliveryAddrDto response = deliveryService.getDefaultAddress(customUserDetails.getUsername());
@@ -42,16 +42,16 @@ public class DeliveryController {
         }
     }
 
-    @GetMapping("/get-addr")
+    @GetMapping("/getAddr")
     public ResponseEntity<?> getAddrById(@RequestParam Integer addrId) {
         try {
             DeliveryAddrDto response = deliveryService.getDeliveryAddr(addrId);
             return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(true, "특정 배송지 조회 성공", response));
-        } catch (UsernameNotFoundException ex){
-            return  ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse(false, ex.getMessage(), null));
+        } catch (Exception ex){
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "특정 배송지 조회 살패: "+ex.getMessage(), null));
         }
     }
-    @GetMapping("/get-addr-list")
+    @GetMapping("/getAddrList")
     public ResponseEntity<?> getAddList(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         try {
             List<DeliveryAddrDto> response = deliveryService.getAllDeliveryAddrs(customUserDetails.getUsername());
@@ -72,7 +72,7 @@ public class DeliveryController {
         }
     }
 
-    @PatchMapping("/update-request")
+    @PatchMapping("/updateRequest")
     public ResponseEntity<?> updateDeliveryRequest(@RequestBody UpdateDeliveryRequest dto) {
         try {
             deliveryService.updateDeliveryRequest(dto);
