@@ -14,6 +14,23 @@
         WHERE <include refid="dateCondition" />
         <if test="searchText != null">
             <choose>
+                <when test="searchRange == '상품명' or searchRange == '상품'">
+                    AND product_name LIKE CONCAT('%', #{searchText}, '%')
+                </when>
+                <when test="searchRange == '등록일시' or searchRange == '연관상품 등록 일시'">
+                    AND registered_date LIKE CONCAT('%', #{searchText}, '%')
+                </when>
+            </choose>
+        </if>
+        ORDER BY registered_date ${orderBy}
+    LIMIT #{size} OFFSET #{offset}
+    </select>
+    <select id="count">
+        SELECT count(*)
+        FROM products
+        WHERE <include refid="dateCondition" />
+        <if test="searchText != null">
+            <choose>
                 <when test="searchRange == '상품명'">
                     AND product_name LIKE CONCAT('%', #{searchText}, '%')
                 </when>
@@ -22,8 +39,6 @@
                 </when>
             </choose>
         </if>
-        ORDER BY registered_date ${orderBy}
-    LIMIT #{size} OFFSET #{offset}
     </select>
     <select id="getProductsByCategoryIds" resultType="ProductsVo">
         SELECT *
@@ -53,7 +68,6 @@
         ORDER BY p.registered_date ${orderBy}
         LIMIT #{size} OFFSET #{offset}
     </select>
-
     <select id="getProductById" resultType="ProductsVo">
         SELECT * FROM products
         WHERE product_id = #{productId};
@@ -82,6 +96,29 @@
         WHERE product_id IN
         <foreach item="id" collection="list" open="(" separator="," close=")">
             #{id}
+        </foreach>
+    </delete>
+    <select id="getCoordinatedProductIds" resultType="Long">
+        SELECT coordinated_product_id
+        FROM coordinate_products
+        WHERE original_product_id = #{id}
+    </select>
+    <select id="getProductByProductName" resultType="ProductsVo">
+        SELECT * FROM products
+        WHERE product_name LIKE CONCAT('%', #{productName}, '%')
+    </select>
+    <insert id="createCoordinate">
+        INSERT INTO coordinate_products (
+        original_product_id, coordinated_product_id
+        ) VALUES (
+        #{originalProductId}, #{coordinatedProductId}
+        )
+    </insert>
+    <delete id="deleteCoordinates">
+        DELETE FROM coordinate_products
+        WHERE (original_product_id, coordinated_product_id) IN
+        <foreach item="coordinate" collection="list" open="(" separator="),(" close=")">
+            #{coordinate.originalProductId}, #{coordinate.coordinatedProductId}
         </foreach>
     </delete>
 
