@@ -84,12 +84,27 @@ public class StoreManagementController {
         }
     }
 
+    // 카테고리 추가
     @PostMapping("/createNewCategory")
     public ResponseEntity<ApiResponse> createNewCategory(@RequestBody List<CreateCategoryDto> createCategoryDtoList) {
         try {
             storeManagementService.createNewCategory(createCategoryDtoList);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "카테고리 생성 완료", null));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
+
+    // 카테고리 삭제
+    @DeleteMapping("/deleteCategories")
+    public ResponseEntity<ApiResponse> deleteCategory(@RequestBody List<Long> deleteList) {
+        try {
+            storeManagementService.deleteCategory(deleteList);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "카테고리 삭제 완료", null));
         } catch (Exception ex) {
             ex.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

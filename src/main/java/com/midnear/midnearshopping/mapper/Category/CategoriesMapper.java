@@ -11,4 +11,5 @@ public interface CategoriesMapper {
     CategoryVo getCategoryById(Long categoryId);
     List<Long> getCategoryIdByCategoryName(String searchText);
     void insertCategory(CategoryVo categoryVo);
+    void deleteCategories(List<Long> deleteList);
 }

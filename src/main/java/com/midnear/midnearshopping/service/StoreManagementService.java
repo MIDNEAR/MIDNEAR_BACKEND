@@ -136,6 +136,11 @@ public class StoreManagementService {
         }
     }
 
+    @Transactional
+    public void deleteCategory(List<Long> deleteList) {
+        categoriesMapper.deleteCategories(deleteList);
+    }
+
     public PoliciesAndInfoDto getPrivacyPolicy() {
         PoliciesAndInfoVo policiesAndInfoVo = policiesAndInfoMapper.getPrivacyPolicy();
         return PoliciesAndInfoDto.toEntity(policiesAndInfoVo);
@@ -156,6 +161,7 @@ public class StoreManagementService {
         return PoliciesAndInfoDto.toEntity(policiesAndInfoVo);
     }
 
+    @Transactional
     public void insertData(PoliciesAndInfoDto policiesAndInfoDto) {
         // 기존 데이터 삭제
         policiesAndInfoMapper.deleteData(policiesAndInfoDto.getType());
@@ -234,7 +240,6 @@ public class StoreManagementService {
 
         return response;
     }
-
 
     public List<StatisticsDto> getMonthlySales(Date startDate) {
         List<StatisticsDto> response = new ArrayList<>();
