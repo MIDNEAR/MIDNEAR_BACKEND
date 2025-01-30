@@ -271,4 +271,19 @@
             #{id}
         </foreach>
     </insert>
+
+<!--  수거 송장번호 입력  -->
+    <update id="updateInvoice">
+        update return di
+        inner join order_products op on op.delivery_id = di.delivery_id
+        LEFT JOIN carrier_mapping cm ON cm.courier = #{courier}
+        set di.tracking_delivery = '배송중',
+        di.courier = #{courier},
+        di.invoice_number=#{invoiceNumber},
+        di.carrier_id = cm.carrier_id
+        where op.order_product_id in
+        <foreach item="id" index="index" collection="orderProductId" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
 </mapper>

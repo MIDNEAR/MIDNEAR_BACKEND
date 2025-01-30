@@ -80,6 +80,9 @@ dependencies {
     // helthcheck
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
+    //json 객체 변환
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+
 }
 
 tasks.named('test') {
