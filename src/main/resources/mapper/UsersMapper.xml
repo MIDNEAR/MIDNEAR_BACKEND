@@ -62,4 +62,13 @@
         FROM users
         WHERE id = #{id}
     </select>
+    <select id="getAllId">
+        select id
+        from users
+    </select>
+    <update id="addPointsToUser">
+        UPDATE users
+        SET point_balance = point_balance + #{amount}
+        WHERE id = #{id};
+    </update>
 </mapper>
