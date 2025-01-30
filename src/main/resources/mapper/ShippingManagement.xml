@@ -11,4 +11,21 @@
             island_mountain_delivery_cost = #{islandMountainDeliveryCost}
         where charge_id = 1
     </update>
+
+    <!-- 배송정보 업데이트 -->
+    <select id="getInTransitOrders">
+        SELECT di.delivery_id,
+               cm.carrier_code,
+               di.invoice_number
+        FROM delivery_info di
+            inner join carrier_mapping  cm on  di.carrier_id = cm.carrier_id
+        WHERE di.tracking_delivery = '배송중'
+    </select>
+
+    <update id="updateTrackingStatus">
+        UPDATE delivery_info
+        SET tracking_delivery = '배송완료',
+            delivery_complete_date = current_timestamp
+        WHERE delivery_id = #{deliveryId}
+    </update>
 </mapper>
