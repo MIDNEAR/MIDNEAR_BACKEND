@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Date;
 import java.util.List;
@@ -50,13 +51,13 @@ public class StoreManagementController {
 
     // 메인 이미지 수정
     @PostMapping("/modify/mainImage")
-    public ResponseEntity<ApiResponse> modifyMainImage(@ModelAttribute StoreImagesDto storeImagesDto) {
-        if (storeImagesDto.getFile().isEmpty()) {
+    public ResponseEntity<ApiResponse> modifyMainImage(@RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ApiResponse(false, "파일이 없습니다.", null));
         }
         try {
-            storeManagementService.modifyMainImage(storeImagesDto);
+            storeManagementService.modifyMainImage(file);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "메인 이미지를 수정하였습니다.", null));
         } catch (Exception ex) {
@@ -68,13 +69,14 @@ public class StoreManagementController {
 
     // 로고 이미지 수정
     @PostMapping("/modify/logoImage")
-    public ResponseEntity<ApiResponse> modifyLogoImage(@ModelAttribute StoreImagesDto storeImagesDto) {
-        if (storeImagesDto.getFile().isEmpty()) {
+    public ResponseEntity<ApiResponse> modifyLogoImage(@RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) {
+
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ApiResponse(false, "파일이 없습니다.", null));
         }
         try {
-            storeManagementService.modifyLogoImage(storeImagesDto);
+            storeManagementService.modifyLogoImage(file);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "로고 이미지를 수정하였습니다.", null));
         } catch (Exception ex) {

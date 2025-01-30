@@ -15,6 +15,7 @@ import com.midnear.midnearshopping.mapper.storeManagement.StoreImagesMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 
 import java.time.LocalDate;
@@ -43,7 +44,7 @@ public class StoreManagementService {
     }
 
     @Transactional
-    public void modifyMainImage(StoreImagesDto storeImagesDto) {
+    public void modifyMainImage(MultipartFile file) {
         List<FileDto> fileInfo = null;
         try {
             // 기존 이미지 삭제
@@ -52,16 +53,16 @@ public class StoreManagementService {
                 s3Service.deleteFile(storeImagesVo.getImageUrl());
 
             // 새로운 파일 업로드
-            fileInfo = s3Service.uploadFiles("main", Collections.singletonList(storeImagesDto.getFile()));
+            fileInfo = s3Service.uploadFiles("main", Collections.singletonList(file));
 
             // DB에 이미지 정보 변경
             storeImagesMapper.deleteImageById(storeImagesVo.getImageId());
-            for (FileDto file : fileInfo) {
+            for (FileDto fileDto : fileInfo) {
                 StoreImagesVo newImagesVo = StoreImagesVo.builder()
                         .imageId(null)
-                        .imageUrl(file.getFileUrl())
-                        .fileSize(file.getFileSize())
-                        .extension(file.getExtension())
+                        .imageUrl(fileDto.getFileUrl())
+                        .fileSize(fileDto.getFileSize())
+                        .extension(fileDto.getExtension())
                         .creationDate(null)
                         .type("main")
                         .build();
@@ -71,8 +72,8 @@ public class StoreManagementService {
             throw new RuntimeException("S3 처리 중 오류가 발생했습니다.", s3Ex);
         }  catch (Exception ex) {
             if (fileInfo != null) {
-                for (FileDto file : fileInfo) {
-                    s3Service.deleteFile(file.getFileUrl());
+                for (FileDto fileDto : fileInfo) {
+                    s3Service.deleteFile(fileDto.getFileUrl());
                 }
             }
             throw new RuntimeException("DB 업데이트 중 오류가 발생했습니다", ex);
@@ -89,7 +90,7 @@ public class StoreManagementService {
     }
 
     @Transactional
-    public void modifyLogoImage(StoreImagesDto storeImagesDto) {
+    public void modifyLogoImage(MultipartFile file) {
         List<FileDto> fileInfo = null;
         try {
             // 기존 이미지 삭제
@@ -98,16 +99,16 @@ public class StoreManagementService {
                 s3Service.deleteFile(storeImagesVo.getImageUrl());
 
             // 새로운 파일 업로드
-            fileInfo = s3Service.uploadFiles("Logo", Collections.singletonList(storeImagesDto.getFile()));
+            fileInfo = s3Service.uploadFiles("Logo", Collections.singletonList(file));
 
             // DB에 이미지 정보 변경
             storeImagesMapper.deleteImageById(storeImagesVo.getImageId());
-            for (FileDto file : fileInfo) {
+            for (FileDto fileDto : fileInfo) {
                 StoreImagesVo newImagesVo = StoreImagesVo.builder()
                         .imageId(null)
-                        .imageUrl(file.getFileUrl())
-                        .fileSize(file.getFileSize())
-                        .extension(file.getExtension())
+                        .imageUrl(fileDto.getFileUrl())
+                        .fileSize(fileDto.getFileSize())
+                        .extension(fileDto.getExtension())
                         .creationDate(null)
                         .type("Logo")
                         .build();
@@ -117,8 +118,8 @@ public class StoreManagementService {
             throw new RuntimeException("S3 처리 중 오류가 발생했습니다.", s3Ex);
         }  catch (Exception ex) {
             if (fileInfo != null) {
-                for (FileDto file : fileInfo) {
-                    s3Service.deleteFile(file.getFileUrl());
+                for (FileDto fileDto : fileInfo) {
+                    s3Service.deleteFile(fileDto.getFileUrl());
                 }
             }
             throw new RuntimeException("DB 업데이트 중 오류가 발생했습니다", ex);
