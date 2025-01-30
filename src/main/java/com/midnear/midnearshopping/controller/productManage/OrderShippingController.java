@@ -111,6 +111,13 @@ public class OrderShippingController {
     @PutMapping("/Invoice")
     public ResponseEntity<ApiResponse> filterSearch(@RequestBody InvoiceInsertDTO invoiceInsertDTO) {
         try {
+            Long courierNumber = orderShippingService.selectCarrierName(invoiceInsertDTO.getCourier());
+
+            if (courierNumber == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(new ApiResponse(false, "존재하지 않는 택배사입니다.", null));
+            }
+            invoiceInsertDTO.setCarrierId(courierNumber);
             orderShippingService.insertInvoice(invoiceInsertDTO);
             // 200 OK 응답으로 JSON 반환
             return ResponseEntity.status(HttpStatus.OK)
@@ -121,6 +128,7 @@ public class OrderShippingController {
                     .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
         }
     }
+
 
     // 배송지연
     @PutMapping("/delayShipping")
@@ -247,9 +255,9 @@ public class OrderShippingController {
             cell.setCellValue("사이즈");
             cell = row.createCell(4);
             cell.setCellValue("컬러");
-            cell = row.createCell(4);
-            cell.setCellValue("수량");
             cell = row.createCell(5);
+            cell.setCellValue("수량");
+            cell = row.createCell(6);
             cell.setCellValue("송장번호");
 
             // Body

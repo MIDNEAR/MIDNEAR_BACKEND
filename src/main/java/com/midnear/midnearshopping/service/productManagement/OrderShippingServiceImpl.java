@@ -66,7 +66,12 @@ public class OrderShippingServiceImpl implements OrderShippingService {
         orderShippingMapper.insertInvoice(invoiceInsertDTO);
     }
 
-//  배송지연
+    @Override
+    public Long selectCarrierName(String carrierName) {
+        return orderShippingMapper.selectCarrierName(carrierName);
+    }
+
+    //  배송지연
     @Override
     public void delaySipping(List<Long> orderProductId) {
         orderShippingMapper.delaySipping(orderProductId);

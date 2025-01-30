@@ -24,6 +24,7 @@ public interface OrderShippingService {
    @Transactional
 // 송장번호 입력
    void insertInvoice(InvoiceInsertDTO invoiceInsertDTO);
+   Long selectCarrierName(String carrierName);
 
 // 배송지연
    @Transactional

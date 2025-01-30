@@ -207,16 +207,23 @@
     <update id="insertInvoice">
         update delivery_info di
         inner join order_products op on op.delivery_id = di.delivery_id
-        LEFT JOIN carrier_mapping cm ON cm.courier = #{courier}
         set di.tracking_delivery = '배송중',
             di.courier = #{courier},
             di.invoice_number=#{invoiceNumber},
-            di.carrier_id = cm.carrier_id
+            di.carrier_id = #{carrierId},
+            di.delivery_process_date = Now()
         where op.order_product_id in
         <foreach item="id" index="index" collection="orderProductId" open="(" separator="," close=")">
             #{id}
         </foreach>
     </update>
+
+<!-- 이름검사 -->
+    <select id="selectCarrierName">
+        select carrier_id
+        from carrier_mapping
+        where carrier_name = #{carrierName}
+    </select>
 
 <!-- 발송 지연처리 -->
     <update id="delaySipping">
@@ -280,20 +287,18 @@
             op.product_name,
             op.product_price,
             op.quantity,
-            da.recipient,
-            da.recipient_contact,
-            da.postal_code,
-            da.address,
-            da.detail_address,
-            da.delivery_request,
+            o.recipient_name,
+            o.recipient_contact,
+            o.postal_code,
+            o.address,
+            o.detailed_address,
+            o.delivery_request,
             p.payment_method,
-            o.total_payment_amount,
             op.delivery_charge,
             p.total_order_payment,
             p.all_payment
         from order_products op
             inner join delivery_info di on op.delivery_id = di.delivery_id
-            inner join delivery_address da on di.delivery_address_id = da.delivery_address_id
             inner join orders o on op.order_id = o.order_id
             left join payments p on p.order_id = o.order_id
         where op.order_product_id in
