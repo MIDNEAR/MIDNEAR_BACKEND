@@ -2,6 +2,7 @@ package com.midnear.midnearshopping.service;
 
 import com.midnear.midnearshopping.domain.dto.coupon_point.PointDto;
 import com.midnear.midnearshopping.domain.dto.coupon_point.PointToSelectedUserDto;
+import com.midnear.midnearshopping.domain.dto.coupon_point.SearchUserDto;
 import com.midnear.midnearshopping.domain.vo.coupon_point.PointVo;
 import com.midnear.midnearshopping.domain.vo.users.UsersVO;
 import com.midnear.midnearshopping.mapper.coupon_point.PointMapper;
@@ -10,7 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -46,5 +49,17 @@ public class CouponPointService {
         for (String id : userIdList) {
             usersMapper.addPointsToUser(id, pointToSelectedUserDto.getAmount());
         }
+    }
+
+    public Map<String, Object> searchUser(String id, int pageNumber) {
+        Map<String, Object> response = new HashMap<>();
+        int offset = (pageNumber - 1) * 10;
+        Long pageSize = usersMapper.getPageSize(id) / 10 + 1;
+        List<String> result = usersMapper.findUserByIdPaging(id, offset);
+
+        response.put("pageSize", pageSize);
+        response.put("searchResult", result);
+        return response;
+
     }
 }

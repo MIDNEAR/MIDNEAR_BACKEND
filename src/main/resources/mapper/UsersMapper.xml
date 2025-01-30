@@ -71,4 +71,15 @@
         SET point_balance = point_balance + #{amount}
         WHERE id = #{id};
     </update>
+    <select id="findUserByIdPaging">
+        select id
+        from users
+        where id like concat('%', #{id}, '%')
+        limit 10 offset #{offset}
+    </select>
+    <select id="getPageSize" resultType="Long">
+        select count(*)
+        from users
+        where id like concat('%', #{id}, '%')
+    </select>
 </mapper>
