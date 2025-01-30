@@ -15,7 +15,6 @@ public class UserOrderDto {
     Integer deliveryAddrId;
     String orderContact;
     String orderEmail;
-    Long userId;
     BigDecimal allPayment;
     List<OrderProductsRequestDto> oderProductsRequestDtos;
 }
