@@ -1,7 +1,9 @@
 package com.midnear.midnearshopping.controller;
 
+import com.midnear.midnearshopping.domain.dto.coupon_point.CouponDto;
 import com.midnear.midnearshopping.domain.dto.coupon_point.PointDto;
 import com.midnear.midnearshopping.domain.dto.coupon_point.PointToSelectedUserDto;
+import com.midnear.midnearshopping.domain.vo.coupon_point.CouponVo;
 import com.midnear.midnearshopping.domain.vo.coupon_point.ReviewPointVo;
 import com.midnear.midnearshopping.exception.ApiResponse;
 import com.midnear.midnearshopping.service.CouponPointService;
@@ -61,6 +63,21 @@ public class CouponPointController {
         try {
             couponPointService.setReviewPointAmount(reviewPointVo);
             return ResponseEntity.ok(new ApiResponse(true, "리뷰 포인트 금액 변경 완료.", null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
+
+    // 전체 쿠폰 지급
+    @PostMapping("/coupon/grantAll")
+    public ResponseEntity<ApiResponse> grantCouponToAll(@RequestBody CouponDto couponDto) {
+        try {
+            couponPointService.grantCouponToAll(couponDto);
+            return ResponseEntity.ok(new ApiResponse(true, "전체 쿠폰 지급 완료.", null));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponse(false, "할인 퍼센트가 올바르지 않습니다.", null));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));

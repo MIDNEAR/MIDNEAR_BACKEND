@@ -25,4 +25,5 @@ public interface UsersMapper {
     void addPointsToUser(@Param("id") String id, @Param("amount")Long amount);
     List<String> findUserByIdPaging(@Param("id")String id, @Param("offset")int offset);
     Long getPageSize(String id);
+    List<Long> getAllUserId();
 }

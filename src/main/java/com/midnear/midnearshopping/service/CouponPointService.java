@@ -1,9 +1,12 @@
 package com.midnear.midnearshopping.service;
 
+import com.midnear.midnearshopping.domain.dto.coupon_point.CouponDto;
 import com.midnear.midnearshopping.domain.dto.coupon_point.PointDto;
 import com.midnear.midnearshopping.domain.dto.coupon_point.PointToSelectedUserDto;
+import com.midnear.midnearshopping.domain.vo.coupon_point.CouponVo;
 import com.midnear.midnearshopping.domain.vo.coupon_point.PointVo;
 import com.midnear.midnearshopping.domain.vo.coupon_point.ReviewPointVo;
+import com.midnear.midnearshopping.mapper.coupon_point.CouponMapper;
 import com.midnear.midnearshopping.mapper.coupon_point.PointMapper;
 import com.midnear.midnearshopping.mapper.users.UsersMapper;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +21,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CouponPointService {
     private final PointMapper pointMapper;
+    private final CouponMapper couponMapper;
     private final UsersMapper usersMapper;
 
     @Transactional
@@ -68,5 +72,24 @@ public class CouponPointService {
         pointMapper.deletePreviousData();
         // 다시 등록
         pointMapper.setReviewPointAmount(reviewPointVo);
+    }
+
+    @Transactional
+    public void grantCouponToAll(CouponDto couponDto) {
+        // 유효성 검사
+        if (couponDto.getDiscountRate() > 100 || couponDto.getDiscountRate() == 0)
+            throw new IllegalArgumentException();
+
+        // 쿠폰 등록
+        CouponVo couponVo = CouponVo.builder()
+                .couponId(null)
+                .couponName(couponDto.getCouponName())
+                .discountRate(couponDto.getDiscountRate())
+                .build();
+        couponMapper.registerCoupon(couponVo);
+        List<Long> userIds = usersMapper.getAllUserId(); // pk인 id 값
+        for (Long id: userIds) {
+            couponMapper.grantCoupon(id, couponVo.getCouponId());
+        }
     }
 }
