@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,6 +37,7 @@ public class OrderService {
     private final ProductColorsMapper productColorsMapper;
     private final SizesMapper sizesMapper;
     private static final int pageSize = 2;
+    private final UserOrderProductsMapper userOrderProductsMapper;
 
     @Transactional(rollbackFor = Exception.class)
     public void createOrder(String id, UserOrderDto userOrderDto) {
@@ -114,7 +116,7 @@ public class OrderService {
                     .quantity(dto.getQuantity())
                     .couponDiscount(dto.getCouponDiscount())
                     .buyConfirmDate(null)
-                    .claimStatus("0")
+                    .claimStatus(null)
                     .pointDiscount(dto.getPointDiscount())
                     .deliveryId(null)
                     .productPrice(dto.getProductPrice())
@@ -152,12 +154,15 @@ public class OrderService {
                         BigDecimal payPrice = product.getProductPrice()
                                 .subtract(product.getPointDiscount() != null ? product.getPointDiscount() : BigDecimal.ZERO)
                                 .subtract(product.getCouponDiscount() != null ? product.getCouponDiscount() : BigDecimal.ZERO);
+                        String orderState = Optional.ofNullable(product.getClaimStatus())
+                                .orElseGet(() -> userOrderProductsMapper.getDeliveryInfo(product.getDeliveryId()));
+
 
                         return UserOrderProductCheckDto.builder()
                                 .orderProductId(product.getOrderProductId())
                                 .size(product.getSize())
                                 .quantity(product.getQuantity())
-                                .claimStatus(product.getClaimStatus())
+                                .orderStatus(orderState)
                                 .pointDiscount(product.getPointDiscount())
                                 .payPrice(payPrice) // 계산된 값 설정
                                 .productName(product.getProductName())
@@ -188,12 +193,14 @@ public class OrderService {
                     BigDecimal payPrice = product.getProductPrice()
                             .subtract(product.getPointDiscount() != null ? product.getPointDiscount() : BigDecimal.ZERO)
                             .subtract(product.getCouponDiscount() != null ? product.getCouponDiscount() : BigDecimal.ZERO);
+                    String orderState = Optional.ofNullable(product.getClaimStatus())
+                            .orElseGet(() -> userOrderProductsMapper.getDeliveryInfo(product.getDeliveryId()));
 
                     return UserOrderProductCheckDto.builder()
                             .orderProductId(product.getOrderProductId())
                             .size(product.getSize())
                             .quantity(product.getQuantity())
-                            .claimStatus(product.getClaimStatus())
+                            .orderStatus(orderState)
                             .pointDiscount(product.getPointDiscount())
                             .payPrice(payPrice) // 계산된 값 설정
                             .productName(product.getProductName())

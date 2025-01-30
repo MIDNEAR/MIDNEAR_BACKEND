@@ -11,6 +11,10 @@
         SELECT * FROM order_products WHERE order_id = #{orderId}
     </select>
 
+    <select id="getDeliveryInfo">
+        SELECT tracking_delivery FROM delivery_info WHERE delivery_id = #{deliveryId}
+    </select>
+
     <select id="getOrderProductsByOrderIdAndStatus">
         SELECT * FROM order_products
         WHERE order_id = #{orderId}
@@ -46,6 +50,7 @@
                      #{deliveryCharge}, #{productMainImage}
                  )
     </insert>
+
 
     <update id="updateOrderStatus">
         update order_products

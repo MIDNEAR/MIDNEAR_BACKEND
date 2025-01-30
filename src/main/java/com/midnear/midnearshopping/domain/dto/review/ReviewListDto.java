@@ -18,4 +18,5 @@ public class ReviewListDto {
     List<String> imagesPerReview;
     String content;
     int isReply;
+    String comment;
 }

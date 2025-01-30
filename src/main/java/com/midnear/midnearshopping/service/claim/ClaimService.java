@@ -100,7 +100,7 @@ public class ClaimService {
                                 .orderProductId(product.getOrderProductId())
                                 .size(product.getSize())
                                 .quantity(product.getQuantity())
-                                .claimStatus(product.getClaimStatus())
+                                .orderStatus(product.getClaimStatus())
                                 .pointDiscount(product.getPointDiscount())
                                 .payPrice(payPrice) // 계산된 값 설정
                                 .productName(product.getProductName())

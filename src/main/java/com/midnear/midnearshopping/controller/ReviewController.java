@@ -20,7 +20,7 @@ public class ReviewController {
     private final ReviewsService reviewsService;
 
     @PostMapping("/create")
-    public ResponseEntity<?> createReview(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody ReviewRequestDto reviewRequestDto) {
+    public ResponseEntity<?> createReview(@AuthenticationPrincipal CustomUserDetails customUserDetails, @ModelAttribute ReviewRequestDto reviewRequestDto) {
         try{
             reviewsService.createReview(customUserDetails.getUsername(), reviewRequestDto);
             return ResponseEntity.ok().body(new ApiResponse(true, "리뷰 작성 성공", null));
@@ -46,10 +46,21 @@ public class ReviewController {
         return ResponseEntity.ok(new ApiResponse(true, "리뷰 삭제 완료", null));
     }
 
-    @PutMapping("/gathering")
+    @GetMapping("/gathering")
     public ResponseEntity<ApiResponse> reviewImagesGathering(@RequestParam String productName,
                                                              @RequestParam(defaultValue = "1") int pageNumber) {
         List<String> response = reviewsService.reviewImageGathering(productName, pageNumber);
         return ResponseEntity.ok(new ApiResponse(true, "리뷰 사진 모아보기 조회 성공", response));
+    }
+
+    @PutMapping("/comment")
+    public ResponseEntity<ApiResponse> reviewImagesGathering(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                                             @RequestParam Long reviewId) {
+        try{
+        reviewsService.updateReviewComment(customUserDetails.getUsername(), reviewId);
+        return ResponseEntity.ok(new ApiResponse(true, "리뷰 댓글작성 성공", null));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, e.getMessage(), null));
+        }
     }
 }

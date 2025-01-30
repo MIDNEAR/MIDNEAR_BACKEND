@@ -77,6 +77,17 @@ public class ReviewsService {
         reviewsMapper.updateReviewStatus(reviewId);
     }
 
+    public void updateReviewComment(String id, Long reviewId) {
+        Integer userId = usersMapper.getUserIdById(id);
+        if(userId == null){
+            throw new RuntimeException("존재하지 않는 유저입니다");
+        }
+        if(userId !=1){
+            throw new RuntimeException("관리자만 리뷰에 댓글을 달 수 있습니다");
+        }
+        reviewsMapper.updateReviewComment(reviewId);
+    }
+
     public ProductReviewDto getProductReviews(String productName, int pageNumber) {
         int offset = (pageNumber - 1) * pageSize;
         ProductReviewDto dto = new ProductReviewDto();
@@ -85,6 +96,7 @@ public class ReviewsService {
         dto.setReviewCount(reviewsMapper.getReviewCount(productName));
         dto.setAllReviewImages(reviewsMapper.getAllReviewImages(productName));
         dto.setReviewList(reviewsMapper.getReviewList(productName, offset, pageSize));
+
 
         return dto;
     }

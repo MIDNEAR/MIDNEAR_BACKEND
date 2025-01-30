@@ -14,7 +14,7 @@ public class UserOrderProductCheckDto {
     private Long orderProductId;
     private String size;
     private int quantity;
-    private String claimStatus;
+    private String orderStatus;
     private BigDecimal pointDiscount;
     private BigDecimal payPrice; // 최종 구매가
     private String productName;
