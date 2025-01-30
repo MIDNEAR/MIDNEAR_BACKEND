@@ -22,6 +22,20 @@
         WHERE r.return_status = '환불완료'
         AND DATE(r.return_complete_date) = #{date}
     </select>
+    <select id="getWeeklySales" resultType="Long">
+        SELECT
+        SUM(product_price - coupon_discount - point_discount)
+        FROM order_products
+        WHERE buy_confirm_date BETWEEN #{start} AND #{end};
+    </select>
+    <select id="getWeeklyRefundedTotalPrice" resultType="Long">
+        SELECT
+        SUM(op.product_price - op.coupon_discount - op.point_discount)
+        FROM returns r
+        LEFT JOIN order_products op ON r.order_product_id = op.order_product_id
+        WHERE r.return_status = '환불완료'
+        AND r.return_complete_date BETWEEN #{start} AND #{end};
+    </select>
     <select id="getMonthlySales" resultType="Long">
         SELECT
         SUM(op.product_price - op.coupon_discount - op.point_discount)

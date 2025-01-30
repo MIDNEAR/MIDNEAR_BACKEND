@@ -214,9 +214,11 @@ public class StoreManagementController {
     }
 
     // 일간 매출 통계
+    // 미래 시간 조회 요청 시 오류 반환
     @GetMapping("/getDailySales")
     public ResponseEntity<ApiResponse> getDailySales(@RequestParam(value = "startDate") Date startDate) {
         try {
+            // startDate yyyy-MM-dd
             List<StatisticsDto> statisticsDtos = storeManagementService.getDailySales(startDate);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "일간 매출 데이터 불러오기 성공", statisticsDtos));
@@ -227,10 +229,28 @@ public class StoreManagementController {
         }
     }
 
+    // 주간 매출 통계
+    // 미래 시간 조회 요청 시 오류 반환
+    @GetMapping("/getWeeklySales")
+    public ResponseEntity<ApiResponse> getWeeklySales(@RequestParam(value = "startDate") Date startDate) {
+        try {
+            // startDate yyyy-MM-01
+            List<StatisticsDto> statisticsDtos = storeManagementService.getWeeklySales(startDate);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "일간 매출 데이터 불러오기 성공", statisticsDtos));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
+
     // 월간 매출 통계
+    // 미래 시간 조회 요청 시 오류 반환
     @GetMapping("/getMonthlySales")
     public ResponseEntity<ApiResponse> getMonthlySales(@RequestParam(value = "startDate") Date startDate) {
         try {
+            // startDate yyyy-MM-01
             List<StatisticsDto> statisticsDtos = storeManagementService.getMonthlySales(startDate);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "월간 매출 데이터 불러오기 성공", statisticsDtos));

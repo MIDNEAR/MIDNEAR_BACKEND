@@ -197,6 +197,45 @@ public class StoreManagementService {
         return response;
     }
 
+    public List<StatisticsDto> getWeeklySales(Date startDate) {
+        List<StatisticsDto> response = new ArrayList<>();
+
+        LocalDate localStartDate = startDate.toLocalDate();
+
+        // 5주 동안 반복
+        for (int i = 0; i < 5; i++) {
+            // 주 시작일과 종료일 계산
+            LocalDate weekStartDate = localStartDate.withDayOfMonth(i * 7 + 1);
+            LocalDate weekEndDate = localStartDate.withDayOfMonth(Math.min((i + 1) * 7, localStartDate.lengthOfMonth()));
+
+            // yyyy-MM-dd 형식의 날짜로 변환
+            String start = weekStartDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            String end = weekEndDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+            // 결제 금액
+            Long paymentAmount = statisticsMapper.getWeeklySales(start, end);
+            if (paymentAmount == null) paymentAmount = 0L; // null인 경우 0으로 반환
+
+            // 환불 금액
+            Long refundAmount = statisticsMapper.getWeeklyRefundedTotalPrice(start, end);
+            if (refundAmount == null) refundAmount = 0L; // null인 경우 0으로 반환
+
+            // 주 시작일 기준으로 반환
+            Date date = Date.valueOf(weekStartDate);
+
+            StatisticsDto statisticsDto = StatisticsDto.builder()
+                    .date(date)
+                    .paymentAmount(paymentAmount)
+                    .refundAmount(refundAmount)
+                    .build();
+
+            response.add(statisticsDto);
+        }
+
+        return response;
+    }
+
+
     public List<StatisticsDto> getMonthlySales(Date startDate) {
         List<StatisticsDto> response = new ArrayList<>();
 
@@ -230,5 +269,4 @@ public class StoreManagementService {
 
         return response;
     }
-
 }
