@@ -297,9 +297,9 @@ public class OrderService {
                     .quantity(dto.getQuantity())
                     .couponDiscount(dto.getCouponDiscount())
                     .buyConfirmDate(null)
-                    .claimStatus("0")
+                    .claimStatus("주문확인중")
                     .pointDiscount(dto.getPointDiscount())
-                    .deliveryId(null)
+                    .deliveryId(null)//이건 배송 정보의 아이디다!!!!1
                     .productPrice(dto.getProductPrice())
                     .productName(productVO.getProductName())
                     .color(color)

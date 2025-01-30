@@ -18,8 +18,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class UserInquiryService {
-    private UserInquiryMapper userInquiryMapper;
-    private UsersMapper usersMapper;
+    private final UserInquiryMapper userInquiryMapper;
+    private final UsersMapper usersMapper;
     private static final int pageSize = 2;
 
     @Transactional
@@ -28,10 +28,11 @@ public class UserInquiryService {
         if(userId == null) {
             throw new UsernameNotFoundException("존재하지 않는 유저입니다.");
         }
+        requestDto.setUserId(userId.longValue());
         try {
             userInquiryMapper.insertInquiry(InquiriesVO.toEntity(requestDto));
         } catch (Exception e) {
-            throw new RuntimeException("문의글 작성중 오류 발생");
+            throw new RuntimeException("문의글 작성중 오류 발생", e);
         }
     }
     @Transactional

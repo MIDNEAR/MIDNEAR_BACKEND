@@ -13,6 +13,7 @@ public class ReviewListDto {
     String id;
     Date created;
     int rating;
+    String color;
     String size;
     List<String> imagesPerReview;
     String content;

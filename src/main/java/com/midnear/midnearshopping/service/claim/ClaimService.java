@@ -50,7 +50,7 @@ public class ClaimService {
             userOrderProductsMapper.updateOrderStatus(cancelRequestDto.getOrderProductId(), "취소진행중");
         } catch (Exception e) {
             log.error("주문 취소 요청 중 오류 발생: {}", e.getMessage(), e);
-            throw new RuntimeException("주문 취소 요청 중 오류가 발생했습니다.");
+            throw new RuntimeException("주문 취소 요청 중 오류가 발생했습니다.", e);
         }
     }
 
@@ -61,7 +61,7 @@ public class ClaimService {
             userOrderProductsMapper.updateOrderStatus(exchangeRequestDto.getOrderProductId(), "교환진행중");
         } catch (Exception e) {
             log.error("교환 요청 중 오류 발생: {}", e.getMessage(), e);
-            throw new RuntimeException("교환 요청 중 오류가 발생했습니다.");
+            throw new RuntimeException("교환 요청 중 오류가 발생했습니다.", e);
         }
     }
 
@@ -72,7 +72,7 @@ public class ClaimService {
             userOrderProductsMapper.updateOrderStatus(returnRequestDto.getOrderProductId(), "반품진행중");
         } catch (Exception e) {
             log.error("반품 요청 중 오류 발생: {}", e.getMessage(), e);
-            throw new RuntimeException("반품 요청 중 오류가 발생했습니다.");
+            throw new RuntimeException("반품 요청 중 오류가 발생했습니다.", e);
         }
     }
 

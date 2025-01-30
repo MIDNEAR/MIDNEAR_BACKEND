@@ -36,7 +36,7 @@ public class UserInquiryController {
         } catch (Exception e) {
             log.error("문의글 작성 실패: {}", e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(false, "문의글 작성 중 오류가 발생했습니다.", null));
+                    .body(new ApiResponse(false, "문의글 작성 중 오류가 발생했습니다."+e.getMessage(), null));
         }
     }
     @GetMapping("/all")
@@ -48,7 +48,7 @@ public class UserInquiryController {
         } catch (Exception e) {
             log.error("문의글 작성 실패: {}", e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(false, "문의글 작성 중 오류가 발생했습니다.", null));
+                    .body(new ApiResponse(false, "문의글 리스트 조회 중 오류가 발생했습니다."+ e.getMessage(), null));
         }
     }
     @GetMapping("/getInquiry")
@@ -59,7 +59,7 @@ public class UserInquiryController {
         } catch (Exception e) {
             log.error("문의글 작성 실패: {}", e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(false, "문의글 작성 중 오류가 발생했습니다.", null));
+                    .body(new ApiResponse(false, "문의글 조회 중 오류가 발생했습니다." + e.getMessage(), null));
         }
     }
 }

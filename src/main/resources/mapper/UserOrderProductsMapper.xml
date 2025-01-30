@@ -21,15 +21,15 @@
             AND order_product_id IN (SELECT order_product_id FROM exchange)
         </if>
         <if test="status == 'returns'">
-            AND order_product_id IN (SELECT order_product_id FROM return)
+            AND order_product_id IN (SELECT order_product_id FROM returns)
         </if>
         <if test="status == 'all'">
             AND order_product_id IN (
-            SELECT order_product_id FROM cancel
+            SELECT order_product_id FROM canceled_products
             UNION
             SELECT order_product_id FROM exchange
             UNION
-            SELECT order_product_id FROM return
+            SELECT order_product_id FROM returns
             )
         </if>
     </select>
@@ -49,7 +49,7 @@
 
     <update id="updateOrderStatus">
         update order_products
-        set claim_status = #{status},
+        set claim_status = #{status}
         WHERE order_product_id = #{orderProductId}
     </update>
 </mapper>

@@ -82,6 +82,7 @@
             r.createdAt AS created,
             r.rating,
             op.size,
+            op.color,
             r.review AS content,
             r.comment
         FROM reviews r
