@@ -1,27 +1,27 @@
-package com.midnear.midnearshopping.domain.vo.order;
+package com.midnear.midnearshopping.domain.dto.order;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Setter
-public class OrdersVO {
+public class NonUserOrderDto {
     Long orderId;
     String orderName;
+    Integer deliveryAddrId;
     String orderContact;
     String orderEmail;
-    Date orderDate;
+    BigDecimal allPayment;
     String recipientName;
     String postalCode;
     String address;
     String detailedAddress;
-    String orderNumber;
     String recipientContact;
     Integer userId;
-    BigDecimal allPayment;
+
+    List<OrderProductsRequestDto> oderProductsRequestDtos;
 }

@@ -24,7 +24,7 @@ public class CartService {
         if (userId == null) {
             throw new UsernameNotFoundException("존재하지 않는 유저입니다.");
         }
-        if (cartMapper.existByUserId()) {
+        if (cartMapper.existByUserId(userId)) {
             throw new IllegalArgumentException("이미 장바구니가 존재합니다.");
         }
         cartMapper.createCart(userId);

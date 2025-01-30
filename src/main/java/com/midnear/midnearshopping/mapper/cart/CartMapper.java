@@ -6,6 +6,6 @@ import org.apache.ibatis.annotations.Mapper;
 public interface CartMapper {
     void createCart(Integer userId);
 
-    boolean existByUserId();
+    boolean existByUserId(Integer userId);
     Long findCartIdByUserId(Integer userId);
 }

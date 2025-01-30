@@ -18,8 +18,14 @@
             delivery_charge, product_main_image
         ) VALUES (
                      #{size}, #{quantity}, #{couponDiscount}, #{buyConfirmDate}, #{claimStatus},
-                     #{pointDiscount}, #{deliveryId}, #{orderId}, #{price}, #{productName}, #{color},
+                     #{pointDiscount}, #{deliveryId}, #{orderId}, #{productPrice}, #{productName}, #{color},
                      #{deliveryCharge}, #{productMainImage}
                  )
     </insert>
+
+    <update id="updateOrderStatus">
+        update order_products
+        set claim_status = #{status},
+        WHERE order_product_id = #{orderProductId}
+    </update>
 </mapper>
