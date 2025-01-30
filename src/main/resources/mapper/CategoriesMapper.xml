@@ -21,4 +21,11 @@
         #{categoryName}, #{parentCategoryId}
         )
     </insert>
+    <delete id="deleteCategories">
+        DELETE FROM categories
+        WHERE category_id IN
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
 </mapper>
