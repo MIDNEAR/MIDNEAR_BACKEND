@@ -93,7 +93,7 @@ public class OrderShippingController {
     }
 
     // 발주확인
-    @PutMapping("/orderConfirmation")
+    @PostMapping("/orderConfirmation")
     public ResponseEntity<ApiResponse> filterSearch(@RequestBody List<Long> orderProductId) {
         try {
             orderShippingService.updateConfirm(orderProductId);

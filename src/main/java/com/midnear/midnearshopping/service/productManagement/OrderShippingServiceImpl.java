@@ -2,6 +2,7 @@ package com.midnear.midnearshopping.service.productManagement;
 
 import com.midnear.midnearshopping.domain.dto.productManagement.*;
 
+import com.midnear.midnearshopping.domain.vo.delivery.DeliveryInfoVO;
 import com.midnear.midnearshopping.mapper.productManagement.OrderShippingMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -45,7 +46,17 @@ public class OrderShippingServiceImpl implements OrderShippingService {
     @Transactional
     @Override
     public void updateConfirm(List<Long> orderProductId) {
-        orderShippingMapper.updateConfirm(orderProductId);
+            for (Long orderProductIds : orderProductId) {
+
+                DeliveryInfoVO deliveryInfoVO = new DeliveryInfoVO();
+                deliveryInfoVO.setTrackingDelivery("배송전");
+                orderShippingMapper.insertDeliveryInfo(deliveryInfoVO);
+
+                Long deliveryId = deliveryInfoVO.getDeliveryId();
+
+                orderShippingMapper.updateDeliveryId(deliveryId, orderProductIds);
+            }
+
     }
 
 //  송장번호 입력

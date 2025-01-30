@@ -1,7 +1,10 @@
 package com.midnear.midnearshopping.mapper.productManagement;
 
 import com.midnear.midnearshopping.domain.dto.productManagement.*;
+import com.midnear.midnearshopping.domain.vo.delivery.DeliveryInfoVO;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -18,7 +21,9 @@ public interface OrderShippingMapper {
     int filterCount(ParamDTO orderParamDTO);
 
 //  발주확인
-    void updateConfirm(@Param("orderProductId")List<Long> orderProductId);
+    void insertDeliveryInfo(DeliveryInfoVO deliveryInfoVO);
+
+    void updateDeliveryId(@Param("deliveryId")Long deliveryId,@Param("orderProductId")Long orderProductId);
 
 //  송장번호 입력
     void insertInvoice(InvoiceInsertDTO invoiceInsertDTO);

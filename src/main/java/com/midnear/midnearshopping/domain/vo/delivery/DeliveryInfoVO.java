@@ -14,12 +14,12 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class DeliveryInfoVO {
-    private int deliveryId;
+    private Long deliveryId;
     private String courier;
     private Long invoiceNumber;
     private String trackingDelivery;
     private LocalDate deliveryProcessDate;
     private LocalDate deliveryCompleteDate;
     private int deliveryAddressId;
-
+    private int carrierId;
 }

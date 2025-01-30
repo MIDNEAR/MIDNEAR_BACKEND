@@ -192,14 +192,15 @@
     </select>
 
 <!-- 발주확인 -->
-    <update id="updateConfirm">
-        update delivery_info di
-            inner join order_products op on op.delivery_id = di.delivery_id
-            set di.tracking_delivery = '배송전'
-        where op.order_product_id in
-        <foreach item="id" index="index" collection="orderProductId" open="(" separator="," close=")">
-            #{id}
-        </foreach>
+    <insert id="insertDeliveryInfo" useGeneratedKeys="true" keyProperty="deliveryId">
+        insert into delivery_info (tracking_delivery)
+        values (#{trackingDelivery})
+    </insert>
+
+    <update id="updateDeliveryId">
+        update order_products
+        set delivery_id = #{deliveryId}
+        where order_product_id = #{orderProductId}
     </update>
 
 <!-- 송장번호 입력 -->
@@ -296,6 +297,8 @@
             #{id}
         </foreach>
     </select>
+
+    <!-- 배송정보 저장   -->
 </mapper>
 
 
