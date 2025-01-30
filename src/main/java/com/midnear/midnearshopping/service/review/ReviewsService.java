@@ -1,6 +1,8 @@
 package com.midnear.midnearshopping.service.review;
 
 import com.midnear.midnearshopping.domain.dto.FileDto;
+import com.midnear.midnearshopping.domain.dto.review.ProductReviewDto;
+import com.midnear.midnearshopping.domain.dto.review.ReviewListDto;
 import com.midnear.midnearshopping.domain.dto.review.ReviewRequestDto;
 import com.midnear.midnearshopping.domain.vo.magazines.MagazineImagesVO;
 import com.midnear.midnearshopping.domain.vo.magazines.MagazinesVO;
@@ -11,6 +13,7 @@ import com.midnear.midnearshopping.mapper.review.ReviewsMapper;
 import com.midnear.midnearshopping.mapper.users.UsersMapper;
 import com.midnear.midnearshopping.service.S3Service;
 import lombok.RequiredArgsConstructor;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +27,7 @@ public class ReviewsService {
     private final ReviewImagesMapper reviewImagesMapper;
     private final UsersMapper usersMapper;
     private final S3Service s3Service;
+    private static final int pageSize = 2;
 
     @Transactional
     public void createReview(String id, ReviewRequestDto reviewRequestDto) {
@@ -36,7 +40,7 @@ public class ReviewsService {
                 .modifiedDate(null)
                 .rating(reviewRequestDto.getRating())
                 .review(reviewRequestDto.getReview())
-                .reviewStatus("대기중")
+                .reviewStatus("active")
                 .userId(userId)
                 .orderProductId(reviewRequestDto.getOrderProductId())
                 .build();
@@ -69,4 +73,25 @@ public class ReviewsService {
         }
 
     }
+    public void updateReviewStatus(Long reviewId) {
+        reviewsMapper.updateReviewStatus(reviewId);
+    }
+
+    public ProductReviewDto getProductReviews(String productName, int pageNumber) {
+        int offset = (pageNumber - 1) * pageSize;
+        ProductReviewDto dto = new ProductReviewDto();
+
+        dto.setImageReviewCount(reviewsMapper.getImageReviewCount(productName));
+        dto.setReviewCount(reviewsMapper.getReviewCount(productName));
+        dto.setAllReviewImages(reviewsMapper.getAllReviewImages(productName));
+        dto.setReviewList(reviewsMapper.getReviewList(productName, offset, pageSize));
+
+        return dto;
+    }
+
+    public List<String> reviewImageGathering(String productName, int pageNumber){
+        int offset = (pageNumber - 1) * pageSize;
+        return reviewImagesMapper.getReviewImagesByProduct(productName, offset, pageSize);
+    }
+
 }

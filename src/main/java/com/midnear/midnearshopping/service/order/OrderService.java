@@ -69,6 +69,7 @@ public class OrderService {
 
         // 주문 정보 DB 저장
         orderMapper.insertOrder(ordersVO);
+
         Long orderId = ordersVO.getOrderId();
         if (orderId == null) {
             throw new RuntimeException("주문 생성 실패: orderId가 NULL입니다.");

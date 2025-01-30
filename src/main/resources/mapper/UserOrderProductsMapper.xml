@@ -11,7 +11,7 @@
         SELECT * FROM order_products WHERE order_id = #{orderId}
     </select>
 
-    <select id="getOrderProductsByOrderIdAndStatus" resultType="OrderProduct">
+    <select id="getOrderProductsByOrderIdAndStatus">
         SELECT * FROM order_products
         WHERE order_id = #{orderId}
         <if test="status == 'cancel'">
