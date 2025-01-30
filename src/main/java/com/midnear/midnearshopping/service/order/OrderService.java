@@ -1,10 +1,7 @@
 package com.midnear.midnearshopping.service.order;
 
 import com.midnear.midnearshopping.domain.dto.delivery.DeliveryAddrDto;
-import com.midnear.midnearshopping.domain.dto.order.OrderDetailsDto;
-import com.midnear.midnearshopping.domain.dto.order.UserOrderCheckDto;
-import com.midnear.midnearshopping.domain.dto.order.UserOrderDto;
-import com.midnear.midnearshopping.domain.dto.order.UserOrderProductCheckDto;
+import com.midnear.midnearshopping.domain.dto.order.*;
 import com.midnear.midnearshopping.domain.vo.order.OrderProductsVO;
 import com.midnear.midnearshopping.domain.vo.order.OrdersVO;
 import com.midnear.midnearshopping.domain.vo.products.ProductsVo;
@@ -207,6 +204,7 @@ public class OrderService {
                 .orderId(order.getOrderId())
                 .orderNumber(order.getOrderNumber())
                 .orderDate(order.getOrderDate())
+                .postalCode(order.getPostalCode())
                 .recipientContact(order.getRecipientContact())
                 .recipientName(order.getRecipientName())
                 .address(order.getAddress())
@@ -215,6 +213,106 @@ public class OrderService {
                 .build();
     }
 
+    public OrderProductDto getOrderProductDetail(Long orderProductId) {
+        OrderProductsVO product = orderProductsMapper.getOrderProductById(orderProductId);
+        if (product == null) {
+            throw new IllegalArgumentException("해당 주문 상품 정보가 존재하지 않습니다.");
+        }
+        return OrderProductDto.builder()
+                .orderProductId(product.getOrderProductId())
+                .size(product.getSize())
+                .quantity(product.getQuantity())
+                .claimStatus(product.getClaimStatus())
+                .pointDiscount(product.getPointDiscount())
+                .productPrice(product.getProductPrice()) // 계산된 값 설정
+                .productName(product.getProductName())
+                .productMainImage(product.getProductMainImage())
+                .build();
+    }
+
+
+    @Transactional(rollbackFor = Exception.class)
+    public String createNonUserOrder(NonUserOrderDto nonUserOrderDto) {
+
+        // 주문 정보 생성
+        OrdersVO ordersVO = OrdersVO.builder()
+                .orderDate(new Date())
+                .orderName(nonUserOrderDto.getOrderName())
+                .orderContact(nonUserOrderDto.getOrderContact())
+                .orderEmail(nonUserOrderDto.getOrderEmail())
+                .recipientName(nonUserOrderDto.getRecipientName())
+                .recipientContact(nonUserOrderDto.getRecipientContact())
+                .postalCode(nonUserOrderDto.getPostalCode())
+                .address(nonUserOrderDto.getAddress())
+                .detailedAddress(nonUserOrderDto.getDetailedAddress())
+                .orderNumber(OrderNumberGenerator.generateOrderNumber())
+                .userId(null)
+                .allPayment(nonUserOrderDto.getAllPayment())
+                .build();
+
+        // 주문 정보 DB 저장
+        orderMapper.insertOrder(ordersVO);
+        Long orderId = ordersVO.getOrderId();
+        if (orderId == null) {
+            throw new RuntimeException("주문 생성 실패: orderId가 NULL입니다.");
+        }
+        System.out.println("📌 생성된 주문 ID: " + orderId);
+
+        // 주문 상품 정보 생성
+        List<OrderProductsVO> orderProductsList = nonUserOrderDto.getOderProductsRequestDtos().stream().map(dto -> {
+            // 상품 이미지 조회
+            List<String> images = productImagesMapper.getImageUrlsById(dto.getProductColorId());
+            if (images == null || images.isEmpty()) {
+                throw new RuntimeException("해당 상품의 이미지가 없습니다. 상품 ID: " + dto.getProductColorId());
+            }
+            String mainImage = images.get(0);
+
+            // 상품 정보 조회
+            Long productId = productColorsMapper.getProductIdByColor(dto.getProductColorId());
+            if (productId == null) {
+                throw new RuntimeException("해당 색상에 대한 제품 ID를 찾을 수 없습니다. 상품 색상 ID: " + dto.getProductColorId());
+            }
+
+            ProductsVo productVO = productsMapper.getProductById(productId);
+            if (productVO == null) {
+                throw new RuntimeException("해당 상품 정보를 찾을 수 없습니다. 상품 ID: " + productId);
+            }
+
+            // 상품 색상 조회
+            String color = productColorsMapper.getColorById(dto.getProductColorId());
+
+            // 현재 재고 조회 (트랜잭션 내에서 Lock)
+            int stock = sizesMapper.getStockByColorAndSize(dto.getProductColorId(), dto.getSize());
+            if (stock - dto.getQuantity() < 0) {
+                throw new RuntimeException("해당 상품은 현재 재고 부족으로 구매가 불가능합니다. 상품명: " + productVO.getProductName());
+            }
+
+            // 재고 차감
+            sizesMapper.updateSizeByColorAndSize(dto.getProductColorId(), dto.getSize(), dto.getQuantity());
+
+            return OrderProductsVO.builder()
+                    .orderId(orderId)
+                    .size(dto.getSize())
+                    .quantity(dto.getQuantity())
+                    .couponDiscount(dto.getCouponDiscount())
+                    .buyConfirmDate(null)
+                    .claimStatus("0")
+                    .pointDiscount(dto.getPointDiscount())
+                    .deliveryId(null)
+                    .productPrice(dto.getProductPrice())
+                    .productName(productVO.getProductName())
+                    .color(color)
+                    .deliveryCharge(dto.getDeliveryCharge())
+                    .productMainImage(mainImage)
+                    .build();
+        }).toList();
+
+        // 주문 상품 정보 DB 저장
+        for (OrderProductsVO orderProduct : orderProductsList) {
+            orderProductsMapper.insertOrderProduct(orderProduct);
+        }
+        return ordersVO.getOrderNumber();
+    }
 
 }
 

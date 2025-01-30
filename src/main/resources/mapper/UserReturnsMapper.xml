@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.midnear.midnearshopping.mapper.claim.UserReturnsMapper">
+
+    <insert id="insertReturn">
+        INSERT INTO returns (
+        return_status,
+        pickup_method,
+        return_request_date,
+        return_complete_date,
+        return_reason,
+        order_product_id
+        ) VALUES (
+        #{returnStatus},
+        #{pickupMethod},
+        #{returnRequestDate},
+        #{returnCompleteDate},
+        #{returnReason},
+        #{orderProductId}
+        )
+    </insert>
+
+</mapper>

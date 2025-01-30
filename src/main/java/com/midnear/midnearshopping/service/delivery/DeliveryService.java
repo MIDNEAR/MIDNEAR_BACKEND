@@ -45,7 +45,11 @@ public class DeliveryService {
         return deliveryAddrMapper.getDefaultAddr(userId);
     }
     public DeliveryAddrDto getDeliveryAddr(int deliveryId) {
-        return deliveryAddrMapper.getDeliveryAddressById(deliveryId);
+        DeliveryAddrDto addr = deliveryAddrMapper.getDeliveryAddressById(deliveryId);
+        if(addr == null) {
+            throw new IllegalArgumentException("존재하지 않는 배송지입니다.");
+        }
+        return addr;
     }
     // 배송 주소 수정
     @Transactional
