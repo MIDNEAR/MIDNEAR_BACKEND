@@ -27,9 +27,10 @@ public class OrderShippingDTO {
     String recipientName;
     String courier;
     Long invoiceNumber;
-    Date deliveryProcess_date;
+    Date deliveryProcessDate;
     String orderContact;
     String postalCode;
     String address;
     String detailedAddress;
+    String deliveryRequest;
 }

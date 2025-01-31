@@ -12,12 +12,13 @@
             op.color,
             op.size,
             op.quantity,
-            o.total_payment_amount,
+            op.delivery_charge,
             o.all_payment,
             o.order_name,
-            o.order_id,
+            u.id,
             o.recipient_name,
             di.delivery_process_date,
+            di.tracking_delivery,
             o.order_contact,
             o.postal_code,
             o.address,
@@ -26,6 +27,7 @@
             inner join orders o on op.order_id = o.order_id
             left join delivery_info di on op.delivery_id = di.delivery_id
             left join payments p ON o.order_id = p.order_id
+            inner join users u on o.user_id = u.user_id
         order by op.order_product_id
             LIMIT #{pageSize} OFFSET #{offset}
     </select>
@@ -36,29 +38,31 @@
             inner join orders o on op.order_id = o.order_id
             left join delivery_info di on op.delivery_id = di.delivery_id
             left join payments p ON o.order_id = p.order_id
+            inner join users u on o.user_id = u.user_id
    </select>
 
 <!-- 주문 통합검색 필터링 조회 -->
     <select id="filterSearch">
         select
-            o.order_number,
-            di.tracking_delivery,
-            op.claim_status,
-            p.payment_date,
-            op.product_name,
-            op.color,
-            op.size,
-            op.quantity,
-            o.total_payment_amount,
-            o.all_payment,
-            o.order_name,
-            u.id,
-            o.recipient_name,
-            di.delivery_process_date,
-            o.order_contact,
-            o.postal_code,
-            o.address,
-            o.detailed_address
+        o.order_number,
+        di.tracking_delivery,
+        op.claim_status,
+        p.payment_date,
+        op.product_name,
+        op.color,
+        op.size,
+        op.quantity,
+        op.delivery_charge,
+        o.all_payment,
+        o.order_name,
+        u.id,
+        o.recipient_name,
+        di.delivery_process_date,
+        di.tracking_delivery,
+        o.order_contact,
+        o.postal_code,
+        o.address,
+        o.detailed_address
         from order_products op
             inner join orders o on op.order_id = o.order_id
             left join delivery_info di on op.delivery_id = di.delivery_id

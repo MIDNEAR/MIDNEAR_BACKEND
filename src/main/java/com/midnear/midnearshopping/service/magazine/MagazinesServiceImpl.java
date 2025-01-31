@@ -19,7 +19,7 @@ import java.util.List;
 public class MagazinesServiceImpl implements MagazinesService {
 
     private final magazinesMapper magazinesMapper;
-    private static final int pageSize = 2;
+    private static final int pageSize = 23;
 
     private final S3Service s3Service;
 

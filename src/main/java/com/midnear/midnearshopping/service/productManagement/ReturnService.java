@@ -1,6 +1,4 @@
 package com.midnear.midnearshopping.service.productManagement;
-
-import com.midnear.midnearshopping.domain.dto.productManagement.OrderShippingDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.ParamDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.ReturnDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.ReturnParamDTO;
