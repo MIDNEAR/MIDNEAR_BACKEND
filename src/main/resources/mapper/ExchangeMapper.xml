@@ -290,10 +290,33 @@
         </foreach>
     </update>
 
+    <!--  수거 송장번호 입력  -->
+    <update id="updatePickupStatus">
+        update exchange e
+        inner join exchange_pickup_delivery epd on epd.exchange_id = e.exchange_id
+        left join carrier_mapping cm on cm.carrier_name = #{courier}
+        set e.exchange_status = '상품수거중',
+        epd.pickup_courier= #{pickupCourier},
+        epd.pickup_invoice= #{pickupInvoice},
+        epd.carrier_id = cm.carrier_id
+        where e.exchange_id in
+        <foreach item="id" index="index" collection="exchangeId" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <!-- 이름검사 -->
+    <select id="selectCarrierName">
+        select carrier_id
+        from carrier_mapping
+        where carrier_name = #{pickupCourier}
+    </select>
+
+
     <!-- 선택내역 배송처리 -->
     <update id="updateStatus">
         update exchange
-        set exchange_status = '상품재배송'
+        set exchange_status = '상품재배송중'
         where exchange_id in
         <foreach item="id" index="index" collection="exchangeId" open="(" separator="," close=")">
             #{id}

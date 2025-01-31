@@ -2,6 +2,7 @@ package com.midnear.midnearshopping.mapper.productManagement;
 
 import com.midnear.midnearshopping.domain.dto.productManagement.ExchangeDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.ExchangeParamDTO;
+import com.midnear.midnearshopping.domain.dto.productManagement.InvoiceInsertDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.ParamDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -25,6 +26,11 @@ public interface ExchangeMapper {
 
     // 선택내역 교환 거부처리
     void denayExchange(@Param("exchangeParamDTO") ExchangeParamDTO exchangeParamDTO);
+
+
+    // 수거 송장번호 입력
+    void updatePickupStatus(InvoiceInsertDTO invoiceInsertDTO);
+    Long selectCarrierName(String pickupCourier);
 
     // 선택내역 배송처리
     void updateStatus(@Param("exchangeId")List<Long> exchangeId);

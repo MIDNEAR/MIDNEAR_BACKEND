@@ -2,6 +2,7 @@ package com.midnear.midnearshopping.service.productManagement;
 
 import com.midnear.midnearshopping.domain.dto.productManagement.ExchangeDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.ExchangeParamDTO;
+import com.midnear.midnearshopping.domain.dto.productManagement.InvoiceInsertDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.ParamDTO;
 import com.midnear.midnearshopping.mapper.productManagement.ExchangeMapper;
 import lombok.RequiredArgsConstructor;
@@ -57,6 +58,17 @@ public class ExchangeServiceImpl implements ExchangeService {
         exchangeMapper.denayExchange(exchangeParamDTO);
     }
 
+    @Override
+    public void updatePickupStatus(InvoiceInsertDTO invoiceInsertDTO) {
+        exchangeMapper.updatePickupStatus(invoiceInsertDTO);
+    }
+
+    @Override
+    public Long selectCarrierName(String carrierName) {
+        return exchangeMapper.selectCarrierName(carrierName);
+    }
+
+    // 상품 재배송처리
     @Transactional
     @Override
     public void updatedelivery(ExchangeParamDTO exchangeParamDTO) {
