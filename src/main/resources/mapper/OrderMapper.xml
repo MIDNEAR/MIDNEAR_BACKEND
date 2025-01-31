@@ -39,12 +39,12 @@
         INSERT INTO orders (
             order_name, order_contact, order_email,
              order_date, recipient_name, postal_code,
-            address, detailed_address, order_number, user_id, all_payment
+            address, detailed_address, order_number, user_id, all_payment, delivery_request
         ) VALUES (
                      #{orderName}, #{orderContact}, #{orderEmail},
                       #{orderDate}, #{recipientName}, #{postalCode},
                      #{address}, #{detailedAddress},  #{orderNumber}, #{userId},
-                      #{allPayment}
+                      #{allPayment}, #{deliveryRequest}
                  )
     </insert>
 
