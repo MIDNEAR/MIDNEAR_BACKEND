@@ -11,6 +11,34 @@
         SELECT * FROM order_products WHERE order_id = #{orderId}
     </select>
 
+    <select id="getDeliveryInfo">
+        SELECT tracking_delivery FROM delivery_info WHERE delivery_id = #{deliveryId}
+    </select>
+
+    <select id="getOrderProductsByOrderIdAndStatus">
+        SELECT * FROM order_products
+        WHERE order_id = #{orderId}
+        <if test="status == 'cancel'">
+            AND order_product_id IN (SELECT order_product_id FROM cancel)
+        </if>
+        <if test="status == 'exchange'">
+            AND order_product_id IN (SELECT order_product_id FROM exchange)
+        </if>
+        <if test="status == 'returns'">
+            AND order_product_id IN (SELECT order_product_id FROM returns)
+        </if>
+        <if test="status == 'all'">
+            AND order_product_id IN (
+            SELECT order_product_id FROM canceled_products
+            UNION
+            SELECT order_product_id FROM exchange
+            UNION
+            SELECT order_product_id FROM returns
+            )
+        </if>
+    </select>
+
+
     <insert id="insertOrderProduct" >
         INSERT INTO order_products (
             size, quantity, coupon_discount, buy_confirm_date, claim_status,
@@ -23,9 +51,10 @@
                  )
     </insert>
 
+
     <update id="updateOrderStatus">
         update order_products
-        set claim_status = #{status},
+        set claim_status = #{status}
         WHERE order_product_id = #{orderProductId}
     </update>
 </mapper>

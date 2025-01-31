@@ -1,16 +1,16 @@
 package com.midnear.midnearshopping.service;
 
-import com.midnear.midnearshopping.domain.dto.coupon_point.CouponDto;
-import com.midnear.midnearshopping.domain.dto.coupon_point.CouponToSelectedUserDto;
-import com.midnear.midnearshopping.domain.dto.coupon_point.PointDto;
-import com.midnear.midnearshopping.domain.dto.coupon_point.PointToSelectedUserDto;
+import com.midnear.midnearshopping.domain.dto.coupon_point.*;
 import com.midnear.midnearshopping.domain.vo.coupon_point.CouponVo;
 import com.midnear.midnearshopping.domain.vo.coupon_point.PointVo;
 import com.midnear.midnearshopping.domain.vo.coupon_point.ReviewPointVo;
 import com.midnear.midnearshopping.mapper.coupon_point.CouponMapper;
 import com.midnear.midnearshopping.mapper.coupon_point.PointMapper;
+import com.midnear.midnearshopping.mapper.coupon_point.UserCouponMapper;
 import com.midnear.midnearshopping.mapper.users.UsersMapper;
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.hpsf.Decimal;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +24,7 @@ public class CouponPointService {
     private final PointMapper pointMapper;
     private final CouponMapper couponMapper;
     private final UsersMapper usersMapper;
+    private final UserCouponMapper userCouponMapper;
 
     @Transactional
     public void grantPointsToAll(PointDto pointDto) {
@@ -117,4 +118,40 @@ public class CouponPointService {
             couponMapper.grantCoupon(Long.valueOf(userId), couponVo.getCouponId());
         }
     }
+
+
+    //여기서부터 사용자 시~작
+    public List<CouponInfoDto> getCouponsByUserId(String id) {
+        Integer userId = usersMapper.getUserIdById(id);
+        if (userId == null){
+            throw new UsernameNotFoundException("User not found");
+        }
+        return userCouponMapper.getCouponsByUserId(userId);
+    }
+    //쿠폰 총 개수
+    public int getCouponsCountByUserId(String id) {
+        Integer userId = usersMapper.getUserIdById(id);
+        if (userId == null){
+            throw new UsernameNotFoundException("User not found");
+        }
+        return userCouponMapper.getCouponsCountByUserId(userId);
+    }
+
+    //포인트 사용 내역
+    public List<UserPointDto> getPointLists(String id) {
+        Integer userId = usersMapper.getUserIdById(id);
+        if (userId == null){
+            throw new UsernameNotFoundException("User not found");
+        }
+        return pointMapper.getPointList(userId);
+    }
+    //포인트 총량
+    public Decimal getPoints(String id) {
+        Integer userId = usersMapper.getUserIdById(id);
+        if (userId == null){
+            throw new UsernameNotFoundException("User not found");
+        }
+        return usersMapper.getPointAmount(userId);
+    }
+
 }

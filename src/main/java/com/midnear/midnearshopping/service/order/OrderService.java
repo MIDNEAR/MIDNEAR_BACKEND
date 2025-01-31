@@ -5,7 +5,7 @@ import com.midnear.midnearshopping.domain.dto.order.*;
 import com.midnear.midnearshopping.domain.vo.order.OrderProductsVO;
 import com.midnear.midnearshopping.domain.vo.order.OrdersVO;
 import com.midnear.midnearshopping.domain.vo.products.ProductsVo;
-import com.midnear.midnearshopping.domain.vo.products.SizesVo;
+import com.midnear.midnearshopping.mapper.coupon_point.UserCouponMapper;
 import com.midnear.midnearshopping.mapper.delivery.DeliveryAddressMapper;
 import com.midnear.midnearshopping.mapper.order.OrderMapper;
 import com.midnear.midnearshopping.mapper.order.UserOrderProductsMapper;
@@ -22,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,6 +38,8 @@ public class OrderService {
     private final ProductColorsMapper productColorsMapper;
     private final SizesMapper sizesMapper;
     private static final int pageSize = 2;
+    private final UserOrderProductsMapper userOrderProductsMapper;
+    private final UserCouponMapper userCouponMapper;
 
     @Transactional(rollbackFor = Exception.class)
     public void createOrder(String id, UserOrderDto userOrderDto) {
@@ -69,6 +73,7 @@ public class OrderService {
 
         // 주문 정보 DB 저장
         orderMapper.insertOrder(ordersVO);
+
         Long orderId = ordersVO.getOrderId();
         if (orderId == null) {
             throw new RuntimeException("주문 생성 실패: orderId가 NULL입니다.");
@@ -107,13 +112,14 @@ public class OrderService {
             // 재고 차감
             sizesMapper.updateSizeByColorAndSize(dto.getProductColorId(), dto.getSize(), dto.getQuantity());
 
+
             return OrderProductsVO.builder()
                     .orderId(orderId)
                     .size(dto.getSize())
                     .quantity(dto.getQuantity())
                     .couponDiscount(dto.getCouponDiscount())
                     .buyConfirmDate(null)
-                    .claimStatus("0")
+                    .claimStatus(null)
                     .pointDiscount(dto.getPointDiscount())
                     .deliveryId(null)
                     .productPrice(dto.getProductPrice())
@@ -128,8 +134,15 @@ public class OrderService {
         for (OrderProductsVO orderProduct : orderProductsList) {
             orderProductsMapper.insertOrderProduct(orderProduct);
         }
-
-
+        //전체 사용량 저장 tlqkf 걍 컬럼을 좀 만들자 제발...네..?
+        BigDecimal totalPointDiscount = userOrderDto.getOderProductsRequestDtos().stream()
+                .map(dto -> dto.getPointDiscount() != null ? dto.getPointDiscount() : BigDecimal.ZERO)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        //사용한 쿠폰 상태 사용으로 변경
+        //근데... 이런식으면 쿠폰 디비가 너무 쌓여서 비효율적 서비스 완성후 논의 필요
+        userCouponMapper.changeStatus(userOrderDto.getUserCouponId());
+        //포인트 차감
+        usersMapper.discountPointsToUserByUserId(userId, totalPointDiscount.longValue());
     }
 
     @Transactional(readOnly = true)
@@ -151,12 +164,15 @@ public class OrderService {
                         BigDecimal payPrice = product.getProductPrice()
                                 .subtract(product.getPointDiscount() != null ? product.getPointDiscount() : BigDecimal.ZERO)
                                 .subtract(product.getCouponDiscount() != null ? product.getCouponDiscount() : BigDecimal.ZERO);
+                        String orderState = Optional.ofNullable(product.getClaimStatus())
+                                .orElseGet(() -> userOrderProductsMapper.getDeliveryInfo(product.getDeliveryId()));
+
 
                         return UserOrderProductCheckDto.builder()
                                 .orderProductId(product.getOrderProductId())
                                 .size(product.getSize())
                                 .quantity(product.getQuantity())
-                                .claimStatus(product.getClaimStatus())
+                                .orderStatus(orderState)
                                 .pointDiscount(product.getPointDiscount())
                                 .payPrice(payPrice) // 계산된 값 설정
                                 .productName(product.getProductName())
@@ -187,12 +203,14 @@ public class OrderService {
                     BigDecimal payPrice = product.getProductPrice()
                             .subtract(product.getPointDiscount() != null ? product.getPointDiscount() : BigDecimal.ZERO)
                             .subtract(product.getCouponDiscount() != null ? product.getCouponDiscount() : BigDecimal.ZERO);
+                    String orderState = Optional.ofNullable(product.getClaimStatus())
+                            .orElseGet(() -> userOrderProductsMapper.getDeliveryInfo(product.getDeliveryId()));
 
                     return UserOrderProductCheckDto.builder()
                             .orderProductId(product.getOrderProductId())
                             .size(product.getSize())
                             .quantity(product.getQuantity())
-                            .claimStatus(product.getClaimStatus())
+                            .orderStatus(orderState)
                             .pointDiscount(product.getPointDiscount())
                             .payPrice(payPrice) // 계산된 값 설정
                             .productName(product.getProductName())
@@ -296,9 +314,9 @@ public class OrderService {
                     .quantity(dto.getQuantity())
                     .couponDiscount(dto.getCouponDiscount())
                     .buyConfirmDate(null)
-                    .claimStatus("0")
+                    .claimStatus("주문확인중")
                     .pointDiscount(dto.getPointDiscount())
-                    .deliveryId(null)
+                    .deliveryId(null)//이건 배송 정보의 아이디다!!!!1
                     .productPrice(dto.getProductPrice())
                     .productName(productVO.getProductName())
                     .color(color)

@@ -71,6 +71,11 @@
         SET point_balance = point_balance + #{amount}
         WHERE id = #{id};
     </update>
+    <update id="discountPointsToUserByUserId">
+        UPDATE users
+        SET point_balance = point_balance + #{amount}
+        WHERE user_id = #userId};
+    </update>
     <select id="findUserByIdPaging">
         select id
         from users
@@ -85,5 +90,11 @@
     <select id="getAllUserId">
         select user_id
         from users
+    </select>
+
+    <select id="getPointAmount">
+        select point_balance
+        from users
+        where user_id = #{userId}
     </select>
 </mapper>

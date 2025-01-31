@@ -8,7 +8,7 @@
             review_image_url,
             file_size,
             extension,
-            creation_date,
+            image_created_date,
             review_id
         ) VALUES (
                      #{reviewImageUrl},
@@ -26,5 +26,17 @@
     <delete id="deleteReviewImagesByReviewId">
         DELETE FROM review_images WHERE review_id = #{reviewId}
     </delete>
+
+    <select id="getReviewImagesByProduct" >
+        SELECT ri.review_image_url
+        FROM review_images ri
+                 JOIN reviews r ON ri.review_id = r.review_id
+                 JOIN order_products op ON r.order_product_id = op.order_product_id
+        WHERE op.product_name = #{productName}
+        ORDER BY ri.image_created_date DESC
+            LIMIT #{pageSize} OFFSET #{offset}
+    </select>
+
+
 
 </mapper>
