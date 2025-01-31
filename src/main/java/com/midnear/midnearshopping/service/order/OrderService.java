@@ -5,7 +5,7 @@ import com.midnear.midnearshopping.domain.dto.order.*;
 import com.midnear.midnearshopping.domain.vo.order.OrderProductsVO;
 import com.midnear.midnearshopping.domain.vo.order.OrdersVO;
 import com.midnear.midnearshopping.domain.vo.products.ProductsVo;
-import com.midnear.midnearshopping.domain.vo.products.SizesVo;
+import com.midnear.midnearshopping.mapper.coupon_point.UserCouponMapper;
 import com.midnear.midnearshopping.mapper.delivery.DeliveryAddressMapper;
 import com.midnear.midnearshopping.mapper.order.OrderMapper;
 import com.midnear.midnearshopping.mapper.order.UserOrderProductsMapper;
@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,6 +39,7 @@ public class OrderService {
     private final SizesMapper sizesMapper;
     private static final int pageSize = 2;
     private final UserOrderProductsMapper userOrderProductsMapper;
+    private final UserCouponMapper userCouponMapper;
 
     @Transactional(rollbackFor = Exception.class)
     public void createOrder(String id, UserOrderDto userOrderDto) {
@@ -110,6 +112,7 @@ public class OrderService {
             // 재고 차감
             sizesMapper.updateSizeByColorAndSize(dto.getProductColorId(), dto.getSize(), dto.getQuantity());
 
+
             return OrderProductsVO.builder()
                     .orderId(orderId)
                     .size(dto.getSize())
@@ -131,8 +134,15 @@ public class OrderService {
         for (OrderProductsVO orderProduct : orderProductsList) {
             orderProductsMapper.insertOrderProduct(orderProduct);
         }
-
-
+        //전체 사용량 저장 tlqkf 걍 컬럼을 좀 만들자 제발...네..?
+        BigDecimal totalPointDiscount = userOrderDto.getOderProductsRequestDtos().stream()
+                .map(dto -> dto.getPointDiscount() != null ? dto.getPointDiscount() : BigDecimal.ZERO)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        //사용한 쿠폰 상태 사용으로 변경
+        //근데... 이런식으면 쿠폰 디비가 너무 쌓여서 비효율적 서비스 완성후 논의 필요
+        userCouponMapper.changeStatus(userOrderDto.getUserCouponId());
+        //포인트 차감
+        usersMapper.discountPointsToUserByUserId(userId, totalPointDiscount.longValue());
     }
 
     @Transactional(readOnly = true)
