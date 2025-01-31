@@ -1,8 +1,5 @@
 package com.midnear.midnearshopping.controller.productManage;
-import com.midnear.midnearshopping.domain.dto.productManagement.CancelProductDTO;
-import com.midnear.midnearshopping.domain.dto.productManagement.ParamDTO;
-import com.midnear.midnearshopping.domain.dto.productManagement.ReturnDTO;
-import com.midnear.midnearshopping.domain.dto.productManagement.ReturnParamDTO;
+import com.midnear.midnearshopping.domain.dto.productManagement.*;
 import com.midnear.midnearshopping.exception.ApiResponse;
 import com.midnear.midnearshopping.service.productManagement.ReturnService;
 import jakarta.validation.Valid;
@@ -118,6 +115,28 @@ public class ReturnController {
     public ResponseEntity<ApiResponse> returnToExchange(@RequestBody List<Long> returnId) {
         try {
             returnService.updateEx(returnId);
+            // 200 OK 응답으로 JSON 반환
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "성공적으로 수정되었습니다.", null));
+
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
+
+    // 송장번호 입력
+    @PutMapping("/Invoice")
+    public ResponseEntity<ApiResponse> filterSearch(@RequestBody InvoiceInsertDTO invoiceInsertDTO) {
+        try {
+            Long courierNumber = returnService.selectCarrierName(invoiceInsertDTO.getCourier());
+
+            if (courierNumber == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(new ApiResponse(false, "존재하지 않는 택배사입니다.", null));
+            }
+            invoiceInsertDTO.setCarrierId(courierNumber);
+            returnService.updateInvoice(invoiceInsertDTO);
             // 200 OK 응답으로 JSON 반환
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "성공적으로 수정되었습니다.", null));

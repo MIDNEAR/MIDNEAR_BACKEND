@@ -1,4 +1,5 @@
 package com.midnear.midnearshopping.service.productManagement;
+import com.midnear.midnearshopping.domain.dto.productManagement.InvoiceInsertDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.ParamDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.ReturnDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.ReturnParamDTO;
@@ -24,4 +25,8 @@ public interface ReturnService {
 
     // 선택상품 교환처리
     void updateEx(List<Long> returnId);
+
+    // 반품 송장번호 입력
+    void updateInvoice(InvoiceInsertDTO invoiceInsertDTO);
+    Long selectCarrierName(String carrierName);
 }

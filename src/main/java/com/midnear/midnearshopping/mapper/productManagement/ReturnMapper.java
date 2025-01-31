@@ -1,5 +1,6 @@
 package com.midnear.midnearshopping.mapper.productManagement;
 
+import com.midnear.midnearshopping.domain.dto.productManagement.InvoiceInsertDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.ParamDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.ReturnDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.ReturnParamDTO;
@@ -27,5 +28,10 @@ public interface ReturnMapper {
     // 선택주문 교환처리
     void updateEx(List<Long> returnId);
 
+    // 교환목록에 추가
     void insertRetoEx(List<Long> returnId);
+
+    // 반품 송장번호 입력
+    void updateReturnStatus(InvoiceInsertDTO invoiceInsertDTO);
+    Long selectCarrierName(String carrierName);
 }

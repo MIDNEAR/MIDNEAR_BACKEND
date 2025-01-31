@@ -14,5 +14,6 @@ public class InvoiceInsertDTO {
     Long invoiceNumber;
     Long carrierId;
     List<Long> orderProductId;
+    List<Long> returnId;
 }
 
