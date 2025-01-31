@@ -18,4 +18,18 @@
     <delete id="deletePreviousData">
         delete from review_point
     </delete>
+    <select id="getCouponsByUserId">
+        select * from user_coupon uc
+        where uc.user_id = #{userId}
+        GROUP BY uc.coupon_id, uc.user_id, uc.issued_date, uc.expiry_date
+    </select>
+    <select id="getCouponsCountByUserId">
+        select COUNT(*) from user_coupon uc
+        where uc.user_id = #{userId}
+    </select>
+    <delete id="deleteCouponByUserId">
+        DELETE FROM user_coupon
+        WHERE user_id = #{userId}
+    </delete>
+
 </mapper>
