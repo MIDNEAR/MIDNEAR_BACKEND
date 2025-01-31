@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.midnear.midnearshopping.mapper.coupon_point.PointMapper">
+    <insert id="grantPoints" useGeneratedKeys="true" keyProperty="pointId">
+        INSERT INTO point (
+        amount, reason
+        ) VALUES (
+        #{amount}, #{reason}
+        )
+    </insert>
+    <insert id="setReviewPointAmount">
+        INSERT INTO review_point (
+        text_review, photo_review
+        ) VALUES (
+        #{textReview}, #{photoReview}
+        )
+    </insert>
+    <delete id="deletePreviousData">
+        delete from review_point
+    </delete>
+</mapper>
