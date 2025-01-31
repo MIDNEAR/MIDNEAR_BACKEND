@@ -325,20 +325,26 @@
     </update>
 
     <insert id="insertResendInfo">
-        insert into exchange_delivery( resend_courier,resend_invoice_number,redelivery_date, exchange_id,delivery_address_id)
+        insert into exchange_delivery( resend_courier,resend_invoice_number,redelivery_date, exchange_id,carrier_id)
         select
             #{resendCourier},
             #{resendInvoiceNumber},
             current_timestamp,
             e.exchange_id,
-            o.delivery_address_id
+            cm.carrier_id
         from exchange e
-            inner join order_products op on e.order_product_id = op.order_product_id
-            inner join orders o on op.order_id = o.order_id
+        left join carrier_mapping cm on cm.carrier_name = #{resendCourier}
         where e.exchange_id in
         <foreach item="id" index="index" collection="exchangeId" open="(" separator="," close=")">
             #{id}
         </foreach>
     </insert>
+
+    <!-- 이름검사 -->
+    <select id="selectReturnCarrierName">
+        select carrier_id
+        from carrier_mapping
+        where carrier_name = #{resendCourier}
+    </select>
 
 </mapper>

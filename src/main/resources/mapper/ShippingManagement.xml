@@ -31,7 +31,7 @@
 
     <!--반품 배송정보 업데이트 -->
     <select id="getReturnOrder">
-        select rd.return_delivery_id,
+        select r.return_id,
                cm.carrier_code,
                rd.invoice_number
         from return_delivery rd
@@ -48,7 +48,7 @@
 
     <!--교환 수거 배송정보 업데이트 -->
     <select id="getExchangePickupOrder">
-        select epd.pickup_delivery_id,
+        select e.exchange_id,
                cm.carrier_code,
                epd.pickup_invoice
         from exchange_pickup_delivery epd
@@ -62,6 +62,25 @@
         inner join exchange_pickup_delivery epd on epd.exchange_id = e.exchange_id
         set e.exchange_status = '상품수거완료',
             epd.pickup_complete_date = now()
+        WHERE e.exchange_id= #{exchangeId}
+    </update>
+
+    <!--교환 재배송 정보 업데이트 -->
+    <select id="getExchangeReturnOrder">
+        select e.exchange_id,
+               cm.carrier_code,
+               ed.resend_invoice_number
+        from exchange_delivery ed
+                 inner join carrier_mapping  cm on  ed.carrier_id = cm.carrier_id
+                 inner join exchange e on ed.exchange_id = e.exchange_id
+        where e.exchange_status = '상품재배송중'
+    </select>
+
+    <update id="updateExchangeReturnStatus">
+        update exchange e
+            inner join exchange_delivery ed on ed.exchange_id = e.exchange_id
+            set e.exchange_status = '배송완료',
+                ed.redelivery_date = now()
         WHERE e.exchange_id= #{exchangeId}
     </update>
 

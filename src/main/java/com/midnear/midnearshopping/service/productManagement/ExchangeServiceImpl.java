@@ -71,8 +71,13 @@ public class ExchangeServiceImpl implements ExchangeService {
     // 상품 재배송처리
     @Transactional
     @Override
-    public void updatedelivery(ExchangeParamDTO exchangeParamDTO) {
-        exchangeMapper.updateStatus(exchangeParamDTO.getExchangeId());
-        exchangeMapper.insertResendInfo(exchangeParamDTO.getExchangeId(),exchangeParamDTO.getResendCourier(),exchangeParamDTO.getResendInvoiceNumber());
+    public void insertResendInfo(InvoiceInsertDTO invoiceInsertDTO) {
+        exchangeMapper.updateStatus(invoiceInsertDTO.getExchangeId());
+        exchangeMapper.insertResendInfo(invoiceInsertDTO);
+    }
+
+    @Override
+    public Long selectReturnCarrierName(String resendCourier) {
+        return exchangeMapper.selectReturnCarrierName(resendCourier);
     }
 }

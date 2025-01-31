@@ -12,8 +12,10 @@ import java.util.List;
 public class InvoiceInsertDTO {
     String courier;
     String pickupCourier;
+    String resendInvoiceNumber;
     String pickupInvoice;
     String invoiceNumber;
+    String resendCourier;
     Long carrierId;
     List<Long> orderProductId;
     List<Long> returnId;

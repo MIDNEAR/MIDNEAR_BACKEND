@@ -26,4 +26,10 @@ public interface ShippingManagementMapper {
     List<DeliveryInfoDTO> getExchangePickupOrder();
 
     void updateExchangePickupStatus(@Param("exchangeId") Long exchangeId);
+
+
+    // 교환 재배송정보 업데이트
+    List<DeliveryInfoDTO> getExchangeReturnOrder();
+
+    void updateExchangeReturnStatus(@Param("exchangeId") Long exchangeId);
 }

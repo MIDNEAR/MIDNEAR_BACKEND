@@ -30,5 +30,7 @@ public interface ExchangeService {
     Long selectCarrierName(String carrierName);
 
 //  선택내역 배송처리
-    void updatedelivery(ExchangeParamDTO exchangeParamDTO);
+    void insertResendInfo(InvoiceInsertDTO InvoiceInsertDTO);
+//  재배송 택배사 이름검사
+    Long selectReturnCarrierName(String resendCourier);
 }

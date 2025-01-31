@@ -3,7 +3,6 @@ package com.midnear.midnearshopping.service.productManagement;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.midnear.midnearshopping.domain.dto.delivery.DeliveryInfoDTO;
-import com.midnear.midnearshopping.mapper.productManagement.ReturnMapper;
 import com.midnear.midnearshopping.mapper.productManagement.ShippingManagementMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -91,7 +90,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
                     if ("배송완료".equals(status)) {  // 스마트택배 API에서 "배송완료" 확인
                         try {
-                            shippingManagementMapper.updateReturnStatus(deliveryinfo.getReturnDeliveryId());
+                            shippingManagementMapper.updateReturnStatus(deliveryinfo.getReturnId());
                             log.info("배송완료 업데이트 성공");
                         } catch (Exception e) {
                             log.error("배송완료 업데이트 실패",e);
@@ -124,7 +123,39 @@ public class DeliveryServiceImpl implements DeliveryService {
 
                     if ("배송완료".equals(status)) {  // 스마트택배 API에서 "배송완료" 확인
                         try {
-                            shippingManagementMapper.updateExchangePickupStatus(deliveryinfo.getPickupDeliveryId());
+                            shippingManagementMapper.updateExchangePickupStatus(deliveryinfo.getExchangeId());
+                            log.info("배송완료 업데이트 성공");
+                        } catch (Exception e) {
+                            log.error("배송완료 업데이트 실패",e);
+                        }
+                    }
+                } else {
+                    log.warn("스마트택배 API 응답 오류");
+                }
+            } catch (Exception e) {
+                log.error("스마트택배 API 호출 실패 : {}", e.getMessage(), e);
+            }
+        }
+    }
+
+    // 교환 재배송 배송상태
+    @Override
+    @Scheduled(fixedRate = 3600000)
+    public void updateExchangeReturnTrackingStatus() {
+        List<DeliveryInfoDTO> inTransitOrders = shippingManagementMapper.getExchangeReturnOrder();
+
+        for (DeliveryInfoDTO deliveryinfo : inTransitOrders) {
+            String url = SMART_TRACKING_API_URL + "?t_code=" + deliveryinfo.getCarrierCode() + "&t_invoice=" + deliveryinfo.getResendInvoiceNumber() + "&t_key=" + "P4pBDvEWDxfhFhnnNRs9NA";
+
+            try {
+                ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, null, String.class);
+
+                if (response.getStatusCode() == HttpStatus.OK) {
+                    String status = parseStatusFromResponse(response.getBody());
+
+                    if ("배송완료".equals(status)) {  // 스마트택배 API에서 "배송완료" 확인
+                        try {
+                            shippingManagementMapper.updateExchangeReturnStatus(deliveryinfo.getExchangeId());
                             log.info("배송완료 업데이트 성공");
                         } catch (Exception e) {
                             log.error("배송완료 업데이트 실패",e);

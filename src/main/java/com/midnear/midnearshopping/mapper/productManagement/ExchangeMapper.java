@@ -34,5 +34,6 @@ public interface ExchangeMapper {
 
     // 선택내역 배송처리
     void updateStatus(@Param("exchangeId")List<Long> exchangeId);
-    void insertResendInfo(@Param("exchangeId")List<Long>exchangeId,@Param("resendCourier")String resendCourier,@Param("resendInvoiceNumber")Long resendInvoiceNumber);
+    Long selectReturnCarrierName(String resendCourier);
+    void insertResendInfo(InvoiceInsertDTO invoiceInsertDTO);
 }

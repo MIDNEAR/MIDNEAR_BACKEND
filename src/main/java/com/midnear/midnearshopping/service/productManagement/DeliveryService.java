@@ -17,4 +17,7 @@ public interface DeliveryService {
 
 //  교환 수거 배송조회
     void updateExchangePickupTrackingStatus();
+
+//  교환 재배송 배송조회
+    void updateExchangeReturnTrackingStatus();
 }
