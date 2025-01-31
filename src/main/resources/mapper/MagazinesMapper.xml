@@ -165,4 +165,69 @@
         where magazine_id = #{magazineId}
     </delete>
 
+    <!--여기서부터 사용자 시작-->
+
+    <select id="getUserMagazineList">
+        select
+            magazine_id AS magazineId,
+            title,
+            created_date AS createdDate,
+            view_count AS viewCount,
+            main_image AS mainImage
+        from magazines m
+        ORDER BY
+        <choose>
+            <when test="sort == 'latest'">
+                m.created_date DESC
+            </when>
+            <when test="sort == 'popularity'">
+                m.view_count DESC
+            </when>
+            <otherwise>
+                m.created_date DESC
+            </otherwise>
+        </choose>
+        LIMIT #{pageSize} OFFSET #{offset}
+    </select>
+    <select id="getMagazine" >
+        select
+        m.magazine_id AS magazineId,
+        m.title,
+        m.content,
+        m.created_date AS createdDate,
+        m.view_count AS viewCount,
+        mi.image_url  AS imageUrls
+        from magazines m left join magazine_images mi on mi.magazine_id = m.magazine_id
+        where m.magazine_id = #{magazineId}
+    </select>
+
+    <update id="updateViewCount">
+        update magazines
+        set view_count = view_count + 1
+        where magazine_id = #{magazineId}
+    </update>
+
+    <select id="magazineUserSearch" >
+        select
+        magazine_id AS magazineId,
+        title,
+        created_date AS createdDate,
+        view_count AS viewCount,
+        main_image AS mainImage
+        from magazines m
+        where title like CONCAT('%', #{searchValue}, '%')
+        order by
+        <choose>
+            <when test="sort == 'latest'">
+                m.created_date DESC
+            </when>
+            <when test="sort == 'popularity'">
+                m.view_count DESC
+            </when>
+            <otherwise>
+                m.created_date DESC
+            </otherwise>
+        </choose>
+        LIMIT #{pageSize} OFFSET #{offset}
+    </select>
 </mapper>
