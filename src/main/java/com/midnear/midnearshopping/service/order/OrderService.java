@@ -231,16 +231,18 @@ public class OrderService {
                 .build();
     }
 
-    public OrderProductDto getOrderProductDetail(Long orderProductId) {
+    public OrderProductDto getOrderProductDetailForCancel(Long orderProductId) {
         OrderProductsVO product = orderProductsMapper.getOrderProductById(orderProductId);
         if (product == null) {
             throw new IllegalArgumentException("해당 주문 상품 정보가 존재하지 않습니다.");
         }
+        String orderState = Optional.ofNullable(product.getClaimStatus())
+                .orElseGet(() -> userOrderProductsMapper.getDeliveryInfo(product.getDeliveryId()));
         return OrderProductDto.builder()
                 .orderProductId(product.getOrderProductId())
                 .size(product.getSize())
                 .quantity(product.getQuantity())
-                .claimStatus(product.getClaimStatus())
+                .claimStatus(orderState)
                 .pointDiscount(product.getPointDiscount())
                 .productPrice(product.getProductPrice()) // 계산된 값 설정
                 .productName(product.getProductName())
@@ -332,5 +334,10 @@ public class OrderService {
         return ordersVO.getOrderNumber();
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    public OrderDetailsDto getOrderNonUser(String orderName, String orderContact, String orderNumber){
+        Long orderId = orderMapper.getOrdersNonUser(orderName, orderContact, orderNumber);
+        return getOrderDetails(orderId);
+    }
 }
 

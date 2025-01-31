@@ -18,7 +18,7 @@ public interface OrderMapper {
     OrdersVO getOrderById(@Param("orderId") Long orderId);
 
     List<UserOrderCheckDto> getOrdersByUserId(@Param("userId")Integer userId, @Param("sort") String sort, @Param("offset") int offset, @Param("pageSize") int pageSize);
-
+    Long getOrdersNonUser(@Param("orderName")String orderName, @Param("orderContact") String order_contact, @Param("orderNumber") String orderNumber);
     // 주문 상품 목록 조회
 
 
