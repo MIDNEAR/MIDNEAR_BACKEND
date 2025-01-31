@@ -23,26 +23,27 @@
     </select>
 
     <update id="updateTrackingStatus">
-        UPDATE delivery_info
-        SET tracking_delivery = '배송완료',
+        update delivery_info
+        set tracking_delivery = '배송완료',
             delivery_complete_date = current_timestamp
-        WHERE delivery_id = #{deliveryId}
+        where delivery_id = #{deliveryId}
     </update>
 
     <!--반품 배송정보 업데이트 -->
     <select id="getReturnOrder">
-        SELECT rd.delivery_id,
+        select rd.return_delivery_id,
                cm.carrier_code,
                rd.invoice_number
-        FROM return_delivery rd
+        from return_delivery rd
                  inner join carrier_mapping  cm on  rd.carrier_id = cm.carrier_id
-        WHERE rd.return_delivery_status = '수거완료'
+                 inner join returns r on rd.return_id = r.return_id
+        where r.return_status = '상품수거완료'
     </select>
 
     <update id="updateReturnStatus">
-        UPDATE return_delivery
-        SET return_delivery_status = '환불대기중',
-        WHERE return_delivery_id = #{returnDeliveryId}
+        update returns
+        set return_status = '환불대기중'
+        WHERE return_id = #{returnId}
     </update>
 
 </mapper>

@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 public class InvoiceInsertDTO {
     String courier;
-    Long invoiceNumber;
+    String invoiceNumber;
     Long carrierId;
     List<Long> orderProductId;
     List<Long> returnId;
