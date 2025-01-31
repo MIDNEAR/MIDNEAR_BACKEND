@@ -16,4 +16,5 @@ public class ReviewImagesVO {
     String extension;
     Date creationDate;
     Long reviewId;
+    String comment;
 }

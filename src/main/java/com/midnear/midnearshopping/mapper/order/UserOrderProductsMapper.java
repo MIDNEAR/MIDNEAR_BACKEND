@@ -13,4 +13,6 @@ public interface UserOrderProductsMapper {
     void insertOrderProduct(OrderProductsVO orderProduct);
     List<OrderProductsVO> getOrderProductsByOrderId(@Param("orderId") Long orderId);
     void updateOrderStatus(Long orderProductId, String status);
+    String getDeliveryInfo(Long deliveryId);
+    List<OrderProductsVO> getOrderProductsByOrderIdAndStatus(@Param("orderId") Long orderId, @Param("status") String status);
 }

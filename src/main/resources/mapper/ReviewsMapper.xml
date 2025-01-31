@@ -2,16 +2,31 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.midnear.midnearshopping.mapper.review.ReviewsMapper">
+    <resultMap id="ReviewListResultMap" type="com.midnear.midnearshopping.domain.dto.review.ReviewListDto">
+        <id property="reviewId" column="review_id"/>
+        <result property="id" column="userId"/>
+        <result property="created" column="created"/>
+        <result property="rating" column="rating"/>
+        <result property="color" column="color"/>
+        <result property="size" column="size"/>
+        <result property="content" column="content"/>
+        <result property="isReply" column="isReply"/>
+
+        <!-- review_images를 imagesPerReview 리스트로 매핑 -->
+        <collection property="imagesPerReview" ofType="java.lang.String">
+            <result column="review_image_url"/>
+        </collection>
+    </resultMap>
 
     <insert id="insertReview" useGeneratedKeys="true" keyProperty="reviewId">
         INSERT INTO reviews (
-            created_at,
+            created_date,
             modified_date,
             rating,
             review,
             review_status,
             user_id,
-            user_product_id
+            order_product_id
         ) VALUES (
                      #{createdAt},
                      #{modifiedDate},
@@ -19,16 +34,16 @@
                      #{review},
                      #{reviewStatus},
                      #{userId},
-                     #{userProductId}
+                     #{orderProductId}
                  )
     </insert>
 
-    <select id="getReviewById" resultType="com.midnear.midnearshopping.domain.vo.review.ReviewsVO">
+    <select id="getReviewById" >
         SELECT * FROM reviews WHERE review_id = #{reviewId}
     </select>
 
-    <select id="getReviewsByProductId" resultType="com.midnear.midnearshopping.domain.vo.review.ReviewsVO">
-        SELECT * FROM reviews WHERE user_product_id = #{userProductId} ORDER BY created_at DESC
+    <select id="getReviewsByProductId" >
+        SELECT * FROM reviews WHERE user_product_id = #{userProductId} ORDER BY created_date DESC
     </select>
 
     <update id="updateReview">
@@ -39,9 +54,76 @@
             review_status = #{reviewStatus}
         WHERE review_id = #{reviewId}
     </update>
+    <update id="updateReviewStatus">
+        UPDATE reviews
+        SET review_status = 'inactive'
+        WHERE review_id = #{reviewId}
+    </update>
 
-    <delete id="deleteReview">
-        DELETE FROM reviews WHERE review_id = #{reviewId}
-    </delete>
+    <update id="updateReviewComment">
+        UPDATE reviews
+        SET comment = #{comment}
+        WHERE review_id = #{reviewId}
+    </update>
+
+    <!-- 사진이 포함된 리뷰 개수 조회 -->
+    <select id="getImageReviewCount" resultType="int">
+        SELECT COUNT(DISTINCT r.review_id)
+        FROM reviews r
+                 JOIN review_images ri ON r.review_id = ri.review_id
+        WHERE r.order_product_id IN
+              (SELECT order_product_id FROM order_products WHERE product_name = #{productName})
+    </select>
+
+    <!-- 전체 리뷰 개수 조회 -->
+    <select id="getReviewCount" resultType="int">
+        SELECT COUNT(*)
+        FROM reviews
+        WHERE order_product_id IN
+              (SELECT order_product_id FROM order_products WHERE product_name = #{productName})
+    </select>
+
+    <!-- 사진이 포함된 리뷰의 대표 이미지 리스트 (최대 5개) -->
+    <select id="getAllReviewImages" resultType="string">
+        SELECT ri.review_image_url
+        FROM review_images ri
+                 JOIN reviews r ON ri.review_id = r.review_id
+        WHERE r.order_product_id IN
+              (SELECT order_product_id FROM order_products WHERE product_name = #{productName})
+        GROUP BY r.review_id
+        ORDER BY r.created_date DESC
+            LIMIT 5
+    </select>
+
+    <!-- 리뷰 리스트 조회 -->
+    <select id="getReviewList" resultMap="ReviewListResultMap">
+        SELECT
+            r.review_id,
+            u.id AS userId,
+            r.created_date AS created,
+            r.rating,
+            op.size,
+            op.color,
+            r.review AS content,
+            r.comment,
+            ri.review_image_url
+        FROM reviews r
+                 JOIN order_products op ON r.order_product_id = op.order_product_id
+                 JOIN users u ON r.user_id = u.user_id
+                 JOIN review_images ri ON r.review_id = ri.review_id
+        WHERE op.product_name = #{productName} AND r.review_status = 'active'
+        ORDER BY r.created_date DESC
+            LIMIT #{pageSize} OFFSET #{offset}
+    </select>
+
+    <!-- 리뷰별 이미지 리스트 조회 -->
+    <select id="getReviewImages">
+        SELECT review_image_url
+        FROM review_images
+        WHERE review_id = #{reviewId}
+    </select>
+
+
+
 
 </mapper>

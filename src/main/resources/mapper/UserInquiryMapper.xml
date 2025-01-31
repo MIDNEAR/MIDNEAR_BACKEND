@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.midnear.midnearshopping.mapper.inquiry.UserInquiriesMapper">
+<mapper namespace="com.midnear.midnearshopping.mapper.Inquiries.UserInquiryMapper">
 
     <insert id="insertInquiry">
         INSERT INTO inquiries (
@@ -14,12 +14,54 @@
         ) VALUES (
             #{title},
             #{content},
-            #{createdAt},
+            NOW(),
             #{isPrivate},
             #{viewCount},
-            #{hasReply},
+            COALESCE(#{hasReply}, '대기중'),
             #{userId}
         )
     </insert>
+    <select id="SelectInquirylist">
+        select
+            i.inquiry_id,
+            i.title,
+            i.content,
+            i.created_at,
+            i.view_count,
+            i.is_private,
+            i.has_reply,
+            u.id
+        from inquiries i
+                 left join users u on i.user_id = u.user_id
+        order by i.created_at desc
+            LIMIT #{pageSize} OFFSET #{offset}
+    </select>
+
+    <select id="selectInquiries">
+        select
+            i.inquiry_id,
+            i.title,
+            i.content,
+            i.created_at,
+            i.is_private,
+            i.view_count,
+            i.has_reply,
+            c.comment_id,
+            c.reply_content,
+            c.reply_date,
+            u.user_id,
+            u.id
+        from
+            inquiries i
+                left join inquiry_comments c on i.inquiry_id = c.inquiry_id
+                left join users u on i.user_id = u.user_id
+        where
+            i.inquiry_id = #{inquiry_id}
+    </select>
+    <update id="updateViewCount">
+        UPDATE inquiries
+        SET view_count= view_count +1
+       WHERE inquiry_id = #{inquiryId}
+    </update>
 
 </mapper>

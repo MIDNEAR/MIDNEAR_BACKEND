@@ -24,9 +24,9 @@ public class InquiriesVO {
         return InquiriesVO.builder()
                 .title(inquiryRequestDto.getTitle())
                 .content(inquiryRequestDto.getContent())
-                .createdAt(Date.valueOf(LocalDate.now())) // 현재 시간 설정
                 .isPrivate(inquiryRequestDto.getIsPrivate())
                 .viewCount(0L) // 신규 생성 시 조회 수 0으로 설정
+                .hasReply("대기중")
                 .userId(inquiryRequestDto.getUserId())
                 .build();
     }
