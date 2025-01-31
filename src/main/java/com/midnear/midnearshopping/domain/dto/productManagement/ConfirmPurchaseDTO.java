@@ -27,10 +27,9 @@ public class ConfirmPurchaseDTO {
     String color;
     String size;
     int quantity;
-    BigDecimal price;
+    BigDecimal productPrice;
     BigDecimal pointDiscount;
     BigDecimal couponDiscount;
-    BigDecimal totalPaymentAmount;
     BigDecimal deliveryCharge;
     BigDecimal allPayment;
 }

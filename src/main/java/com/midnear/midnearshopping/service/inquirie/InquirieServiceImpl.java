@@ -15,7 +15,7 @@ import java.util.List;
 public class InquirieServiceImpl implements InquirieService {
 
     private final InquiriesMapper inquiriesMapper;
-    private static final int pageSize = 2;
+    private static final int pageSize = 23;
 
 //  문의 글 하나 띄우기
     @Override
@@ -30,7 +30,12 @@ public class InquirieServiceImpl implements InquirieService {
         inquiriesMapper.insertInquiryComment(inquiryCommentsDTO);
     }
 
-//  문의 댓글 수정
+    @Override
+    public void updateInquiry(Long updateInquiry) {
+        inquiriesMapper.updateInquiry(updateInquiry);
+    }
+
+    //  문의 댓글 수정
     @Override
     public void updateInquiryComment(Inquiry_commentsDTO inquiryCommentsDTO) {
         inquiriesMapper.updateInquiryComment(inquiryCommentsDTO);
