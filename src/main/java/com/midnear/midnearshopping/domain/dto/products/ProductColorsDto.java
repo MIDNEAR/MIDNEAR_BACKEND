@@ -16,7 +16,6 @@ import java.util.List;
 @Builder
 public class ProductColorsDto {
     private Long productColorId;
-    //private Long coordinatedProductId;
     private String color;
     private  Long productId;
     private List<SizesDto> sizes  = new ArrayList<>();

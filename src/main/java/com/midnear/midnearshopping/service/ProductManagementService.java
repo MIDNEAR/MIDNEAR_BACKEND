@@ -41,6 +41,7 @@ public class ProductManagementService {
     private final ProductImagesMapper productImagesMapper;
     private final ShippingReturnsMapper shippingReturnsMapper;
     private final S3Service s3Service;
+    int size = 23; // 한 페이지에 들어가는 상품 개수
 
     public List<CategoryDto> getCategories() {
         List<CategoryVo> categoryVoList = categoriesMapper.getCategories();
@@ -55,8 +56,7 @@ public class ProductManagementService {
         List<CategoryDto> rootCategories = new ArrayList<>(); // 최상위 카테고리 list
         for (CategoryVo vo : categoryVoList) {
             CategoryDto current = dtoMap.get(vo.getCategoryId());
-            if (vo.getParentCategoryId() == null) {
-                // 최상위 카테고리
+            if (vo.getParentCategoryId() == null) { // 부모 카테고리가 null이면 최상위 카테고리
                 rootCategories.add(current);
             } else {
                 // 하위 카테고리를 부모의 children 리스트에 추가
@@ -72,25 +72,14 @@ public class ProductManagementService {
 
     @Transactional
     public void registerProducts(ProductsDto productDto) {
-        // 공통 상품 정보 저장하고 productId 반환
-        ProductsVo productsVo = ProductsVo.builder()
-                .productName(productDto.getProductName())
-                .price(productDto.getPrice())
-                .discountPrice(productDto.getDiscountPrice())
-                .discountRate(productDto.getDiscountRate())
-                .discountStartDate(productDto.getDiscountStartDate())
-                .discountEndDate(productDto.getDiscountEndDate())
-                .detail(productDto.getDetail())
-                .sizeGuide(productDto.getSizeGuide())
-                .registeredDate(productDto.getRegisteredDate())
-                .categoryId(productDto.getCategoryId())
-                .build();
+        // 공통 상품 정보 저장하고 vo에 productId 반환
+        ProductsVo productsVo = ProductsVo.toEntity(productDto);
         productsMapper.registerProducts(productsVo);
 
         // 컬러별 상품 등록
         List<ProductColorsDto> colors = productDto.getColors();
         for (ProductColorsDto color : colors) {
-            // 색상 등록 하고 productColorId 반환
+            // 색상 등록 하고 vo에 productColorId 반환
             ProductColorsVo productColorsVo = ProductColorsVo.builder()
                     .color(color.getColor())
                     .productId(productsVo.getProductId())
@@ -143,7 +132,7 @@ public class ProductManagementService {
         }
     }
 
-    public Map<String, Object> getProductList(int page, int size, String sortOrder, String dateRange, String searchRange, String searchText) {
+    public Map<String, Object> getProductList(int page, String sortOrder, String dateRange, String searchRange, String searchText) {
         Map<String, Object> result = new HashMap<>();
         List<ProductManagementListDto> productList = new ArrayList<>();
 
@@ -269,6 +258,7 @@ public class ProductManagementService {
                 s3Service.deleteFile(imagesVo.getImageUrl());
             }
         }
+        // color 다 삭제 되면기본 정보 거기도 삭제
         // 상품 삭제, 관련 테이블 (productColors, sizes, productImages 에 cascade 걸려있음)
         productsMapper.deleteProducts(deleteList);
     }
