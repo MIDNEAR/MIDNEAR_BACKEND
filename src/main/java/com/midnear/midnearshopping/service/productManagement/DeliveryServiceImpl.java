@@ -74,7 +74,7 @@ public class DeliveryServiceImpl implements DeliveryService {
         }
     }
 
-//  교환 배송상태 update
+//  반품 배송상태 update
     @Override
     @Scheduled(fixedRate = 3600000)
     public void updateReturnTrackingStatus() {
@@ -105,6 +105,38 @@ public class DeliveryServiceImpl implements DeliveryService {
             }
         }
 
+    }
+
+    // 교환 수거배송상태
+    @Override
+    @Scheduled(fixedRate = 3600000)
+    public void updateExchangePickupTrackingStatus() {
+        List<DeliveryInfoDTO> inTransitOrders = shippingManagementMapper.getExchangePickupOrder();
+
+        for (DeliveryInfoDTO deliveryinfo : inTransitOrders) {
+            String url = SMART_TRACKING_API_URL + "?t_code=" + deliveryinfo.getCarrierCode() + "&t_invoice=" + deliveryinfo.getPickupInvoice() + "&t_key=" + "P4pBDvEWDxfhFhnnNRs9NA";
+
+            try {
+                ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, null, String.class);
+
+                if (response.getStatusCode() == HttpStatus.OK) {
+                    String status = parseStatusFromResponse(response.getBody());
+
+                    if ("배송완료".equals(status)) {  // 스마트택배 API에서 "배송완료" 확인
+                        try {
+                            shippingManagementMapper.updateExchangePickupStatus(deliveryinfo.getPickupDeliveryId());
+                            log.info("배송완료 업데이트 성공");
+                        } catch (Exception e) {
+                            log.error("배송완료 업데이트 실패",e);
+                        }
+                    }
+                } else {
+                    log.warn("스마트택배 API 응답 오류");
+                }
+            } catch (Exception e) {
+                log.error("스마트택배 API 호출 실패 : {}", e.getMessage(), e);
+            }
+        }
     }
 }
 

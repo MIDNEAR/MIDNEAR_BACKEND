@@ -294,11 +294,12 @@
     <update id="updatePickupStatus">
         update exchange e
         inner join exchange_pickup_delivery epd on epd.exchange_id = e.exchange_id
-        left join carrier_mapping cm on cm.carrier_name = #{courier}
+        left join carrier_mapping cm on cm.carrier_name = #{pickupCourier}
         set e.exchange_status = '상품수거중',
         epd.pickup_courier= #{pickupCourier},
         epd.pickup_invoice= #{pickupInvoice},
-        epd.carrier_id = cm.carrier_id
+        epd.carrier_id = cm.carrier_id,
+        epd.pickup_status = '상품수거중'
         where e.exchange_id in
         <foreach item="id" index="index" collection="exchangeId" open="(" separator="," close=")">
             #{id}

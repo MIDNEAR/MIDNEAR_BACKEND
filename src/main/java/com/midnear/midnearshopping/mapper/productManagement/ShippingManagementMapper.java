@@ -17,7 +17,13 @@ public interface ShippingManagementMapper {
     List<DeliveryInfoDTO> getInTransitOrders();
     void updateTrackingStatus(@Param("deliveryId") Long deliveryId);
 
+    // 환불배송정보 업데이트
     List<DeliveryInfoDTO> getReturnOrder();
 
     void updateReturnStatus(@Param("returnId") Long returnId);
+
+    // 교환 수거 배송정보 업데이트
+    List<DeliveryInfoDTO> getExchangePickupOrder();
+
+    void updateExchangePickupStatus(@Param("exchangeId") Long exchangeId);
 }

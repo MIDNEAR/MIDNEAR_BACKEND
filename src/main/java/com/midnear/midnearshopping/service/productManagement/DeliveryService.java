@@ -14,4 +14,7 @@ public interface DeliveryService {
 
  //  환불 배송조회
     void updateReturnTrackingStatus();
+
+//  교환 수거 배송조회
+    void updateExchangePickupTrackingStatus();
 }

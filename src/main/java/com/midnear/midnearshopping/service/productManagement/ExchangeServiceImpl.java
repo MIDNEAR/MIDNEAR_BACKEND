@@ -58,11 +58,11 @@ public class ExchangeServiceImpl implements ExchangeService {
         exchangeMapper.denayExchange(exchangeParamDTO);
     }
 
+    //  수거 송장번호 입력
     @Override
     public void updatePickupStatus(InvoiceInsertDTO invoiceInsertDTO) {
         exchangeMapper.updatePickupStatus(invoiceInsertDTO);
     }
-
     @Override
     public Long selectCarrierName(String carrierName) {
         return exchangeMapper.selectCarrierName(carrierName);

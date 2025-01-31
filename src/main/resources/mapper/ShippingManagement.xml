@@ -46,4 +46,23 @@
         WHERE return_id = #{returnId}
     </update>
 
+    <!--교환 수거 배송정보 업데이트 -->
+    <select id="getExchangePickupOrder">
+        select epd.pickup_delivery_id,
+               cm.carrier_code,
+               epd.pickup_invoice
+        from exchange_pickup_delivery epd
+                 inner join carrier_mapping  cm on  epd.carrier_id = cm.carrier_id
+                 inner join exchange e on epd.exchange_id = e.exchange_id
+        where e.exchange_status = '상품수거중'
+    </select>
+
+    <update id="updateExchangePickupStatus">
+        update exchange e
+        inner join exchange_pickup_delivery epd on epd.exchange_id = e.exchange_id
+        set e.exchange_status = '상품수거완료',
+            epd.pickup_complete_date = now()
+        WHERE e.exchange_id= #{exchangeId}
+    </update>
+
 </mapper>

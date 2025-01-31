@@ -8,8 +8,10 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class DeliveryInfoDTO {
+    Long pickupDeliveryId;
     Long deliveryId;
     Long returnDeliveryId;
+    String pickupInvoice;
     String carrierCode;
     String invoiceNumber;
 }
