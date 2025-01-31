@@ -34,4 +34,7 @@ public interface ReturnMapper {
     // 반품 송장번호 입력
     void updateReturnStatus(InvoiceInsertDTO invoiceInsertDTO);
     Long selectCarrierName(String carrierName);
+
+    // 상품 수거완료 처리
+    void pickupProduct(List<Long> returnId);
 }

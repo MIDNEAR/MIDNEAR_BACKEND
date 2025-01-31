@@ -29,4 +29,6 @@ public interface ReturnService {
     // 반품 송장번호 입력
     void updateInvoice(InvoiceInsertDTO invoiceInsertDTO);
     Long selectCarrierName(String carrierName);
+
+    void pickupProduct(List<Long> returnId);
 }

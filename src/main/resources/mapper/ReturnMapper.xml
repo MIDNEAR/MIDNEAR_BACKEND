@@ -294,4 +294,17 @@
         from carrier_mapping
         where carrier_name = #{carrierName}
     </select>
+
+    <!-- 상품 수거완료 처리 -->
+    <update id="pickupProduct">
+        update returns r
+        inner join return_delivery rd on rd.return_id = r.return_id
+        set r.return_status = '상품수거완료',
+            rd.return_delivery_status = '상품수거완료'
+        where r.return_id in
+        <foreach item="id" index="index" collection="returnId" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
 </mapper>
+

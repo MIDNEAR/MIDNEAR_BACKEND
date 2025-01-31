@@ -50,6 +50,7 @@ public class ReturnServiceImpl implements ReturnService {
         returnMapper.confirmReturn(returnId);
     }
 
+    // 반품거부
     @Override
     public void denayReturn(ReturnParamDTO returnParamDTO) {
         returnMapper.denayReturn(returnParamDTO.getReturnDenayReason(),returnParamDTO.getReturnId());
@@ -72,5 +73,10 @@ public class ReturnServiceImpl implements ReturnService {
     @Override
     public Long selectCarrierName(String carrierName) {
         return returnMapper.selectCarrierName(carrierName);
+    }
+
+    @Override
+    public void pickupProduct(List<Long> returnId) {
+        returnMapper.pickupProduct(returnId);
     }
 }
