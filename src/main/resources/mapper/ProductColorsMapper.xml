@@ -5,7 +5,7 @@
         INSERT INTO product_colors (
         color, product_id, sale_status    <!-- 상품 등록 시에는 코디 상품 x -->
         ) VALUES (
-        #{color}, #{productId}, 'ON_SALE'
+        #{color}, #{productId}, '판매중'
         )
     </insert>
     <select id="getProductColorsByProductId" resultType="ProductColorsVo">
