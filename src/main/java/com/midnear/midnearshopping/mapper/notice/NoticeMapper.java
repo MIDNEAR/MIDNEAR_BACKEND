@@ -1,5 +1,6 @@
 package com.midnear.midnearshopping.mapper.notice;
 
+import com.midnear.midnearshopping.domain.dto.notice.NoticeListDto;
 import com.midnear.midnearshopping.domain.vo.notice.NoticeVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -17,5 +18,7 @@ public interface NoticeMapper {
     void fixNotices(List<Long> noticeList);
     void unfixNotices(List<Long> noticeList);
     Long count(@Param("dateRange")String dateRange, @Param("searchRange")String searchRange, @Param("searchText")String searchText);
-
+    NoticeVo findNextFixedNotice(Long noticeId);
+    NoticeVo findNextNotice(Long noticeId);
+    List<NoticeListDto> getNoticesPaging(int offset, int size, String dateRange, String searchText);
 }

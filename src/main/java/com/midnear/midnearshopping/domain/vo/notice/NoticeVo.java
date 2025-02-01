@@ -23,8 +23,6 @@ public class NoticeVo {
 
     private Boolean fix;
 
-    private List<MultipartFile> files;
-
     public static NoticeVo toEntity(NoticeDto noticeDto) {
         return NoticeVo.builder()
                 .noticeId(noticeDto.getNoticeId())
@@ -32,7 +30,6 @@ public class NoticeVo {
                 .content(noticeDto.getContent())
                 .createdDate(noticeDto.getCreatedDate())
                 .fix(noticeDto.getFix())
-                .files(noticeDto.getFiles())
                 .build();
     }
 

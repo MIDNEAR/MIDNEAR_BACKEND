@@ -82,6 +82,31 @@
             #{id}
         </foreach>
     </update>
+    <select id="findNextFixedNotice" resultType="NoticeVo">
+        SELECT *
+        FROM notices
+        WHERE notice_id > #{noticeId}
+          AND fix = TRUE
+        ORDER BY notice_id ASC
+            LIMIT 1
+    </select>
+    <select id="findNextNotice" resultType="NoticeVo">
+        SELECT *
+        FROM notices
+        WHERE notice_id > #{noticeId}
+          AND fix = FALSE
+        ORDER BY notice_id ASC
+            LIMIT 1
+    </select>
+    <select id="getNoticesPaging" resultType="NoticeVo">
+        SELECT * FROM notices
+        WHERE fix = FALSE
+        <include refid="dateCondition" />
+        <if test="searchText != null">
+            AND title LIKE CONCAT('%', #{searchText}, '%')
+        </if>
+        LIMIT #{size} OFFSET #{offset}
+    </select>
     <sql id="dateCondition">
         <choose>
             <when test="dateRange == '오늘'">
