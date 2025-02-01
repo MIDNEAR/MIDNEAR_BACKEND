@@ -37,7 +37,7 @@ public class ReturnDTO {
     String id;
     String recipientName;
     String courier;
-    Long invoiceNumber;
+    String invoiceNumber;
     String orderContact;
     String recipientContact;
 }
