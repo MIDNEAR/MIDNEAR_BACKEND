@@ -24,6 +24,13 @@
         LIMIT #{pageSize} OFFSET #{offset}
     </select>
 
+    <!-- 비회원 주문 정보 조회 -->
+    <select id="getOrdersNonUser">
+        SELECT order_id
+        FROM orders
+        WHERE order_name = #{orderName} AND order_contact = #{orderContact} AND order_number = #{orderNumber}
+    </select>
+
     <select id="getOrderById" parameterType="long" resultType="com.midnear.midnearshopping.domain.vo.order.OrdersVO">
         SELECT * FROM orders WHERE order_id = #{orderId}
     </select>
@@ -39,12 +46,12 @@
         INSERT INTO orders (
             order_name, order_contact, order_email,
              order_date, recipient_name, postal_code,
-            address, detailed_address, order_number, user_id, all_payment
+            address, detailed_address, order_number, user_id, all_payment, delivery_request
         ) VALUES (
                      #{orderName}, #{orderContact}, #{orderEmail},
                       #{orderDate}, #{recipientName}, #{postalCode},
                      #{address}, #{detailedAddress},  #{orderNumber}, #{userId},
-                      #{allPayment}
+                      #{allPayment}, #{deliveryRequest}
                  )
     </insert>
 

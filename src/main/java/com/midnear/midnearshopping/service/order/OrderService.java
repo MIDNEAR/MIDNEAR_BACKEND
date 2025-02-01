@@ -5,7 +5,7 @@ import com.midnear.midnearshopping.domain.dto.order.*;
 import com.midnear.midnearshopping.domain.vo.order.OrderProductsVO;
 import com.midnear.midnearshopping.domain.vo.order.OrdersVO;
 import com.midnear.midnearshopping.domain.vo.products.ProductsVo;
-import com.midnear.midnearshopping.domain.vo.products.SizesVo;
+import com.midnear.midnearshopping.mapper.coupon_point.UserCouponMapper;
 import com.midnear.midnearshopping.mapper.delivery.DeliveryAddressMapper;
 import com.midnear.midnearshopping.mapper.order.OrderMapper;
 import com.midnear.midnearshopping.mapper.order.UserOrderProductsMapper;
@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,6 +39,7 @@ public class OrderService {
     private final SizesMapper sizesMapper;
     private static final int pageSize = 2;
     private final UserOrderProductsMapper userOrderProductsMapper;
+    private final UserCouponMapper userCouponMapper;
 
     @Transactional(rollbackFor = Exception.class)
     public void createOrder(String id, UserOrderDto userOrderDto) {
@@ -67,6 +69,7 @@ public class OrderService {
                 .orderNumber(OrderNumberGenerator.generateOrderNumber())
                 .userId(userId)
                 .allPayment(userOrderDto.getAllPayment())
+                .deliveryRequest(userOrderDto.getDeliveryRequest())
                 .build();
 
         // 주문 정보 DB 저장
@@ -110,6 +113,7 @@ public class OrderService {
             // 재고 차감
             sizesMapper.updateSizeByColorAndSize(dto.getProductColorId(), dto.getSize(), dto.getQuantity());
 
+
             return OrderProductsVO.builder()
                     .orderId(orderId)
                     .size(dto.getSize())
@@ -131,8 +135,15 @@ public class OrderService {
         for (OrderProductsVO orderProduct : orderProductsList) {
             orderProductsMapper.insertOrderProduct(orderProduct);
         }
-
-
+        //전체 사용량 저장
+        BigDecimal totalPointDiscount = userOrderDto.getOderProductsRequestDtos().stream()
+                .map(dto -> dto.getPointDiscount() != null ? dto.getPointDiscount() : BigDecimal.ZERO)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        //사용한 쿠폰 상태 사용으로 변경
+        //근데... 이런식으면 쿠폰 디비가 너무 쌓여서 비효율적 서비스 완성후 논의 필요
+        userCouponMapper.changeStatus(userOrderDto.getUserCouponId());
+        //포인트 차감
+        usersMapper.discountPointsToUserByUserId(userId, totalPointDiscount.longValue());
     }
 
     @Transactional(readOnly = true)
@@ -221,16 +232,18 @@ public class OrderService {
                 .build();
     }
 
-    public OrderProductDto getOrderProductDetail(Long orderProductId) {
+    public OrderProductDto getOrderProductDetailForCancel(Long orderProductId) {
         OrderProductsVO product = orderProductsMapper.getOrderProductById(orderProductId);
         if (product == null) {
             throw new IllegalArgumentException("해당 주문 상품 정보가 존재하지 않습니다.");
         }
+        String orderState = Optional.ofNullable(product.getClaimStatus())
+                .orElseGet(() -> userOrderProductsMapper.getDeliveryInfo(product.getDeliveryId()));
         return OrderProductDto.builder()
                 .orderProductId(product.getOrderProductId())
                 .size(product.getSize())
                 .quantity(product.getQuantity())
-                .claimStatus(product.getClaimStatus())
+                .claimStatus(orderState)
                 .pointDiscount(product.getPointDiscount())
                 .productPrice(product.getProductPrice()) // 계산된 값 설정
                 .productName(product.getProductName())
@@ -256,6 +269,7 @@ public class OrderService {
                 .orderNumber(OrderNumberGenerator.generateOrderNumber())
                 .userId(null)
                 .allPayment(nonUserOrderDto.getAllPayment())
+                .deliveryRequest(nonUserOrderDto.getDeliveryRequest())
                 .build();
 
         // 주문 정보 DB 저장
@@ -322,5 +336,10 @@ public class OrderService {
         return ordersVO.getOrderNumber();
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    public OrderDetailsDto getOrderNonUser(String orderName, String orderContact, String orderNumber){
+        Long orderId = orderMapper.getOrdersNonUser(orderName, orderContact, orderNumber);
+        return getOrderDetails(orderId);
+    }
 }
 

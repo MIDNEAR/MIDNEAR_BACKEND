@@ -17,4 +17,6 @@ public class UserOrderDto {
     String orderEmail;
     BigDecimal allPayment;
     List<OrderProductsRequestDto> oderProductsRequestDtos;
+    Long userCouponId;
+    String deliveryRequest;
 }

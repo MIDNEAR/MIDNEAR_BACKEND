@@ -51,9 +51,9 @@ public class UserOrderController {
     }
     //취소 페이지에서 필요한 api.....
     @GetMapping("/forCancel")
-    public ResponseEntity<ApiResponse> getOrderProduct(@RequestParam Long orderProductId) {
+    public ResponseEntity<ApiResponse> getOrderProductForCancel(@RequestParam Long orderProductId) {
         try {
-            OrderProductDto orderProduct = orderService.getOrderProductDetail(orderProductId);
+            OrderProductDto orderProduct = orderService.getOrderProductDetailForCancel(orderProductId);
             return ResponseEntity.ok(new ApiResponse(true, "주문 조회 성공", orderProduct));
         } catch (Exception e) {
             return ResponseEntity.internalServerError()
@@ -69,6 +69,17 @@ public class UserOrderController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse(false, "주문 생성 중 오류 발생: " + e.getMessage(), null));
+        }
+    }
+
+    @GetMapping("/getNonUser")
+    public ResponseEntity<ApiResponse> getNonUserOrder(@RequestParam String orderName, @RequestParam String orderContact, @RequestParam String orderNumber) {
+        try {
+            OrderDetailsDto orderDetails = orderService.getOrderNonUser(orderName, orderContact, orderNumber);
+            return ResponseEntity.ok(new ApiResponse(true, "비회원 주문 조회 성공", orderDetails));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(new ApiResponse(false, "비회원 주문 조회 중 오류 발생: " + e.toString(), null));
         }
     }
 

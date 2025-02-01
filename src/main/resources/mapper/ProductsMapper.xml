@@ -213,7 +213,7 @@
         LEFT JOIN
         order_products op ON op.order_product_id = p.product_id
         WHERE
-        p.category_id IN (SELECT category_id FROM CategoryHierarchy)
+        p.category_id IN (SELECT category_id FROM CategoryHierarchy) AND pc.sale_status = '판매중' OR pc.sale_status = '품절'
         GROUP BY
         pc.product_color_id
         ORDER BY

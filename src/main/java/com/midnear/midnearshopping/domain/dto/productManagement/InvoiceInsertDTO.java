@@ -12,6 +12,7 @@ import java.util.List;
 public class InvoiceInsertDTO {
     String courier;
     Long invoiceNumber;
+    Long carrierId;
     List<Long> orderProductId;
 }
 

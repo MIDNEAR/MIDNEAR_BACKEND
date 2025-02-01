@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import java.sql.Date;
 import java.util.HashMap;
@@ -40,11 +41,14 @@ public class InquirieController {
 
     //  문의글 댓글 달기
     @PostMapping("/postInquirieComment")
+    @Transactional
     public ResponseEntity<ApiResponse> postInquirieComment(@RequestBody Inquiry_commentsDTO inquiryCommentsDTO){
         try {
             Date today = new Date(System.currentTimeMillis());
             inquiryCommentsDTO.setReplyDate(today);
             inquirieService.insertInquirieComment(inquiryCommentsDTO);
+
+            inquirieService.updateInquiry(inquiryCommentsDTO.getInquiryId());
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "댓글이 성공적으로 등록되었습니다..", null));
         } catch (Exception ex) {
@@ -80,7 +84,7 @@ public class InquirieController {
             int totalCount = inquirieService.count();
 
             //      총 페이지 수
-            int totalPages = (int) Math.ceil((double) totalCount / 2);
+            int totalPages = (int) Math.ceil((double) totalCount / 23);
 
             Map<String, Object> response = new HashMap<>();
             response.put("inquiries", inquiryList);
@@ -109,7 +113,7 @@ public class InquirieController {
             int totalCount = inquirieService.countReply(hasReply);
 
             //      총 페이지 수
-            int totalPages = (int) Math.ceil((double) totalCount / 2);
+            int totalPages = (int) Math.ceil((double) totalCount / 23);
 
             Map<String, Object> response = new HashMap<>();
             response.put("inquiries", inquiryList);

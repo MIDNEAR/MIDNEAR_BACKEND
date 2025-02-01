@@ -24,7 +24,6 @@
             op.product_price,
             op.point_discount,
             op.coupon_discount,
-            o.total_payment_amount,
             op.delivery_charge,
             o.all_payment
         from order_products op
@@ -42,6 +41,7 @@
              inner join orders o on op.order_id = o.order_id
              left join delivery_info di on op.delivery_id = di.delivery_id
              left join payments p ON o.order_id = p.order_id
+
     </select>
 
     <!-- 주문 통합검색 필터링 조회 -->
@@ -66,7 +66,6 @@
             op.product_price,
             op.point_discount,
             op.coupon_discount,
-            o.total_payment_amount,
             op.delivery_charge,
             o.all_payment
         from order_products op

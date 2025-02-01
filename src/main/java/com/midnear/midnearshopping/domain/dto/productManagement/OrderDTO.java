@@ -11,19 +11,19 @@ import java.util.Date;
 @AllArgsConstructor
 public class OrderDTO {
     Long orderNumber;
-    String orderStatus;
     String claimStatus;
     Date paymentDate;
     String productName;
     String color;
     String size;
     int quantity;
-    BigDecimal totalPaymentAmount;
     BigDecimal allPayment;
+    BigDecimal deliveryCharge;
     String orderName;
     String id;
     String recipientName;
     Date deliveryProcessDate;
+    String trackingDelivery;
     String orderContact;
     String postalCode;
     String address;

@@ -30,6 +30,13 @@
         values (#{replyContent},#{replyDate},#{inquiryId})
     </insert>
 
+<!-- 문의글 업데이트 -->
+    <update id="updateInquiry">
+        update inquiries
+        set has_reply = '완료'
+        where inquiry_id = #{inquiryId}
+    </update>
+
 <!-- 문의 댓글 수정 -->
     <update id="updateInquiryComment">
         update inquiry_comments

@@ -34,7 +34,7 @@ public class MagazinesController {
             int totalCount = magazinesService.count();
 
             //      총 페이지 수
-            int totalPages = (int) Math.ceil((double) totalCount / 2);
+            int totalPages = (int) Math.ceil((double) totalCount / 23);
 
             Map<String, Object> response = new HashMap<>();
             response.put("inquiries", magazinesList);
@@ -64,7 +64,7 @@ public class MagazinesController {
             int totalCount = magazinesService.searchCount(dateFilter, orderBy, search, searchValue);
 
             //      총 페이지 수
-            int totalPages = (int) Math.ceil((double) totalCount / 2);
+            int totalPages = (int) Math.ceil((double) totalCount / 23);
 
             Map<String, Object> response = new HashMap<>();
             response.put("magazinList", magazineList);

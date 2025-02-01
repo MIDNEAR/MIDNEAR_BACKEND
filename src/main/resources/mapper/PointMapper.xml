@@ -18,4 +18,15 @@
     <delete id="deletePreviousData">
         delete from review_point
     </delete>
+<!--얘는 파일 따로 뺴기 애매해서 여기에 넣음-->
+    <select id="getPointList">
+        select
+            p.amount,
+            p.reason,
+            op.product_name as productName
+        from point p
+        join reviews r on p.review_id = r.review_id
+        join order_products op on r.order_product_id = p.order_product_id
+        where user_id = #{userId}
+    </select>
 </mapper>

@@ -93,7 +93,7 @@ public class OrderShippingController {
     }
 
     // 발주확인
-    @PutMapping("/orderConfirmation")
+    @PostMapping("/orderConfirmation")
     public ResponseEntity<ApiResponse> filterSearch(@RequestBody List<Long> orderProductId) {
         try {
             orderShippingService.updateConfirm(orderProductId);
@@ -111,6 +111,13 @@ public class OrderShippingController {
     @PutMapping("/Invoice")
     public ResponseEntity<ApiResponse> filterSearch(@RequestBody InvoiceInsertDTO invoiceInsertDTO) {
         try {
+            Long courierNumber = orderShippingService.selectCarrierName(invoiceInsertDTO.getCourier());
+
+            if (courierNumber == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(new ApiResponse(false, "존재하지 않는 택배사입니다.", null));
+            }
+            invoiceInsertDTO.setCarrierId(courierNumber);
             orderShippingService.insertInvoice(invoiceInsertDTO);
             // 200 OK 응답으로 JSON 반환
             return ResponseEntity.status(HttpStatus.OK)
@@ -121,6 +128,7 @@ public class OrderShippingController {
                     .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
         }
     }
+
 
     // 배송지연
     @PutMapping("/delayShipping")
@@ -152,7 +160,7 @@ public class OrderShippingController {
         }
     }
 
-    // 엑셀 다운로드
+    // 총수량 엑셀 다운로드
     @GetMapping("/exelDownload")
     public ResponseEntity<?> excelDownload(@RequestParam("orderProductId") List<Long> orderProductId) throws IOException {
         try (Workbook wb = new XSSFWorkbook();
@@ -221,6 +229,79 @@ public class OrderShippingController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
         }
+    }
+
+    // 총수량 엑셀 다운로드
+    @GetMapping("/AllExel")
+    public ResponseEntity<?> AllExel(@RequestParam("orderProductId") List<Long> orderProductId) throws IOException {
+        try (Workbook wb = new XSSFWorkbook();
+             ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            Sheet sheet = wb.createSheet("전체 주문서");
+            Row row = null;
+            Cell cell = null;
+            int rowNum = 0;
+
+            List<OptionQuantityDTO> order = orderShippingService.selectOrderDetails(orderProductId);
+
+            // Header
+            row = sheet.createRow(rowNum++);
+            cell = row.createCell(0);
+            cell.setCellValue("주문자명");
+            cell = row.createCell(1);
+            cell.setCellValue("수취인명");
+            cell = row.createCell(2);
+            cell.setCellValue("제품명");
+            cell = row.createCell(3);
+            cell.setCellValue("사이즈");
+            cell = row.createCell(4);
+            cell.setCellValue("컬러");
+            cell = row.createCell(5);
+            cell.setCellValue("수량");
+            cell = row.createCell(6);
+            cell.setCellValue("송장번호");
+
+            // Body
+            for (int i = 0; i < order.size(); i++) {
+                row = sheet.createRow(rowNum++);
+                cell = row.createCell(0);
+                cell.setCellValue(order.get(i).getOrderName());
+                cell = row.createCell(1);
+                cell.setCellValue(order.get(i).getRecipientName());
+                cell = row.createCell(2);
+                cell.setCellValue(order.get(i).getProductName());
+                cell = row.createCell(3);
+                cell.setCellValue(order.get(i).getSize());
+                cell = row.createCell(4);
+                cell.setCellValue(order.get(i).getColor());
+                cell = row.createCell(5);
+                cell.setCellValue(order.get(i).getQuantity());
+                cell = row.createCell(6);
+                Long invoiceNumber = order.get(i).getInvoiceNumber();
+
+                if (invoiceNumber != null) {
+                    cell.setCellValue(invoiceNumber); // Long -> long 자동 언박싱
+                } else {
+                    cell.setBlank(); // null 값인 경우 빈 셀로 설정
+                }
+            }
+
+            // Excel 파일을 바이트 배열로 변환
+            wb.write(outputStream);
+            byte[] excelData = outputStream.toByteArray();
+
+            // HTTP 헤더 설정
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            headers.setContentDispositionFormData("attachment", "Order.xlsx");
+
+            return ResponseEntity.status(HttpStatus.OK)
+                    .headers(headers)
+                    .body(excelData);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "엑셀 파일 생성 중 오류가 발생했습니다.", null));
+        }
+
     }
 
 }
