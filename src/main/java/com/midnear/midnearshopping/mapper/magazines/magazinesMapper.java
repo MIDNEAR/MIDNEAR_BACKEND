@@ -1,8 +1,6 @@
 package com.midnear.midnearshopping.mapper.magazines;
 
-import com.midnear.midnearshopping.domain.dto.magazines.MagazineImagesDTO;
-import com.midnear.midnearshopping.domain.dto.magazines.MagazinesDTO;
-import com.midnear.midnearshopping.domain.dto.magazines.MagazinesListDTO;
+import com.midnear.midnearshopping.domain.dto.magazines.*;
 import com.midnear.midnearshopping.domain.vo.magazines.MagazineImagesVO;
 import com.midnear.midnearshopping.domain.vo.magazines.MagazinesVO;
 import org.apache.ibatis.annotations.Mapper;
@@ -41,4 +39,10 @@ public interface magazinesMapper {
 
     //  수정할 매거진 이미지 삭제
     void deleteMagazineImage(Long magazineId);
+
+    List<MagazineResponseListDto> getUserMagazineList(@Param("offset") int offset, @Param("pageSize") int pageSize, @Param("sort") String sort);
+    MagazineResponseDto getMagazine(Long magazineId);
+    void updateViewCount(Long magazineId);
+    List<MagazineResponseListDto> magazineUserSearch(@Param("offset") int offset, @Param("pageSize") int pageSize, @Param("sort") String sort, @Param("searchValue") String searchValue);
+
 }

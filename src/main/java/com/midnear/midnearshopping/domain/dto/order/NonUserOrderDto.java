@@ -22,6 +22,7 @@ public class NonUserOrderDto {
     String detailedAddress;
     String recipientContact;
     Integer userId;
+    String deliveryRequest;
 
     List<OrderProductsRequestDto> oderProductsRequestDtos;
 }
