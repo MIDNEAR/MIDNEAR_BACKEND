@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,6 +15,6 @@ public class MagazineResponseDto {
     String title;
     String content;
     Date createdDate;
-    List<String> imageUrls;
+    List<String> imageUrls = new ArrayList<>();
 
 }
