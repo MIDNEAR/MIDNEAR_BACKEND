@@ -69,6 +69,7 @@ public class OrderService {
                 .orderNumber(OrderNumberGenerator.generateOrderNumber())
                 .userId(userId)
                 .allPayment(userOrderDto.getAllPayment())
+                .deliveryRequest(userOrderDto.getDeliveryRequest())
                 .build();
 
         // 주문 정보 DB 저장
@@ -134,7 +135,7 @@ public class OrderService {
         for (OrderProductsVO orderProduct : orderProductsList) {
             orderProductsMapper.insertOrderProduct(orderProduct);
         }
-        //전체 사용량 저장 tlqkf 걍 컬럼을 좀 만들자 제발...네..?
+        //전체 사용량 저장
         BigDecimal totalPointDiscount = userOrderDto.getOderProductsRequestDtos().stream()
                 .map(dto -> dto.getPointDiscount() != null ? dto.getPointDiscount() : BigDecimal.ZERO)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -268,6 +269,7 @@ public class OrderService {
                 .orderNumber(OrderNumberGenerator.generateOrderNumber())
                 .userId(null)
                 .allPayment(nonUserOrderDto.getAllPayment())
+                .deliveryRequest(nonUserOrderDto.getDeliveryRequest())
                 .build();
 
         // 주문 정보 DB 저장
