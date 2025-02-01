@@ -13,6 +13,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -20,6 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtUtil jwtUtil;
+    private final CorsConfigurationSource corsConfigurationSource;
 
     private static final String[] AUTH_WHITELIST = {
             "/api/v1/member/**", "/swagger-ui/**", "/api-docs", "/swagger-ui-custom.html",
@@ -27,7 +30,7 @@ public class SecurityConfig {
             "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html", "/api/v1/auth/**","user/signup", "user/login","user/find-id", "disruptive/**","/sms/**","/inquirie/**"
             ,"/magazine/**", "/email/**", "/user/is-duplicate", "/user/find-by-email", "/user/change-password", "/user/change-user-info", "/user/user-info", "/product/**",
             "/productManagement/**" , "/notice/**", "/storeManagement/**", "/coupon/**", "/point/**", "/setReviewPointAmount"
-            ,"/actuator/health","/confirmPurchase/**", "/userMagazine/**", "/orders/getNonUser", "/orders/nonUserCreate", "/orders/forCancel"
+            ,"/actuator/health","/confirmPurchase/**", "/userMagazine/**", "/orders/getNonUser", "/orders/nonUserCreate", "/orders/forCancel", "/review/**"
     }; //더 열어둘 엔드포인트 여기에 추가
 
     @Bean
@@ -38,7 +41,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf((csrf)->csrf.disable());
-        http.cors(Customizer.withDefaults());
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource));
         //세션 사용 안 함
         http.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(
                 SessionCreationPolicy.STATELESS));
@@ -49,7 +52,6 @@ public class SecurityConfig {
         //JwtAuthFilter를 UsernamePasswordAuthenticationFilter 앞에 추가
         http.addFilterBefore(new JwtAuthFilter(customUserDetailsService, jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
-
         // 권한 규칙 작성
         http.authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(AUTH_WHITELIST).permitAll()
@@ -57,7 +59,6 @@ public class SecurityConfig {
         );
 
         return http.build();
-
 
     }
 }
