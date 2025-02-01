@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.midnear.midnearshopping.mapper.order.PaymentMapper">
+<!--    <update id="insertPayments">-->
+<!--        INSERT INTO payments (order_id, toss_order_id, payment_status)-->
+<!--        VALUES (, 'a4CWyWY5m89PNh7xJwhk1', '결제대기');-->
+<!--    </update>-->
+
+<!-- ui 확인하고 수정 필요 -->
+    <update id="updatePayment">
+        update payments
+        set toss_payment_method = #{tossPaymentMethod},
+            payment_date = now(),
+            total_order_payment = #{totalOrderPayment}
+            payment_status = #{paymentStatus}
+            toss_order_id = #{tossOrderId}
+            toss_payment_key = #{tossPaymentKey}
+        where toss_order_id = #{tossOrderId}
+        </update>
+
+</mapper>

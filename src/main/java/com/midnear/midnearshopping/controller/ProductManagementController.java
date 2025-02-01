@@ -4,7 +4,6 @@ import com.midnear.midnearshopping.domain.dto.category.CategoryDto;
 import com.midnear.midnearshopping.domain.dto.coordinate.CoordinateDto;
 import com.midnear.midnearshopping.domain.dto.coordinate.CoordinatedProductDto;
 import com.midnear.midnearshopping.domain.dto.coordinate.MainProductDto;
-import com.midnear.midnearshopping.domain.dto.products.ProductManagementListDto;
 import com.midnear.midnearshopping.domain.dto.products.ProductsDto;
 import com.midnear.midnearshopping.domain.dto.shipping_returns.ShippingReturnsDto;
 import com.midnear.midnearshopping.domain.vo.shipping_returns.ShippingReturnsVo;
@@ -40,7 +39,7 @@ public class ProductManagementController {
     }
 
     // 상품 추가
-    @PostMapping("/register")
+    @PostMapping("/registerProducts")
     public ResponseEntity<ApiResponse> registerProducts(@ModelAttribute @Valid ProductsDto productsDto) {
         try {
             productManagementService.registerProducts(productsDto);
@@ -61,7 +60,6 @@ public class ProductManagementController {
     @GetMapping("/productList")
     public ResponseEntity<ApiResponse> getProductList(
             @RequestParam(name = "page", defaultValue = "1") int page,
-            @RequestParam(name = "size", defaultValue = "23") int size,
             @RequestParam(name = "sortOrder", defaultValue = "최신순") String sortOrder,
             @RequestParam(name = "dateRange", defaultValue = "전체") String dateRange,
             @RequestParam(name = "searchRange", defaultValue = "") String searchRange,
@@ -69,7 +67,7 @@ public class ProductManagementController {
     ) {
         try {
             //List<ProductsListDto> + 전체 페이지 수
-            Map<String, Object> response = productManagementService.getProductList(page, size, sortOrder, dateRange, searchRange, searchText);
+            Map<String, Object> response = productManagementService.getProductList(page, sortOrder, dateRange, searchRange, searchText);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "상품 리스트 조회 성공", response));
         } catch (Exception e) {
@@ -86,6 +84,9 @@ public class ProductManagementController {
             productManagementService.setOnSale(saleList);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "판매중으로 변경 완료", null));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponse(false, e.getMessage(), null));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -234,14 +235,13 @@ public class ProductManagementController {
     @GetMapping("/getCoordinatedList")
     public ResponseEntity<ApiResponse> getCoordinatedList(
             @RequestParam(name = "page", defaultValue = "1") int page,
-            @RequestParam(name = "size", defaultValue = "4") int size,
             @RequestParam(name = "sortOrder", defaultValue = "최신순") String sortOrder,
             @RequestParam(name = "dateRange", defaultValue = "전체") String dateRange,
             @RequestParam(name = "searchRange", defaultValue = "") String searchRange,
             @RequestParam(name = "searchText", required = false) String searchText
     ) {
         try {
-            Map<String, Object> response = productManagementService.getCoordinatedList(page, size, sortOrder, dateRange, searchRange, searchText);
+            Map<String, Object> response = productManagementService.getCoordinatedList(page, sortOrder, dateRange, searchRange, searchText);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "코디 상품 리스트 불러오기 성공", response));
         } catch (Exception e) {
