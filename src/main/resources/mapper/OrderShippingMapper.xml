@@ -293,7 +293,7 @@
             o.address,
             o.detailed_address,
             o.delivery_request,
-            p.payment_method,
+            p.toss_payment_method,
             op.delivery_charge,
             p.total_order_payment,
             p.all_payment

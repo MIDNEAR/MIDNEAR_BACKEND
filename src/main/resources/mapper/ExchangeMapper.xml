@@ -272,7 +272,7 @@
         </foreach>
     </update>
     <insert id="ExchangeToRefund">
-        insert into refunds(refund_reason,refund_status,refund_complete_date,order_product_id)
+        insert into returns(return_reason,return_status,return_complete_date,order_product_id)
         values
         <foreach item="id" index="index" collection="orderProductId" separator=",">
             ('판매자 직접 반품', '환불 완료', current_timestamp, #{id})
