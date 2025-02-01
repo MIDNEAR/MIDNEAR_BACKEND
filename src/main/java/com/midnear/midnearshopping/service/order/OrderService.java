@@ -8,6 +8,7 @@ import com.midnear.midnearshopping.domain.vo.order.OrdersVO;
 import com.midnear.midnearshopping.domain.vo.products.ProductsVo;
 import com.midnear.midnearshopping.mapper.coupon_point.UserCouponMapper;
 import com.midnear.midnearshopping.mapper.delivery.DeliveryAddressMapper;
+import com.midnear.midnearshopping.mapper.delivery.DeliveryInfoMapper;
 import com.midnear.midnearshopping.mapper.order.OrderMapper;
 import com.midnear.midnearshopping.mapper.order.UserOrderProductsMapper;
 import com.midnear.midnearshopping.mapper.products.ProductColorsMapper;
@@ -41,6 +42,7 @@ public class OrderService {
     private static final int pageSize = 2;
     private final UserOrderProductsMapper userOrderProductsMapper;
     private final UserCouponMapper userCouponMapper;
+    private final DeliveryInfoMapper deliveryInfoMapper;
 
     @Transactional(rollbackFor = Exception.class)
     public void createOrder(String id, UserOrderDto userOrderDto) {
@@ -349,6 +351,11 @@ public class OrderService {
         PaymentInfoDto dto = orderMapper.getPaymentInfoByOrderId(orderId);
         dto.setDeliveryCharge(dto.getTotalOrderPayment().subtract(dto.getAllPayment()));
         return orderMapper.getPaymentInfoByOrderId(orderId);
+    }
+
+    public BigDecimal getDeliveryCharge(String postalCode){
+        String location = PostalCodeChecker.checkRegion(Integer.parseInt(postalCode));
+        return deliveryAddressMapper.getDeliveryCharge(location);
     }
 }
 
