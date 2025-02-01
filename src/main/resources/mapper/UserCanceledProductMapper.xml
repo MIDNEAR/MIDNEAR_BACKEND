@@ -20,24 +20,6 @@
                  )
     </insert>
 
-    <!--디비 허상이슈로 잠시 스탑-->
-    <insert id="insert">
-        INSERT INTO exchange_delivery (
-            resend_carier,
-            resend_invoice_number,
-            redelivery_date,
-            exchange_id,
-            cancellation_approval_date,
-            order_product_id
-        ) VALUES (
-                     #{canceledProductId},
-                     #{cancellationRequestDate},
-                     #{cancellationStatus},
-                     #{cancelReason},
-                     #{cancellationApprovalDate},
-                     #{orderProductId}
-                 )
-    </insert>
 
 
 
