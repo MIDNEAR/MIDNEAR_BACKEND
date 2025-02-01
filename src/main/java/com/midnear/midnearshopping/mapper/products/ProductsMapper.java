@@ -25,7 +25,7 @@ public interface ProductsMapper {
     List<ProductsVo> getProductByProductName(String productName);
     void createCoordinate(CoordinateDto createCoordinateDto);
     void deleteCoordinates(List<CoordinateDto> deleteList);
-    List<Long> getProductColorsIdsByName(@Param("offset")int offset, @Param("size")int size, @Param("orderBy")String orderBy, @Param("dateRange")String dateRange, @Param("searchRange")String searchRange, @Param("searchText")String searchText);
+    List<Long> getProductColorsIdsByNameOrDate(@Param("offset")int offset, @Param("size")int size, @Param("orderBy")String orderBy, @Param("dateRange")String dateRange, @Param("searchRange")String searchRange, @Param("searchText")String searchText);
     List<Long> getOriginalProductProductIdsByCoordinatedIds(List<Long> coordinatedProductIds);
     List<ProductsVo> getProductsByIds(List<Long> originalProductIds);
 }

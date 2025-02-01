@@ -25,13 +25,20 @@
         ORDER BY registered_date ${orderBy}
     LIMIT #{size} OFFSET #{offset}
     </select>
-    <select id="getProductColorsIdsByName" resultType="Long">
+    <select id="getProductColorsIdsByNameOrDate" resultType="Long">
         SELECT pc.product_color_id
         FROM product_colors pc
         LEFT JOIN products p ON pc.product_id = p.product_id
         WHERE <include refid="dateCondition" />
         <if test="searchText != null">
-            AND product_name LIKE CONCAT('%', #{searchText}, '%')
+            <choose>
+                <when test="searchRange == '연관상품'">
+                    AND product_name LIKE CONCAT('%', #{searchText}, '%')
+                </when>
+                <when test="searchRange == '연관상품 등록 일시'">
+                    AND registered_date LIKE CONCAT('%', #{searchText}, '%')
+                </when>
+            </choose>
         </if>
         ORDER BY registered_date ${orderBy}
         LIMIT #{size} OFFSET #{offset}
