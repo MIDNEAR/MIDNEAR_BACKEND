@@ -69,6 +69,7 @@ public class OrderService {
                 .orderNumber(OrderNumberGenerator.generateOrderNumber())
                 .userId(userId)
                 .allPayment(userOrderDto.getAllPayment())
+                .deliveryRequest(userOrderDto.getDeliveryRequest())
                 .build();
 
         // 주문 정보 DB 저장
@@ -134,7 +135,7 @@ public class OrderService {
         for (OrderProductsVO orderProduct : orderProductsList) {
             orderProductsMapper.insertOrderProduct(orderProduct);
         }
-        //전체 사용량 저장 tlqkf 걍 컬럼을 좀 만들자 제발...네..?
+        //전체 사용량 저장
         BigDecimal totalPointDiscount = userOrderDto.getOderProductsRequestDtos().stream()
                 .map(dto -> dto.getPointDiscount() != null ? dto.getPointDiscount() : BigDecimal.ZERO)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -231,16 +232,18 @@ public class OrderService {
                 .build();
     }
 
-    public OrderProductDto getOrderProductDetail(Long orderProductId) {
+    public OrderProductDto getOrderProductDetailForCancel(Long orderProductId) {
         OrderProductsVO product = orderProductsMapper.getOrderProductById(orderProductId);
         if (product == null) {
             throw new IllegalArgumentException("해당 주문 상품 정보가 존재하지 않습니다.");
         }
+        String orderState = Optional.ofNullable(product.getClaimStatus())
+                .orElseGet(() -> userOrderProductsMapper.getDeliveryInfo(product.getDeliveryId()));
         return OrderProductDto.builder()
                 .orderProductId(product.getOrderProductId())
                 .size(product.getSize())
                 .quantity(product.getQuantity())
-                .claimStatus(product.getClaimStatus())
+                .claimStatus(orderState)
                 .pointDiscount(product.getPointDiscount())
                 .productPrice(product.getProductPrice()) // 계산된 값 설정
                 .productName(product.getProductName())
@@ -266,6 +269,7 @@ public class OrderService {
                 .orderNumber(OrderNumberGenerator.generateOrderNumber())
                 .userId(null)
                 .allPayment(nonUserOrderDto.getAllPayment())
+                .deliveryRequest(nonUserOrderDto.getDeliveryRequest())
                 .build();
 
         // 주문 정보 DB 저장
@@ -332,5 +336,10 @@ public class OrderService {
         return ordersVO.getOrderNumber();
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    public OrderDetailsDto getOrderNonUser(String orderName, String orderContact, String orderNumber){
+        Long orderId = orderMapper.getOrdersNonUser(orderName, orderContact, orderNumber);
+        return getOrderDetails(orderId);
+    }
 }
 

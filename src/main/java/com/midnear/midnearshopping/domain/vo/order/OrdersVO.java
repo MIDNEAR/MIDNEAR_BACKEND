@@ -24,4 +24,5 @@ public class OrdersVO {
     String recipientContact;
     Integer userId;
     BigDecimal allPayment;
+    String deliveryRequest;
 }
