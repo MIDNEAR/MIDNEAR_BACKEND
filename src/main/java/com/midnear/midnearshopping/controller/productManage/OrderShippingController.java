@@ -276,7 +276,7 @@ public class OrderShippingController {
                 cell = row.createCell(5);
                 cell.setCellValue(order.get(i).getQuantity());
                 cell = row.createCell(6);
-                Long invoiceNumber = order.get(i).getInvoiceNumber();
+                String invoiceNumber = order.get(i).getInvoiceNumber();
 
                 if (invoiceNumber != null) {
                     cell.setCellValue(invoiceNumber); // Long -> long 자동 언박싱
