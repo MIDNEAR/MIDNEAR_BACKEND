@@ -412,9 +412,19 @@ public class ProductManagementService {
             List<Long> categories = categoriesMapper.getCategoryIdByCategoryName(searchText);
             if (!categories.isEmpty())
                 productsVoList = productsMapper.getProductsByCategoryIds(categories);
+        } else if (searchRange.equals("연관상품")) { // 연관상품 이름으로 검색
+            // coordinated_product_id에 해당하는 상품 이름으로 검색
+            List<Long> coordinatedProductIds = productsMapper.getProductColorsIdsByName(offset, size, orderBy, dateRange, searchRange, searchText);
+            if (!coordinatedProductIds.isEmpty()) {
+                List<Long> originalProductIds = productsMapper.getOriginalProductProductIdsByCoordinatedIds(coordinatedProductIds);
+                if (!originalProductIds.isEmpty()) {
+                    productsVoList = productsMapper.getProductsByIds(originalProductIds);
+                }
+            }
         } else { // searchRange가 상품명 or 등록일시
             productsVoList = productsMapper.getProductPaging(offset, size, orderBy, dateRange, searchRange, searchText);
         }
+        // 연관상품 등록 일시
 
         Long pageSize = (long) (productsVoList.size() / size + 1);
 
@@ -456,7 +466,12 @@ public class ProductManagementService {
 
                 // 코디 상품 찾기
                 List<CoordinatedProductDto> coordinatedProductList =  new ArrayList<>();
-                List<Long> coordinateProductIds = productsMapper.getCoordinatedProductIds(productColorsVo.getProductColorId());
+                List<Long> coordinateProductIds = new ArrayList<>();
+                if (searchRange.equals("연관상품")) {
+                    coordinateProductIds = productsMapper.getProductColorsIdsByName(offset, size, orderBy, dateRange, searchRange, searchText);
+                } else  {
+                    coordinateProductIds = productsMapper.getCoordinatedProductIds(productColorsVo.getProductColorId());
+                }
                 if (!coordinateProductIds.isEmpty()) {
                     for (Long id : coordinateProductIds) {
                         ProductColorsVo color = productColorsMapper.getProductColorById(id);
