@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.midnear.midnearshopping.mapper.claim.UserExchangeMapper">
 
-    <insert id="insertExchange">
+    <insert id="insertExchange" useGeneratedKeys="true" keyProperty="exchangeId">
         INSERT INTO exchange (
             exchange_status,
             exchange_reason,
@@ -21,6 +21,22 @@
                      #{exchangeRequestDate},
                      #{collectionMethod},
                      #{orderProductId}
+                 )
+    </insert>
+    <!--교환 수거 배송 테이블 생성-->
+    <insert id="insertExchangePickupDelivery">
+        INSERT INTO exchange_pickup_delivery (
+            pickup_status,
+            pickup_complete_date,
+            pickup_invoice,
+            pickup_courier,
+            exchange_id
+        ) VALUES (
+                     '-',
+                     null,
+                     null,
+                     null,
+                     #{exchangeId}
                  )
     </insert>
 
