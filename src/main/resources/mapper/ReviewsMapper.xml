@@ -26,7 +26,8 @@
             review,
             review_status,
             user_id,
-            order_product_id
+            order_product_id,
+            approve_status
         ) VALUES (
                      #{createdAt},
                      #{modifiedDate},
@@ -34,7 +35,8 @@
                      #{review},
                      #{reviewStatus},
                      #{userId},
-                     #{orderProductId}
+                     #{orderProductId},
+                  0
                  )
     </insert>
 

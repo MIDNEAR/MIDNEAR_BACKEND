@@ -57,8 +57,10 @@ public class ClaimService {
     @Transactional
     public void createExchange(ExchangeRequestDto exchangeRequestDto) {
         try {
-            userExchangeMapper.insertExchange(ExchangeVO.toEntity(exchangeRequestDto));
+            ExchangeVO vo = ExchangeVO.toEntity(exchangeRequestDto);
+            userExchangeMapper.insertExchange(vo);
             userOrderProductsMapper.updateOrderStatus(exchangeRequestDto.getOrderProductId(), "교환진행중");
+            userExchangeMapper.insertExchangePickupDelivery(vo.getExchangeId());
         } catch (Exception e) {
             log.error("교환 요청 중 오류 발생: {}", e.getMessage(), e);
             throw new RuntimeException("교환 요청 중 오류가 발생했습니다.", e);
