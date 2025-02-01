@@ -1,4 +1,4 @@
-package com.midnear.midnearshopping.service;
+package com.midnear.midnearshopping.service.notice;
 
 import com.midnear.midnearshopping.domain.dto.FileDto;
 import com.midnear.midnearshopping.domain.dto.notice.NoticeDto;
@@ -6,11 +6,11 @@ import com.midnear.midnearshopping.domain.vo.notice.NoticeImagesVo;
 import com.midnear.midnearshopping.domain.vo.notice.NoticeVo;
 import com.midnear.midnearshopping.mapper.notice.NoticeImagesMapper;
 import com.midnear.midnearshopping.mapper.notice.NoticeMapper;
+import com.midnear.midnearshopping.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.apache.ibatis.javassist.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import software.amazon.awssdk.services.s3.endpoints.internal.Not;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 
 import java.util.HashMap;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-public class NoticeService {
+public class NoticeManagementService {
     private final NoticeMapper noticeMapper;
     private final NoticeImagesMapper noticeImagesMapper;
     private final S3Service s3Service;

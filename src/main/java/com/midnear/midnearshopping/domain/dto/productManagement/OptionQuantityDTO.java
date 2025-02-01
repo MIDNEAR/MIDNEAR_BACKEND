@@ -18,5 +18,5 @@ public class OptionQuantityDTO {
     int quantity;
     String orderName;
     String recipientName;
-    Long invoiceNumber;
+    String invoiceNumber;
 }
