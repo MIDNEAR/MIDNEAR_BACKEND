@@ -235,14 +235,13 @@ public class ProductManagementController {
     @GetMapping("/getCoordinatedList")
     public ResponseEntity<ApiResponse> getCoordinatedList(
             @RequestParam(name = "page", defaultValue = "1") int page,
-            @RequestParam(name = "size", defaultValue = "4") int size,
             @RequestParam(name = "sortOrder", defaultValue = "최신순") String sortOrder,
             @RequestParam(name = "dateRange", defaultValue = "전체") String dateRange,
             @RequestParam(name = "searchRange", defaultValue = "") String searchRange,
             @RequestParam(name = "searchText", required = false) String searchText
     ) {
         try {
-            Map<String, Object> response = productManagementService.getCoordinatedList(page, size, sortOrder, dateRange, searchRange, searchText);
+            Map<String, Object> response = productManagementService.getCoordinatedList(page, sortOrder, dateRange, searchRange, searchText);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "코디 상품 리스트 불러오기 성공", response));
         } catch (Exception e) {

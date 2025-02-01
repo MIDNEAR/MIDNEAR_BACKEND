@@ -41,7 +41,7 @@ public class ProductManagementService {
     private final ProductImagesMapper productImagesMapper;
     private final ShippingReturnsMapper shippingReturnsMapper;
     private final S3Service s3Service;
-    int size = 23; // 한 페이지에 들어가는 상품 개수
+    int size = 23; // 상품 관리에서 페이지에 들어가는 상품 개수 (코디 상품 조회 개수 제한은 지역 변수로 관리함)
 
     public List<CategoryDto> getCategories() {
         List<CategoryVo> categoryVoList = categoriesMapper.getCategories();
@@ -399,10 +399,10 @@ public class ProductManagementService {
         shippingReturnsMapper.updateShippingPolicy(shippingReturnsVo);
     }
 
-    public Map<String, Object> getCoordinatedList(int page, int size, String sortOrder, String dateRange, String searchRange, String searchText) {
+    public Map<String, Object> getCoordinatedList(int page, String sortOrder, String dateRange, String searchRange, String searchText) {
         Map<String, Object> result = new HashMap<>();
         List<MainProductDto> productList = new ArrayList<>();
-
+        int size = 4;
         int offset = (page - 1) * size;
         String orderBy = sortOrder.equals("최신순") ? "DESC" : "ASC";
 
