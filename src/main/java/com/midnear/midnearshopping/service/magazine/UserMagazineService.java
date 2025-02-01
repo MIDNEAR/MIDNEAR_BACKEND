@@ -20,7 +20,10 @@ public class UserMagazineService {
         return magazinesMapper.getUserMagazineList(offset, pageSize, sort);
     }
     public MagazineResponseDto getMagazines(Long magazineId) {
-        return magazinesMapper.getMagazine(magazineId);
+        MagazineResponseDto dto = magazinesMapper.getMagazine(magazineId);
+        List<String> images = magazinesMapper.getMagazineImages(magazineId);
+        dto.setImageUrls(images);
+        return dto;
     }
     public List<MagazineResponseListDto> searchMagazineLists(int pageNumber, String sort, String searchValue) {
         int offset = (pageNumber - 1) * pageSize;

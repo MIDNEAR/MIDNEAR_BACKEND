@@ -34,7 +34,7 @@ public class UserMagazineController {
             MagazineResponseDto magazine = userMagazineService.getMagazines(magazineId);
             return ResponseEntity.ok(new ApiResponse(true, "Magazine retrieved successfully", magazine));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new ApiResponse(false, "Failed to retrieve magazine: " + e.getMessage(), null));
+            return ResponseEntity.badRequest().body(new ApiResponse(false, "Failed to retrieve magazine: " + e.getMessage() + e.toString(), null));
         }
     }
 

@@ -20,6 +20,5 @@ public class OrderDetailsDto {
     String address;
     String detailedAddress;
     List<UserOrderProductCheckDto> userOrderProductCheckDtos;
-
     //결제정보 보여주는건 여기에 추가
 }
