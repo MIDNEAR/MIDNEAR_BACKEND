@@ -50,6 +50,7 @@ public class DisruptiveServiceImpl implements DisruptiveService {
         return disruptiveMapper.searchCount(dateFilter,orderBy,search,searchValue);
     }
 
+//  판매방해고객 삭제
     @Override
     @Transactional
     public void deleteDisrupt(List<Integer> disruptiveCustomerId) {

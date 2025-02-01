@@ -1,6 +1,7 @@
 package com.midnear.midnearshopping.controller.productManage;
 import com.midnear.midnearshopping.domain.dto.productManagement.ExchangeDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.ExchangeParamDTO;
+import com.midnear.midnearshopping.domain.dto.productManagement.InvoiceInsertDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.ParamDTO;
 import com.midnear.midnearshopping.exception.ApiResponse;
 import com.midnear.midnearshopping.service.productManagement.ExchangeService;
@@ -97,17 +98,45 @@ public class ExchangeController {
         }
     }
 
-    // 선택상품 배송처리
-    @PostMapping("/selectDelivery")
-    public ResponseEntity<ApiResponse>selectDelivery(@RequestBody ExchangeParamDTO exchangeParamDTO){
+    // 상품 수거중
+    @PutMapping("/pickupProduct")
+    public ResponseEntity<ApiResponse> pickupProduct(@RequestBody InvoiceInsertDTO invoiceInsertDTO) {
         try {
-            exchangeService.updatedelivery(exchangeParamDTO);
+            Long courierNumber = exchangeService.selectCarrierName(invoiceInsertDTO.getPickupCourier());
 
+            if (courierNumber == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(new ApiResponse(false, "존재하지 않는 택배사입니다.", null));
+            }
+            invoiceInsertDTO.setCarrierId(courierNumber);
+            exchangeService.updatePickupStatus(invoiceInsertDTO);
             // 200 OK 응답으로 JSON 반환
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ApiResponse(true, "성공적으로 조회되었습니다.", null));
+                    .body(new ApiResponse(true, "성공적으로 수정되었습니다.", null));
 
-        }catch (Exception ex) {
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
+
+    // 선택상품 배송처리
+    @PostMapping("/resendDelivery")
+    public ResponseEntity<ApiResponse>selectDelivery(@RequestBody InvoiceInsertDTO invoiceInsertDTO){
+        try {
+            Long courierNumber = exchangeService.selectReturnCarrierName(invoiceInsertDTO.getResendCourier());
+
+            if (courierNumber == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(new ApiResponse(false, "존재하지 않는 택배사입니다.", null));
+            }
+            invoiceInsertDTO.setCarrierId(courierNumber);
+            exchangeService.insertResendInfo(invoiceInsertDTO);
+            // 200 OK 응답으로 JSON 반환
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "성공적으로 수정되었습니다.", null));
+
+        } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
         }
