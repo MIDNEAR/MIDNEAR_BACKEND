@@ -27,6 +27,7 @@ public class NoticeDto {
 
     private Boolean fix;
 
+    @JsonIgnore
     private List<MultipartFile> files;
 
     private String imageUrl;
@@ -38,7 +39,6 @@ public class NoticeDto {
                 .content(notice.getContent())
                 .createdDate(notice.getCreatedDate())
                 .fix(notice.getFix())
-                .files(notice.getFiles())
                 .build();
     }
 }

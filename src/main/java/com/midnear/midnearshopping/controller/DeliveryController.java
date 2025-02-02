@@ -60,6 +60,15 @@ public class DeliveryController {
             return  ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse(false, ex.getMessage(), null));
         }
     }
+    @GetMapping("/getInvoiceNumber")
+    public ResponseEntity<?> getInvoiceNumber(@RequestParam Long deliveryId) {
+        try {
+            String response = deliveryService.getInvoiceNumber(deliveryId);
+            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(true, "송장 번호 조회 성공", response));
+        } catch (Exception ex){
+            return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(false, ex.getMessage(), null));
+        }
+    }
     @PutMapping("/update")
     public ResponseEntity<?> updateAddr(@RequestBody DeliveryAddrDto dto) {
         try {
