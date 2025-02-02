@@ -16,8 +16,8 @@
         DELETE FROM notice_images
         WHERE notice_id = #{noticeId}
     </delete>
-    <select id="getPopupImages">
-        SELECT ni.image_url
+    <select id="getPopupImages" resultType="PopupDto">
+        SELECT ni.image_url, n.notice_id
         FROM notice_images ni
                  LEFT JOIN notices n ON ni.notice_id = n.notice_id
         WHERE n.fix = TRUE

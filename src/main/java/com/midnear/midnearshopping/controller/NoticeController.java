@@ -3,6 +3,7 @@ package com.midnear.midnearshopping.controller;
 import com.midnear.midnearshopping.domain.dto.notice.NextNoticeDto;
 import com.midnear.midnearshopping.domain.dto.notice.NoticeDto;
 import com.midnear.midnearshopping.domain.dto.notice.NoticeListDto;
+import com.midnear.midnearshopping.domain.dto.notice.PopupDto;
 import com.midnear.midnearshopping.exception.ApiResponse;
 import com.midnear.midnearshopping.service.notice.NoticeService;
 import lombok.RequiredArgsConstructor;
@@ -91,7 +92,7 @@ public class NoticeController {
     @GetMapping("/popupImages")
     public ResponseEntity<ApiResponse> getNoticePopupImages() {
         try {
-            List<String> popupImageUrls = noticeService.getNoticePopupImages();
+            List<PopupDto> popupImageUrls = noticeService.getNoticePopupImages();
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "팝업 이미지 조회 성공", popupImageUrls));
         } catch (Exception ex) {

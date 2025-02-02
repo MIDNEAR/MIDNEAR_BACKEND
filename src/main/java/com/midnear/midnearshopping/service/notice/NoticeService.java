@@ -3,6 +3,7 @@ package com.midnear.midnearshopping.service.notice;
 import com.midnear.midnearshopping.domain.dto.notice.NextNoticeDto;
 import com.midnear.midnearshopping.domain.dto.notice.NoticeDto;
 import com.midnear.midnearshopping.domain.dto.notice.NoticeListDto;
+import com.midnear.midnearshopping.domain.dto.notice.PopupDto;
 import com.midnear.midnearshopping.domain.vo.notice.NoticeImagesVo;
 import com.midnear.midnearshopping.domain.vo.notice.NoticeVo;
 import com.midnear.midnearshopping.mapper.notice.NoticeImagesMapper;
@@ -82,7 +83,7 @@ public class NoticeService {
         return noticeMapper.getNoticesPaging(offset, size, dateRange, searchText);
     }
 
-    public List<String> getNoticePopupImages() {
+    public List<PopupDto> getNoticePopupImages() {
         return noticeImagesMapper.getPopupImages();
     }
 }
