@@ -87,4 +87,17 @@ public class NoticeController {
                     .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
         }
     }
+
+    @GetMapping("/popupImages")
+    public ResponseEntity<ApiResponse> getNoticePopupImages() {
+        try {
+            List<String> popupImageUrls = noticeService.getNoticePopupImages();
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "팝업 이미지 조회 성공", popupImageUrls));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
 }

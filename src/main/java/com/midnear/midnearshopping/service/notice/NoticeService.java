@@ -81,4 +81,8 @@ public class NoticeService {
 
         return noticeMapper.getNoticesPaging(offset, size, dateRange, searchText);
     }
+
+    public List<String> getNoticePopupImages() {
+        return noticeImagesMapper.getPopupImages();
+    }
 }

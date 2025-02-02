@@ -11,4 +11,5 @@ public interface NoticeImagesMapper {
     void uploadNoticeImages(NoticeImagesVo noticeImagesVo);
     NoticeImagesVo getNoticeImageVo(Long noticeId);
     void deleteNoticeImages(Long noticeId);
+    List<String> getPopupImages();
 }
