@@ -3,6 +3,8 @@ package com.midnear.midnearshopping.domain.dto.payment;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.sql.Date;
+import java.time.LocalDate;
 
 @Setter
 @Builder
@@ -15,5 +17,6 @@ public class PaymentInfoDto {
     String tossOrderId;
     String tossPaymentKey;
     BigDecimal allPayment;
+    Date paymentDate;
     BigDecimal deliveryCharge;
 }

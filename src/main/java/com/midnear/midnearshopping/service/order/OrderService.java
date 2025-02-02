@@ -146,7 +146,7 @@ public class OrderService {
         //근데... 이런식으면 쿠폰 디비가 너무 쌓여서 비효율적 서비스 완성후 논의 필요
         userCouponMapper.changeStatus(userOrderDto.getUserCouponId());
         //포인트 차감
-        usersMapper.discountPointsToUserByUserId(userId, totalPointDiscount.longValue());
+        usersMapper.discountPointsToUserByUserId(userId, totalPointDiscount.longValue() * -1);
     }
 
     @Transactional(readOnly = true)
@@ -349,7 +349,6 @@ public class OrderService {
     @Transactional(rollbackFor = Exception.class)
     public PaymentInfoDto getPayment(Long orderId){
         PaymentInfoDto dto = orderMapper.getPaymentInfoByOrderId(orderId);
-        dto.setDeliveryCharge(dto.getTotalOrderPayment().subtract(dto.getAllPayment()));
         return orderMapper.getPaymentInfoByOrderId(orderId);
     }
 
