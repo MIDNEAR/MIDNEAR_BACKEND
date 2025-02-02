@@ -135,9 +135,9 @@ public class NoticeManagementService {
                 .collect(Collectors.toList());
     }
 
-    public Map<String, Object> getNoticeList(int page, int size, String sortOrder, String dateRange, String searchRange, String searchText) {
+    public Map<String, Object> getNoticeList(int page, String sortOrder, String dateRange, String searchRange, String searchText) {
         Map<String, Object> result = new HashMap<>();
-
+        int size = 23; // 고정글 포함 한 페이지 개수
         int count = (size > getFixedNoticeList().size()) ? size - getFixedNoticeList().size() : 0; // 고정글 빼고 페이지에 맞게 일반글 가지고 오기 위해 사이즈 계산
         if (count == 0) { // 고정글로 한 페이지가 채워지는 경우...
             result.put("totalPageSize", 1);
