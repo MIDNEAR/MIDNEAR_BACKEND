@@ -19,13 +19,13 @@
         SELECT * FROM order_products
         WHERE order_id = #{orderId}
         <if test="status == 'cancel'">
-            AND order_product_id IN (SELECT order_product_id FROM cancel)
+            AND EXISTS (SELECT 1 FROM canceled_products WHERE canceled_products.order_product_id = order_products.order_product_id)
         </if>
         <if test="status == 'exchange'">
-            AND order_product_id IN (SELECT order_product_id FROM exchange)
+            AND EXISTS (SELECT 1 FROM exchange WHERE exchange.order_product_id = order_products.order_product_id)
         </if>
         <if test="status == 'returns'">
-            AND order_product_id IN (SELECT order_product_id FROM returns)
+            AND EXISTS (SELECT 1 FROM returns WHERE returns.order_product_id = order_products.order_product_id)
         </if>
         <if test="status == 'all'">
             AND order_product_id IN (

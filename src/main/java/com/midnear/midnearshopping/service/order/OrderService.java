@@ -322,7 +322,7 @@ public class OrderService {
                     .quantity(dto.getQuantity())
                     .couponDiscount(dto.getCouponDiscount())
                     .buyConfirmDate(null)
-                    .claimStatus("주문확인중")
+                    .claimStatus(null)
                     .pointDiscount(dto.getPointDiscount())
                     .deliveryId(null)//이건 배송 정보의 아이디다!!!!1
                     .productPrice(dto.getProductPrice())
