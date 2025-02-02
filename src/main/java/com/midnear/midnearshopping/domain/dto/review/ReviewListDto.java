@@ -19,4 +19,6 @@ public class ReviewListDto {
     String content;
     int isReply;
     String comment;
+    String reviewStatus;
+    boolean approveStatus;
 }

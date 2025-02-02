@@ -18,4 +18,5 @@ public class ReviewsVO {
     String reviewStatus;
     Integer userId;
     Long orderProductId;
+    String approveStatus;
 }

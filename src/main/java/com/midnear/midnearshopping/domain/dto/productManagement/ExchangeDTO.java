@@ -36,7 +36,7 @@ public class ExchangeDTO {
     String id;
     String recipientName;
     String courier;
-    Long invoiceNumber;
+    String invoiceNumber;
     String pickupCourier;
     Long pickupInvoice;
     String resendCourier;

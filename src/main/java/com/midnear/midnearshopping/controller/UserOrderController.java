@@ -1,6 +1,7 @@
 package com.midnear.midnearshopping.controller;
 
 import com.midnear.midnearshopping.domain.dto.order.*;
+import com.midnear.midnearshopping.domain.dto.payment.PaymentInfoDto;
 import com.midnear.midnearshopping.domain.vo.users.CustomUserDetails;
 import com.midnear.midnearshopping.exception.ApiResponse;
 import com.midnear.midnearshopping.service.order.OrderService;
@@ -80,6 +81,17 @@ public class UserOrderController {
         } catch (Exception e) {
             return ResponseEntity.internalServerError()
                     .body(new ApiResponse(false, "비회원 주문 조회 중 오류 발생: " + e.toString(), null));
+        }
+    }
+
+    @GetMapping("/getPaymentInfo")
+    public ResponseEntity<ApiResponse> getPaymentInfo(@RequestParam Long orderId) {
+        try {
+            PaymentInfoDto response = orderService.getPayment(orderId);
+            return ResponseEntity.ok(new ApiResponse(true, "결제 정보 조회 성공", response));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(new ApiResponse(false, "결제정보 조회 중 오류 발생: " + e.toString(), null));
         }
     }
 

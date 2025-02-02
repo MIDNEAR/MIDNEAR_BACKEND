@@ -3,21 +3,17 @@
 <mapper namespace="com.midnear.midnearshopping.mapper.coupon_point.PointMapper">
     <insert id="grantPoints" useGeneratedKeys="true" keyProperty="pointId">
         INSERT INTO point (
-        amount, reason
+        amount, reason, review_id, user_id, grant_date
         ) VALUES (
-        #{amount}, #{reason}
+        #{amount}, #{reason}, #{reviewId}, #{userId}, NOW()
         )
     </insert>
-    <insert id="setReviewPointAmount">
-        INSERT INTO review_point (
-        text_review, photo_review
-        ) VALUES (
-        #{textReview}, #{photoReview}
-        )
-    </insert>
-    <delete id="deletePreviousData">
-        delete from review_point
-    </delete>
+    <select id="getProductInfoByReviewId" resultType="java.lang.String">
+        select concat(op.product_name, ' _ ', op.color)
+        from reviews r
+        join order_products op on r.order_product_id = op.order_product_id
+        where review_id = #{reviewId}
+    </select>
 <!--얘는 파일 따로 뺴기 애매해서 여기에 넣음-->
     <select id="getPointList">
         select

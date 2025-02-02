@@ -2,6 +2,7 @@ package com.midnear.midnearshopping.service.order;
 
 import com.midnear.midnearshopping.domain.dto.delivery.DeliveryAddrDto;
 import com.midnear.midnearshopping.domain.dto.order.*;
+import com.midnear.midnearshopping.domain.dto.payment.PaymentInfoDto;
 import com.midnear.midnearshopping.domain.vo.order.OrderProductsVO;
 import com.midnear.midnearshopping.domain.vo.order.OrdersVO;
 import com.midnear.midnearshopping.domain.vo.products.ProductsVo;
@@ -216,6 +217,7 @@ public class OrderService {
                             .payPrice(payPrice) // 계산된 값 설정
                             .productName(product.getProductName())
                             .productMainImage(product.getProductMainImage())
+                            .deliveryId(product.getDeliveryId())
                             .build();
                 }).collect(Collectors.toList());
 
@@ -340,6 +342,13 @@ public class OrderService {
     public OrderDetailsDto getOrderNonUser(String orderName, String orderContact, String orderNumber){
         Long orderId = orderMapper.getOrdersNonUser(orderName, orderContact, orderNumber);
         return getOrderDetails(orderId);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public PaymentInfoDto getPayment(Long orderId){
+        PaymentInfoDto dto = orderMapper.getPaymentInfoByOrderId(orderId);
+        dto.setDeliveryCharge(dto.getTotalOrderPayment().subtract(dto.getAllPayment()));
+        return orderMapper.getPaymentInfoByOrderId(orderId);
     }
 }
 
