@@ -10,12 +10,12 @@
             c.discount_rate
             from user_coupon uc
                  JOIN coupon c on c.coupon_id = uc.coupon_id
-        where used_status = 1 AND uc.user_id = #{userId}
-        GROUP BY uc.coupon_id, uc.user_id, uc.issued_date, uc.expiry_date
+        where used_status = 0 AND uc.user_id = #{userId}
+        GROUP BY uc.coupon_id
     </select>
     <select id="getCouponsCountByUserId">
         select COUNT(*) from user_coupon uc
-        where used_status = 1 AND uc.user_id = #{userId}
+        where used_status = 0 AND uc.user_id = #{userId}
     </select>
     <delete id="deleteCouponByUserId">
         DELETE FROM user_coupon

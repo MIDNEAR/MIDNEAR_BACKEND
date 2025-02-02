@@ -149,6 +149,14 @@ public class OrderShippingController {
     @PostMapping("/directCancel")
     public ResponseEntity<ApiResponse> directCancel(@RequestBody List<Long> orderProductId) {
         try {
+            List<Long> orderCancelList = orderShippingService.selectCancelProduct(orderProductId);
+            // 조회된 취소 완료된 상품이 있는지 검사
+            for (Long id : orderProductId) {
+                if (orderCancelList.contains(id)) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                            .body(new ApiResponse(false, "이미 취소된 상품입니다", null));
+                }
+            }
             orderShippingService.directCancel(orderProductId);
             // 200 OK 응답으로 JSON 반환
             return ResponseEntity.status(HttpStatus.OK)
@@ -158,6 +166,7 @@ public class OrderShippingController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
         }
+
     }
 
     // 총수량 엑셀 다운로드

@@ -236,6 +236,7 @@
         </foreach>
     </update>
 
+
 <!-- 판매자 직접취소 -->
     <insert id="directCancel">
         insert into canceled_products (cancellation_request_date, cancellation_status, cancellation_approval_date, cancel_reason, order_product_id)
@@ -243,6 +244,15 @@
             (current_timestamp, '취소완료', current_timestamp, '판매자 직접취소', #{id})
         </foreach>
     </insert>
+
+    <select id="selectCancelProduct">
+        select order_product_id
+        from canceled_products
+        where order_product_id in
+        <foreach item="id" index="index" collection="orderProductId" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
 
 <!-- 옵션별 수량 엑셀 다운로드를 위한 자료조회 -->
     <select id="selectOptionQuantity">
@@ -295,8 +305,7 @@
             o.delivery_request,
             p.toss_payment_method,
             op.delivery_charge,
-            p.total_order_payment,
-            p.all_payment
+            p.total_order_payment
         from order_products op
             inner join delivery_info di on op.delivery_id = di.delivery_id
             inner join orders o on op.order_id = o.order_id

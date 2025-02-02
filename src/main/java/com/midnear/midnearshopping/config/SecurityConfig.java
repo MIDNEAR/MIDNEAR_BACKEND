@@ -30,7 +30,7 @@ public class SecurityConfig {
             "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html", "/api/v1/auth/**","user/signup", "user/login","user/find-id", "disruptive/**","/sms/**","/inquirie/**"
             ,"/magazine/**", "/email/**", "/user/is-duplicate", "/user/find-by-email", "/user/change-password", "/user/change-user-info", "/user/user-info", "/product/**",
             "/productManagement/**" , "/notice/**", "/storeManagement/**", "/coupon/**", "/point/**", "/setReviewPointAmount"
-            ,"/actuator/health", "/userMagazine/**", "/orders/getNonUser", "/orders/nonUserCreate", "/orders/forCancel", "/review/**", "/noticeManagement/**"
+            ,"/actuator/health","/confirmPurchase/**", "/userMagazine/**", "/orders/getNonUser", "/orders/nonUserCreate", "/orders/forCancel", "/review/**", "/noticeManagement/**","/review/nonUserCreat", "/delivery/getInvoiceNumber"
     }; //더 열어둘 엔드포인트 여기에 추가
 
     @Bean
@@ -40,12 +40,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/actuator/health").permitAll()
-                        .anyRequest().authenticated()
-                )
-                .csrf((csrf)->csrf.disable());
+        http.csrf((csrf)->csrf.disable());
         http.cors(cors -> cors.configurationSource(corsConfigurationSource));
         //세션 사용 안 함
         http.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(
@@ -53,7 +48,6 @@ public class SecurityConfig {
 
         //FormLogin, BasicHttp 비활성화
         http.formLogin((form) -> form.disable());
-
         http.httpBasic(AbstractHttpConfigurer::disable);
         //JwtAuthFilter를 UsernamePasswordAuthenticationFilter 앞에 추가
         http.addFilterBefore(new JwtAuthFilter(customUserDetailsService, jwtUtil), UsernamePasswordAuthenticationFilter.class);

@@ -19,10 +19,11 @@
         select
             p.amount,
             p.reason,
+            p.grant_date AS grantDate,
             op.product_name as productName
         from point p
         join reviews r on p.review_id = r.review_id
-        join order_products op on r.order_product_id = p.order_product_id
-        where user_id = #{userId}
+        join order_products op on r.order_product_id = op.order_product_id
+        where p.user_id = #{userId}
     </select>
 </mapper>
