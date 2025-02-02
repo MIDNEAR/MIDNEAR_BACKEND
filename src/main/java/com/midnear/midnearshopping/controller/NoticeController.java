@@ -3,6 +3,7 @@ package com.midnear.midnearshopping.controller;
 import com.midnear.midnearshopping.domain.dto.notice.NextNoticeDto;
 import com.midnear.midnearshopping.domain.dto.notice.NoticeDto;
 import com.midnear.midnearshopping.domain.dto.notice.NoticeListDto;
+import com.midnear.midnearshopping.domain.dto.notice.PopupDto;
 import com.midnear.midnearshopping.exception.ApiResponse;
 import com.midnear.midnearshopping.service.notice.NoticeService;
 import lombok.RequiredArgsConstructor;
@@ -81,6 +82,19 @@ public class NoticeController {
             List<NoticeListDto> noticeList = noticeService.getNoticeList(page, dateRange, searchText);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, " 공지사항 일반글 목록 조회 성공.", noticeList));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
+
+    @GetMapping("/popupImages")
+    public ResponseEntity<ApiResponse> getNoticePopupImages() {
+        try {
+            List<PopupDto> popupImageUrls = noticeService.getNoticePopupImages();
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "팝업 이미지 조회 성공", popupImageUrls));
         } catch (Exception ex) {
             ex.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
