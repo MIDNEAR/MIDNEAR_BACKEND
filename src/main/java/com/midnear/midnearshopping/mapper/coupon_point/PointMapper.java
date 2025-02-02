@@ -10,7 +10,6 @@ import java.util.List;
 @Mapper
 public interface PointMapper {
     void grantPoints(PointVo pointVo);
-    void setReviewPointAmount(ReviewPointVo reviewPointVo);
-    void deletePreviousData();
     List<UserPointDto> getPointList(Integer userId);
+    String getProductInfoByReviewId(Long reviewId);
 }

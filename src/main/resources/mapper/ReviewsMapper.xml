@@ -125,7 +125,17 @@
         WHERE review_id = #{reviewId}
     </select>
 
-
+    <update id="setApproveStatusTrue">
+        UPDATE reviews
+        SET
+        approve_status = TRUE
+        WHERE review_id = #{reviewId}
+    </update>
+    <select id="getUserIdByReviewId">
+        select user_id
+        from reviews
+        where review_id = #{reviewId}
+    </select>
 
 
 </mapper>

@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,12 +16,7 @@ public class PointVo {
     private Long pointId;
     private Long amount;
     private String reason;
-
-    public static PointVo toEntity(PointDto pointDto) {
-        return PointVo.builder()
-                .pointId(null)
-                .amount(pointDto.getAmount())
-                .reason(pointDto.getReason())
-                .build();
-    }
+    private Long reviewId;
+    private Long userId;
+    private Date grantDate;
 }

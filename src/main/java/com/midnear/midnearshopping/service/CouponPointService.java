@@ -4,9 +4,13 @@ import com.midnear.midnearshopping.domain.dto.coupon_point.*;
 import com.midnear.midnearshopping.domain.vo.coupon_point.CouponVo;
 import com.midnear.midnearshopping.domain.vo.coupon_point.PointVo;
 import com.midnear.midnearshopping.domain.vo.coupon_point.ReviewPointVo;
+import com.midnear.midnearshopping.domain.vo.review.ReviewImagesVO;
 import com.midnear.midnearshopping.mapper.coupon_point.CouponMapper;
 import com.midnear.midnearshopping.mapper.coupon_point.PointMapper;
+import com.midnear.midnearshopping.mapper.coupon_point.ReviewPointMapper;
 import com.midnear.midnearshopping.mapper.coupon_point.UserCouponMapper;
+import com.midnear.midnearshopping.mapper.review.ReviewImagesMapper;
+import com.midnear.midnearshopping.mapper.review.ReviewsMapper;
 import com.midnear.midnearshopping.mapper.users.UsersMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.hpsf.Decimal;
@@ -25,11 +29,19 @@ public class CouponPointService {
     private final CouponMapper couponMapper;
     private final UsersMapper usersMapper;
     private final UserCouponMapper userCouponMapper;
+    private final ReviewImagesMapper reviewImagesMapper;
+    private final ReviewPointMapper reviewPointMapper;
+    private final ReviewsMapper reviewsMapper;
 
     @Transactional
     public void grantPointsToAll(PointDto pointDto) {
         // 포인트 내역 저장
-        PointVo pointVo = PointVo.toEntity(pointDto);
+        PointVo pointVo = PointVo.builder()
+                .amount(pointDto.getAmount())
+                .reason(pointDto.getReason())
+                .reviewId(null)
+                .userId(pointDto.getUserId())
+                .build();
         pointMapper.grantPoints(pointVo);
 
         // 모든 사용자에게 포인트 지급
@@ -41,15 +53,19 @@ public class CouponPointService {
 
     @Transactional
     public void grantPointsToSelectedUsers(PointToSelectedUserDto pointToSelectedUserDto) {
-        // 포인트 내역 저장
-        PointVo pointVo = PointVo.builder()
-                .pointId(null)
-                .amount(pointToSelectedUserDto.getAmount())
-                .reason(pointToSelectedUserDto.getReason())
-                .build();
-        pointMapper.grantPoints(pointVo);
-
         List<String> userIdList = pointToSelectedUserDto.getUserIdList();
+        for (String id : userIdList) {
+            Long userId = Long.valueOf(usersMapper.getUserIdById(id));
+            // 포인트 내역 저장
+            PointVo pointVo = PointVo.builder()
+                    .amount(pointToSelectedUserDto.getAmount())
+                    .reason(pointToSelectedUserDto.getReason())
+                    .reviewId(null)
+                    .userId(userId)
+                    .build();
+            pointMapper.grantPoints(pointVo);
+        }
+
         // 특정 사용자에게 포인트 지급
         for (String id : userIdList) {
             usersMapper.addPointsToUser(id, pointToSelectedUserDto.getAmount());
@@ -73,9 +89,9 @@ public class CouponPointService {
     @Transactional
     public void setReviewPointAmount(ReviewPointVo reviewPointVo) {
         // 이전 데이터 지우고
-        pointMapper.deletePreviousData();
+        reviewPointMapper.deletePreviousData();
         // 다시 등록
-        pointMapper.setReviewPointAmount(reviewPointVo);
+        reviewPointMapper.setReviewPointAmount(reviewPointVo);
     }
 
     @Transactional
@@ -119,6 +135,35 @@ public class CouponPointService {
         }
     }
 
+    @Transactional
+    public void grantReviewPoint(Long reviewId) {
+        // 포토인지 텍스트인지 확인 후 설정된 지급 amount를 테이블에서 가져오고
+        Boolean isPhotoReview = reviewImagesMapper.isPhotoReview(reviewId);
+        Long amount = 0L;
+        String reason = pointMapper.getProductInfoByReviewId(reviewId); // 상품명 _ 컬러로 지급 사유
+        Long userId = reviewsMapper.getUserIdByReviewId(reviewId);
+        if (isPhotoReview)
+            amount = reviewPointMapper.getPhotoReview();
+         else
+            amount = reviewPointMapper.getTextReview();
+
+        // 리뷰 승인 시 포인트 내역 저장
+        PointVo pointVo = PointVo.builder()
+                .amount(amount)
+                .reason(reason)
+                .reviewId(reviewId)
+                .userId(userId)
+                .build();
+        pointMapper.grantPoints(pointVo);
+
+        // 작성한 사용자에게 포인트 지급
+        String id = usersMapper.getIdByUserId(userId);
+        usersMapper.addPointsToUser(id, amount);
+
+        // 승인 상태 업데이트
+        reviewsMapper.setApproveStatusTrue(reviewId);
+    }
+
 
     //여기서부터 사용자 시~작
     public List<CouponInfoDto> getCouponsByUserId(String id) {
@@ -153,5 +198,4 @@ public class CouponPointService {
         }
         return usersMapper.getPointAmount(userId);
     }
-
 }
