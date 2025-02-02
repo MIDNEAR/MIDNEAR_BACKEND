@@ -97,7 +97,6 @@ public class NoticeManagementController {
     @GetMapping("/all")
     public ResponseEntity<ApiResponse> getNoticeList(
             @RequestParam(name = "page", defaultValue = "1") int page,
-            @RequestParam(name = "size", defaultValue = "23") int size,
             @RequestParam(name = "sortOrder", defaultValue = "최신순") String sortOrder,
             @RequestParam(name = "dateRange", defaultValue = "전체") String dateRange,
             @RequestParam(name = "searchRange", defaultValue = "") String searchRange, // search 범위 없으면 검색 x
@@ -105,7 +104,7 @@ public class NoticeManagementController {
     ) {
         try {
             // List<noticeDto> + 전체 페이지 수
-            Map<String, Object> response = noticeManagementService.getNoticeList(page, size, sortOrder, dateRange, searchRange, searchText);
+            Map<String, Object> response = noticeManagementService.getNoticeList(page, sortOrder, dateRange, searchRange, searchText);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "데이터 불러오기 성공.", response));
         } catch (Exception ex) {
@@ -116,7 +115,7 @@ public class NoticeManagementController {
     }
 
     // 고정 글 설정
-    @PutMapping("/fix")
+    @PatchMapping("/fix")
     public ResponseEntity<ApiResponse> fixNotices(@RequestBody List<Long> fixList) {
         try {
             noticeManagementService.fixNotices(fixList);
@@ -124,7 +123,7 @@ public class NoticeManagementController {
                     .body(new ApiResponse(true, "선택 글 고정에 성공하였습니다.", null));
         } catch (IllegalArgumentException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ApiResponse(false, ex.getMessage(), null));
+                    .body(new ApiResponse(false, "선택된 공지사항이 없습니다.", null));
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
@@ -132,7 +131,7 @@ public class NoticeManagementController {
     }
 
     // 고정글 설정 해제
-    @PutMapping("/unfix")
+    @PatchMapping("/unfix")
     public ResponseEntity<ApiResponse> unfixNotices(@RequestBody List<Long> unfixList) {
         try {
             noticeManagementService.unfixNotices(unfixList);
@@ -140,7 +139,7 @@ public class NoticeManagementController {
                     .body(new ApiResponse(true, "선택 글 고정을 해제하였습니다.", null));
         } catch (IllegalArgumentException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ApiResponse(false, ex.getMessage(), null));
+                    .body(new ApiResponse(false, "선택된 공지사항이 없습니다.", null));
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
