@@ -15,9 +15,8 @@ public class UserMagazineService {
     private final magazinesMapper magazinesMapper;
     private static final int pageSize = 8;
 
-    public List<MagazineResponseListDto> getMagazineLists(int pageNumber, String sort) {
-        int offset = (pageNumber - 1) * pageSize;
-        return magazinesMapper.getUserMagazineList(offset, pageSize, sort);
+    public List<MagazineResponseListDto> getMagazineLists(String sort) {
+        return magazinesMapper.getUserMagazineList( sort);
     }
     public MagazineResponseDto getMagazines(Long magazineId) {
         MagazineResponseDto dto = magazinesMapper.getMagazine(magazineId);

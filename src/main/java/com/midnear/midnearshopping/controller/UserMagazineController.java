@@ -18,9 +18,9 @@ public class UserMagazineController {
 
     // 매거진 목록 조회
     @GetMapping("/list")
-    public ResponseEntity<ApiResponse> getMagazineLists(@RequestParam int pageNumber, @RequestParam String sort) {
+    public ResponseEntity<ApiResponse> getMagazineLists(@RequestParam String sort) {
         try {
-            List<MagazineResponseListDto> magazines = userMagazineService.getMagazineLists(pageNumber, sort);
+            List<MagazineResponseListDto> magazines = userMagazineService.getMagazineLists(sort);
             return ResponseEntity.ok(new ApiResponse(true, "Magazines retrieved successfully", magazines));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new ApiResponse(false, "Failed to retrieve magazines: " + e.getMessage(), null));
