@@ -19,6 +19,7 @@
         select
             p.amount,
             p.reason,
+            P.grant_date AS grantDate,
             op.product_name as productName
         from point p
         join reviews r on p.review_id = r.review_id
