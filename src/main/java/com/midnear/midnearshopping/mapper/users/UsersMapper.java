@@ -29,4 +29,5 @@ public interface UsersMapper {
     List<Long> getAllUserId();
     void discountPointsToUserByUserId(Integer userId, Long amount);
     Decimal getPointAmount(Integer userId);
+    String getIdByUserId(Long userId);
 }

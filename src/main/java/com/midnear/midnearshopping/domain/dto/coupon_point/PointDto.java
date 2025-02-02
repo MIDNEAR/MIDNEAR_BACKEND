@@ -10,4 +10,6 @@ import lombok.*;
 public class PointDto {
     private Long amount;
     private String reason;
+    private Long reviewId;
+    private Long userId;
 }

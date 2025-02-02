@@ -19,4 +19,6 @@ public interface ReviewsMapper {
     List<ReviewListDto> getReviewList(@Param("productName") String productName, @Param("offset") int offset, @Param("pageSize") int pageSize);
     List<String> getReviewImages(@Param("reviewId") Long reviewId);
     void updateReviewComment(Long reviewId);
+    void setApproveStatusTrue(Long reviewId);
+    Long getUserIdByReviewId(Long reviewId);
 }

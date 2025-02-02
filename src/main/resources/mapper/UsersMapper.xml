@@ -91,9 +91,13 @@
         select user_id
         from users
     </select>
-
     <select id="getPointAmount">
         select point_balance
+        from users
+        where user_id = #{userId}
+    </select>
+    <select id="getIdByUserId">
+        select id
         from users
         where user_id = #{userId}
     </select>

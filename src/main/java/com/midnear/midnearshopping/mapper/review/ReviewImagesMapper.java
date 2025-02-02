@@ -13,4 +13,6 @@ public interface ReviewImagesMapper {
             @Param("offset") int offset,
             @Param("pageSize") int pageSize
     );
+
+    Boolean isPhotoReview(Long reviewId);
 }
