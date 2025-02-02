@@ -24,9 +24,9 @@ public class UserMagazineService {
         dto.setImageUrls(images);
         return dto;
     }
-    public List<MagazineResponseListDto> searchMagazineLists(int pageNumber, String sort, String searchValue) {
-        int offset = (pageNumber - 1) * pageSize;
-        return magazinesMapper.magazineUserSearch(offset, pageSize, sort, searchValue);
+    public List<MagazineResponseListDto> searchMagazineLists(String sort, String searchValue) {
+
+        return magazinesMapper.magazineUserSearch(sort, searchValue);
     }
     @Transactional
     public void getMagazine(Long magazineId) {

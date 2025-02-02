@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -44,7 +45,7 @@ public class UserCouponPointController {
     // 사용자 포인트 총량 조회
     @GetMapping("/points/total")
     public ResponseEntity<ApiResponse> getPoints(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        Decimal points = couponPointService.getPoints(customUserDetails.getUsername());
+        BigDecimal points = couponPointService.getPoints(customUserDetails.getUsername());
         return ResponseEntity.ok(new ApiResponse(true, "Total points retrieved successfully", points));
     }
 }

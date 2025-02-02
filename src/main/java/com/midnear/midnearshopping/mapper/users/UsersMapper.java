@@ -28,6 +28,6 @@ public interface UsersMapper {
     Long getPageSize(String id);
     List<Long> getAllUserId();
     void discountPointsToUserByUserId(Integer userId, Long amount);
-    Decimal getPointAmount(Integer userId);
+    BigDecimal getPointAmount(Integer userId);
     String getIdByUserId(Long userId);
 }

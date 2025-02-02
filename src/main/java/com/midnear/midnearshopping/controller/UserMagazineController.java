@@ -40,9 +40,9 @@ public class UserMagazineController {
 
     // 매거진 검색 목록 조회
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse> searchMagazineLists(@RequestParam int pageNumber, @RequestParam String sort, @RequestParam String searchValue) {
+    public ResponseEntity<ApiResponse> searchMagazineLists(@RequestParam String sort, @RequestParam String searchValue) {
         try {
-            List<MagazineResponseListDto> magazines = userMagazineService.searchMagazineLists(pageNumber, sort, searchValue);
+            List<MagazineResponseListDto> magazines = userMagazineService.searchMagazineLists( sort, searchValue);
             return ResponseEntity.ok(new ApiResponse(true, "Searched magazines retrieved successfully", magazines));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new ApiResponse(false, "Failed to search magazines: " + e.getMessage(), null));

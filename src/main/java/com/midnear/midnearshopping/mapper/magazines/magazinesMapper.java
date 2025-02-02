@@ -43,7 +43,7 @@ public interface magazinesMapper {
     List<MagazineResponseListDto> getUserMagazineList( @Param("sort") String sort);
     MagazineResponseDto getMagazine(Long magazineId);
     void updateViewCount(Long magazineId);
-    List<MagazineResponseListDto> magazineUserSearch(@Param("offset") int offset, @Param("pageSize") int pageSize, @Param("sort") String sort, @Param("searchValue") String searchValue);
+    List<MagazineResponseListDto> magazineUserSearch(@Param("sort") String sort, @Param("searchValue") String searchValue);
     List<String> getMagazineImages(Long magazineId);
 
 }
