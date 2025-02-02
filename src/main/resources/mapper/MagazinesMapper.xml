@@ -187,7 +187,6 @@
                 m.created_date DESC
             </otherwise>
         </choose>
-        LIMIT #{pageSize} OFFSET #{offset}
     </select>
 
 
@@ -230,7 +229,6 @@
                 m.created_date DESC
             </otherwise>
         </choose>
-        LIMIT #{pageSize} OFFSET #{offset}
     </select>
 
     <select id="getMagazineImages">
