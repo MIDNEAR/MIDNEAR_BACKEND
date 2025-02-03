@@ -9,7 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -22,12 +22,12 @@ public class ProductsDto {
     private BigDecimal discountPrice;
     private int discountRate;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date discountStartDate;
+    private String discountStartDate;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date discountEndDate;
+    private String discountEndDate;
     private String detail;
     private String sizeGuide;
-    private Date registeredDate;
+    private String registeredDate;
     private Long categoryId;
     @Builder.Default // 빌더로 생성 시 List 초기화
     private List<ProductColorsDto> colors = new ArrayList<>();
@@ -39,11 +39,11 @@ public class ProductsDto {
                 .price(productsVo.getPrice())
                 .discountPrice(productsVo.getDiscountPrice())
                 .discountRate(productsVo.getDiscountRate())
-                .discountStartDate(productsVo.getDiscountStartDate())
-                .discountEndDate(productsVo.getDiscountEndDate())
+                .discountStartDate(String.valueOf(productsVo.getDiscountStartDate()))
+                .discountEndDate(String.valueOf(productsVo.getDiscountEndDate()))
                 .detail(productsVo.getDetail())
                 .sizeGuide(productsVo.getSizeGuide())
-                .registeredDate(productsVo.getRegisteredDate())
+                .registeredDate(String.valueOf(productsVo.getRegisteredDate()))
                 .categoryId(productsVo.getCategoryId())
                 .build();
     }
