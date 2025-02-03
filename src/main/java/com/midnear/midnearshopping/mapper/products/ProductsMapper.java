@@ -32,4 +32,5 @@ public interface ProductsMapper {
     List<ProductsVo> getProductsByIds(List<Long> originalProductIds);
     List<CoordinateProductDto> getCoordinateProducts(Long productColorId);
     ProductListInfoDto getTotalAndPage();
+    ProductListInfoDto getCategoryTotalAndPage(Long categoryId);
 }
