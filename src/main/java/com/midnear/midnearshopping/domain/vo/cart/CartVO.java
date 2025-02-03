@@ -8,5 +8,5 @@ import lombok.Setter;
 public class CartVO {
 
     private Long cartId;
-    private Integer userId;
+    private Long userId;
 }

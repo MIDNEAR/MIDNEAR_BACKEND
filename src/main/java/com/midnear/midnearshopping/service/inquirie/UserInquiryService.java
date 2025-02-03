@@ -24,11 +24,11 @@ public class UserInquiryService {
 
     @Transactional
     public void createInquiry(String id, InquiryRequestDto requestDto) {
-        Integer userId =  usersMapper.getUserIdById(id);
+        Long userId =  usersMapper.getUserIdById(id);
         if(userId == null) {
             throw new UsernameNotFoundException("존재하지 않는 유저입니다.");
         }
-        requestDto.setUserId(userId.longValue());
+        requestDto.setUserId(userId);
         try {
             userInquiryMapper.insertInquiry(InquiriesVO.toEntity(requestDto));
         } catch (Exception e) {

@@ -47,7 +47,7 @@ public class OrderService {
     @Transactional(rollbackFor = Exception.class)
     public void createOrder(String id, UserOrderDto userOrderDto) {
         // 사용자 ID 조회
-        Integer userId = usersMapper.getUserIdById(id);
+        Long userId = usersMapper.getUserIdById(id);
         if (userId == null) {
             throw new RuntimeException("해당 사용자를 찾을 수 없습니다. 사용자 ID: " + id);
         }
@@ -153,7 +153,7 @@ public class OrderService {
     public List<UserOrderCheckDto> getOrders(String id, int pageNumber, String sort) {
         int offset = (pageNumber - 1) * pageSize;
         // 주문 기본 정보 조회
-        Integer userId = usersMapper.getUserIdById(id);
+        Long userId = usersMapper.getUserIdById(id);
         if (userId == null) {
             throw new UsernameNotFoundException("존재하지 않는 유저입니다.");
         }

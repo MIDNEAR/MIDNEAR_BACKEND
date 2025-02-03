@@ -12,8 +12,8 @@ import java.util.List;
 public interface DeliveryAddressMapper {
     void createDeliveryAddress(DeliveryAddressVO deliveryAddressVO);
     DeliveryAddrDto getDeliveryAddressById(int deliveryAddressId);
-    List<DeliveryAddrDto> getDeliveryAddressesByUserId(int userId);
-    DeliveryAddrDto getDefaultAddr(int userId);
+    List<DeliveryAddrDto> getDeliveryAddressesByUserId(Long userId);
+    DeliveryAddrDto getDefaultAddr(Long userId);
     void updateDeliveryAddress(DeliveryAddressVO deliveryAddressVO);
     void updateDeliveryRequest(UpdateDeliveryRequest updateDeliveryRequest);
     void deleteDeliveryAddress(int deliveryAddressId);

@@ -24,7 +24,7 @@ public class DeliveryService {
     @Transactional
     public void createDeliveryAddr(String id, DeliveryAddrDto deliveryAddrCreateDto) {
         DeliveryAddressVO deliveryAddressVO = DeliveryAddressVO.toEntity(deliveryAddrCreateDto);
-        Integer userId = usersmapper.getUserIdById(id);
+        Long userId = usersmapper.getUserIdById(id);
         if (userId == null) {
             throw new UsernameNotFoundException("존재하지 않는 유저입니다.");
         }
@@ -33,14 +33,14 @@ public class DeliveryService {
     }
     //유저가 등록한 모든 주소 가져옴
     public List<DeliveryAddrDto> getAllDeliveryAddrs(String id) {
-        Integer userId = usersmapper.getUserIdById(id);
+        Long userId = usersmapper.getUserIdById(id);
         if (userId == null) {
             throw new UsernameNotFoundException("존재하지 않는 유저입니다.");
         }
         return deliveryAddrMapper.getDeliveryAddressesByUserId(userId);
     }
     public DeliveryAddrDto getDefaultAddress(String id) {
-        Integer userId = usersmapper.getUserIdById(id);
+        Long userId = usersmapper.getUserIdById(id);
         if (userId == null) {
             throw new UsernameNotFoundException("존재하지 않는 유저입니다.");
         }

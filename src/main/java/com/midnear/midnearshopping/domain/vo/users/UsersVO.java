@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Builder
 public class UsersVO {
-    private Integer userId;
+    private Long userId;
     private String name;
     private String id;
     private String password;

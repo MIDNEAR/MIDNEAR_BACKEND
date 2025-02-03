@@ -85,7 +85,7 @@ public class ClaimService {
         int offset = (pageNumber - 1) * pageSize;
 
         // 주문 기본 정보 조회
-        Integer userId = usersMapper.getUserIdById(id);
+        Long userId = usersMapper.getUserIdById(id);
         if (userId == null) {
             throw new UsernameNotFoundException("존재하지 않는 유저입니다.");
         }
