@@ -1,5 +1,6 @@
 package com.midnear.midnearshopping.service.productManagement;
 
+import com.midnear.midnearshopping.domain.dto.productManagement.InvoiceInsertDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.ParamDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.ReturnDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.ReturnParamDTO;
@@ -49,15 +50,33 @@ public class ReturnServiceImpl implements ReturnService {
         returnMapper.confirmReturn(returnId);
     }
 
+    // 반품거부
     @Override
     public void denayReturn(ReturnParamDTO returnParamDTO) {
         returnMapper.denayReturn(returnParamDTO.getReturnDenayReason(),returnParamDTO.getReturnId());
     }
 
+    // 교환목록에 추가
     @Override
     @Transactional
     public void updateEx(List<Long> returnId) {
         returnMapper.updateEx(returnId);
         returnMapper.insertRetoEx(returnId);
+    }
+
+    // 송장번호 입력
+    @Override
+    public void updateInvoice(InvoiceInsertDTO invoiceInsertDTO) {
+        returnMapper.updateReturnStatus(invoiceInsertDTO);
+    }
+
+    @Override
+    public Long selectCarrierName(String carrierName) {
+        return returnMapper.selectCarrierName(carrierName);
+    }
+
+    @Override
+    public void pickupProduct(List<Long> returnId) {
+        returnMapper.pickupProduct(returnId);
     }
 }

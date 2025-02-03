@@ -12,7 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UsersDto {
-    private Integer userId;
+    private Long userId;
     @NotBlank(message = "이름을 입력해주세요")
     private String name;
     @NotBlank(message = "아이디를 입력해주세요")

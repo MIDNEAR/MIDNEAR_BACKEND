@@ -417,3 +417,21 @@ CREATE TABLE `delivery_charge` (
      `island_mountain_delivery_cost` int NOT NULL,
       PRIMARY KEY (`charge_id`)
 );
+
+CREATE TABLE carrier_mapping (
+     id BIGINT AUTO_INCREMENT PRIMARY KEY,
+     carrier_name VARCHAR(255) UNIQUE NOT NULL,
+     carrier_code VARCHAR(50) UNIQUE NOT NULL
+);
+
+CREATE TABLE `return_pickup_delivery` (
+   `return_pickup_id` int NOT NULL AUTO_INCREMENT,
+   `return_pickup_status` varchar(20) NULL,
+   `courier` Date NULL,
+   `invoice_number` int NULL,
+   `collection_complete_date` Date NULL,
+   `payment_status` int NULL,
+   `return_id` int NOT NULL,
+   PRIMARY KEY (`return_pickup_id`),
+   FOREIGN KEY (`return_id`) REFERENCES `returns`(`return_id`)
+);

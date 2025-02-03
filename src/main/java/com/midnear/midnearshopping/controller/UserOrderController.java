@@ -1,6 +1,7 @@
 package com.midnear.midnearshopping.controller;
 
 import com.midnear.midnearshopping.domain.dto.order.*;
+import com.midnear.midnearshopping.domain.dto.payment.PaymentInfoDto;
 import com.midnear.midnearshopping.domain.vo.users.CustomUserDetails;
 import com.midnear.midnearshopping.exception.ApiResponse;
 import com.midnear.midnearshopping.service.order.OrderService;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -80,6 +82,28 @@ public class UserOrderController {
         } catch (Exception e) {
             return ResponseEntity.internalServerError()
                     .body(new ApiResponse(false, "비회원 주문 조회 중 오류 발생: " + e.toString(), null));
+        }
+    }
+
+    @GetMapping("/getPaymentInfo")
+    public ResponseEntity<ApiResponse> getPaymentInfo(@RequestParam Long orderId) {
+        try {
+            PaymentInfoDto response = orderService.getPayment(orderId);
+            return ResponseEntity.ok(new ApiResponse(true, "결제 정보 조회 성공", response));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(new ApiResponse(false, "결제정보 조회 중 오류 발생: " + e.toString(), null));
+        }
+    }
+
+    @GetMapping("/getDeliveryCharge")
+    public ResponseEntity<ApiResponse> getDeliveryCharge(@RequestParam String postalCode) {
+        try {
+            BigDecimal response = orderService.getDeliveryCharge(postalCode);
+            return ResponseEntity.ok(new ApiResponse(true, "배송비 조회 성공", response));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(new ApiResponse(false, "배송비 조회 중 오류 발생: " + e.toString(), null));
         }
     }
 

@@ -1,5 +1,6 @@
 package com.midnear.midnearshopping.service.product;
 
+import com.midnear.midnearshopping.domain.dto.coordinate.CoordinateDto;
 import com.midnear.midnearshopping.domain.dto.products.*;
 import com.midnear.midnearshopping.domain.vo.category.CategoryVo;
 import com.midnear.midnearshopping.domain.vo.products.ProductColorsVo;
@@ -23,7 +24,7 @@ public class ProductService {
     private final ProductsMapper productMapper;
     private final ProductColorsMapper productColorsMapper;
     private final SizesMapper sizesMapper;
-    private static final int pageSize = 2;
+    private static final int pageSize = 16;
     private final ProductsMapper productsMapper;
     private final ProductImagesMapper productImagesMapper;
 
@@ -85,6 +86,16 @@ public class ProductService {
         productsDto.setImages(images);
 
         return productsDto;
+    }
+
+    public List<CoordinateProductDto> getCoordinateProducts(Long productColorId){
+        return productMapper.getCoordinateProducts(productColorId);
+    }
+
+    public ProductListInfoDto getProductListInfo() {
+        ProductListInfoDto dto = productMapper.getTotalAndPage();
+        dto.setPage(pageSize);
+        return dto;
     }
 
 

@@ -1,6 +1,7 @@
 package com.midnear.midnearshopping.service.review;
 
 import com.midnear.midnearshopping.domain.dto.FileDto;
+import com.midnear.midnearshopping.domain.dto.review.CommentDto;
 import com.midnear.midnearshopping.domain.dto.review.ProductReviewDto;
 import com.midnear.midnearshopping.domain.dto.review.ReviewListDto;
 import com.midnear.midnearshopping.domain.dto.review.ReviewRequestDto;
@@ -27,13 +28,21 @@ public class ReviewsService {
     private final ReviewImagesMapper reviewImagesMapper;
     private final UsersMapper usersMapper;
     private final S3Service s3Service;
-    private static final int pageSize = 2;
+    private static final int pageSize = 16;
+    @Transactional
+    public void nonUserCreateReview(ReviewRequestDto reviewRequestDto) {
+         createReview("", reviewRequestDto);
+    }
 
     @Transactional
     public void createReview(String id, ReviewRequestDto reviewRequestDto) {
-        Integer userId = usersMapper.getUserIdById(id);
-        if(userId == null){
-            throw new RuntimeException("존재하지 않는 유저입니다");
+        System.out.println("createReview called with id: " + id);
+        Long userId;
+        if(id.trim().isEmpty()){
+            userId=null;
+        } else{
+            System.out.println("id is NOT null, fetching userId");
+            userId = usersMapper.getUserIdById(id);
         }
         ReviewsVO reviewsVO = ReviewsVO.builder()
                 .createdAt(new Date())
@@ -77,15 +86,15 @@ public class ReviewsService {
         reviewsMapper.updateReviewStatus(reviewId);
     }
 
-    public void updateReviewComment(String id, Long reviewId) {
-        Integer userId = usersMapper.getUserIdById(id);
+    public void updateReviewComment(String id, CommentDto dto) {
+        Long userId = usersMapper.getUserIdById(id);
         if(userId == null){
             throw new RuntimeException("존재하지 않는 유저입니다");
         }
         if(userId !=1){
             throw new RuntimeException("관리자만 리뷰에 댓글을 달 수 있습니다");
         }
-        reviewsMapper.updateReviewComment(reviewId);
+        reviewsMapper.updateReviewComment(dto.getReviewId(), dto.getComment());
     }
 
     public ProductReviewDto getProductReviews(String productName, int pageNumber) {
@@ -105,5 +114,6 @@ public class ReviewsService {
         int offset = (pageNumber - 1) * pageSize;
         return reviewImagesMapper.getReviewImagesByProduct(productName, offset, pageSize);
     }
+
 
 }

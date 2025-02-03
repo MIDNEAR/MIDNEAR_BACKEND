@@ -20,7 +20,7 @@ public class CartService {
 
     @Transactional
     public void makeCart(String id){
-        Integer userId = usersMapper.getUserIdById(id);
+        Long userId = usersMapper.getUserIdById(id);
         if (userId == null) {
             throw new UsernameNotFoundException("존재하지 않는 유저입니다.");
         }
@@ -32,7 +32,7 @@ public class CartService {
 
     @Transactional
     public void addCart(String id, Long productColorId, int quantity, String size) {
-        Integer userId = usersMapper.getUserIdById(id);
+        Long userId = usersMapper.getUserIdById(id);
         if (userId == null) {
             throw new UsernameNotFoundException("존재하지 않는 유저입니다.");
         }
@@ -52,7 +52,7 @@ public class CartService {
 
     @Transactional
     public List<CartProductDto> getCart(String id) {
-        Integer userId = usersMapper.getUserIdById(id);
+        Long userId = usersMapper.getUserIdById(id);
         if (userId == null) {
             throw new UsernameNotFoundException("존재하지 않는 유저입니다.");
         }

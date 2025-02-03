@@ -4,7 +4,6 @@ import com.midnear.midnearshopping.domain.dto.users.UserInfoChangeDto;
 import com.midnear.midnearshopping.domain.vo.users.UsersVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.apache.poi.hpsf.Decimal;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -21,12 +20,13 @@ public interface UsersMapper {
     int updatePassword(UsersVO user);
     String getPasswordById(String id);
     void updateUserInfo(UserInfoChangeDto userInfoChangeDto);
-    Integer getUserIdById(String id);
+    Long getUserIdById(String id);
     List<String> getAllId();
     void addPointsToUser(@Param("id") String id, @Param("amount")Long amount);
     List<String> findUserByIdPaging(@Param("id")String id, @Param("offset")int offset);
     Long getPageSize(String id);
     List<Long> getAllUserId();
-    void discountPointsToUserByUserId(Integer userId, Long amount);
-    Decimal getPointAmount(Integer userId);
+    void discountPointsToUserByUserId(Long userId, Long amount);
+    BigDecimal getPointAmount(Long userId);
+    String getIdByUserId(Long userId);
 }

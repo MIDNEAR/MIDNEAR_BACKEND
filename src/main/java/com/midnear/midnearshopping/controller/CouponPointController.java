@@ -100,4 +100,17 @@ public class CouponPointController {
         }
     }
 
+    // 리뷰 승인 시 포인트 지급
+    @PostMapping("/point/grantReviewPoint")
+    public ResponseEntity<ApiResponse> grantReviewPoint(@RequestParam("reviewId") Long reviewId) {
+        try {
+            couponPointService.grantReviewPoint(reviewId);
+            return ResponseEntity.ok(new ApiResponse(true, "리뷰 포인트 지급 완료.", null));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
+
 }

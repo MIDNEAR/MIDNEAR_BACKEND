@@ -40,9 +40,10 @@ public interface magazinesMapper {
     //  수정할 매거진 이미지 삭제
     void deleteMagazineImage(Long magazineId);
 
-    List<MagazineResponseListDto> getUserMagazineList(@Param("offset") int offset, @Param("pageSize") int pageSize, @Param("sort") String sort);
+    List<MagazineResponseListDto> getUserMagazineList( @Param("sort") String sort);
     MagazineResponseDto getMagazine(Long magazineId);
     void updateViewCount(Long magazineId);
-    List<MagazineResponseListDto> magazineUserSearch(@Param("offset") int offset, @Param("pageSize") int pageSize, @Param("sort") String sort, @Param("searchValue") String searchValue);
+    List<MagazineResponseListDto> magazineUserSearch(@Param("sort") String sort, @Param("searchValue") String searchValue);
+    List<String> getMagazineImages(Long magazineId);
 
 }

@@ -19,4 +19,5 @@ public class UserOrderProductCheckDto {
     private BigDecimal payPrice; // 최종 구매가
     private String productName;
     private String productMainImage;
+    private Long deliveryId;
 }

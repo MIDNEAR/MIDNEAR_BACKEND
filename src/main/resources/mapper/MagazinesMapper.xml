@@ -187,18 +187,19 @@
                 m.created_date DESC
             </otherwise>
         </choose>
-        LIMIT #{pageSize} OFFSET #{offset}
     </select>
-    <select id="getMagazine" >
-        select
-        m.magazine_id AS magazineId,
-        m.title,
-        m.content,
-        m.created_date AS createdDate,
-        m.view_count AS viewCount,
-        mi.image_url  AS imageUrls
-        from magazines m left join magazine_images mi on mi.magazine_id = m.magazine_id
-        where m.magazine_id = #{magazineId}
+
+
+    <select id="getMagazine">
+        SELECT
+            m.magazine_id AS magazineId,
+            m.title,
+            m.content,
+            m.created_date AS createdDate,
+            m.view_count AS viewCount
+        FROM magazines m
+        WHERE m.magazine_id = #{magazineId}
+
     </select>
 
     <update id="updateViewCount">
@@ -228,6 +229,11 @@
                 m.created_date DESC
             </otherwise>
         </choose>
-        LIMIT #{pageSize} OFFSET #{offset}
+    </select>
+
+    <select id="getMagazineImages">
+        SELECT mi.image_url
+        FROM magazine_images mi
+        WHERE mi.magazine_id = #{magazineId}
     </select>
 </mapper>

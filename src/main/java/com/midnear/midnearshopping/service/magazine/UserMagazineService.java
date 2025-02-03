@@ -15,16 +15,18 @@ public class UserMagazineService {
     private final magazinesMapper magazinesMapper;
     private static final int pageSize = 8;
 
-    public List<MagazineResponseListDto> getMagazineLists(int pageNumber, String sort) {
-        int offset = (pageNumber - 1) * pageSize;
-        return magazinesMapper.getUserMagazineList(offset, pageSize, sort);
+    public List<MagazineResponseListDto> getMagazineLists(String sort) {
+        return magazinesMapper.getUserMagazineList( sort);
     }
     public MagazineResponseDto getMagazines(Long magazineId) {
-        return magazinesMapper.getMagazine(magazineId);
+        MagazineResponseDto dto = magazinesMapper.getMagazine(magazineId);
+        List<String> images = magazinesMapper.getMagazineImages(magazineId);
+        dto.setImageUrls(images);
+        return dto;
     }
-    public List<MagazineResponseListDto> searchMagazineLists(int pageNumber, String sort, String searchValue) {
-        int offset = (pageNumber - 1) * pageSize;
-        return magazinesMapper.magazineUserSearch(offset, pageSize, sort, searchValue);
+    public List<MagazineResponseListDto> searchMagazineLists(String sort, String searchValue) {
+
+        return magazinesMapper.magazineUserSearch(sort, searchValue);
     }
     @Transactional
     public void getMagazine(Long magazineId) {

@@ -81,4 +81,22 @@
         DELETE FROM orders WHERE order_id = #{orderId}
     </delete>
 
+    <select id="getPaymentInfoByOrderId">
+        select
+            p.toss_payment_method AS tossPaymentMethod,
+            p.total_order_payment AS totalOrderPayment,
+            p.payment_status AS paymentStatus,
+            p.toss_order_id AS tossOrderId,
+            p.toss_payment_key AS tossPaymentKey,
+            o.all_payment AS allPayment,
+            p.payment_date AS paymentDate,
+            op.delivery_charge AS deliveryCharge
+        from payments p
+            join orders o on o.order_id=p.order_id
+            join order_products op on op.order_id = o.order_id
+        where p.order_id=#{orderId}
+        limit 1
+    </select>
+
+
 </mapper>
