@@ -1,5 +1,6 @@
 package com.midnear.midnearshopping.service.product;
 
+import com.midnear.midnearshopping.domain.dto.coordinate.CoordinateDto;
 import com.midnear.midnearshopping.domain.dto.products.*;
 import com.midnear.midnearshopping.domain.vo.category.CategoryVo;
 import com.midnear.midnearshopping.domain.vo.products.ProductColorsVo;
@@ -85,6 +86,10 @@ public class ProductService {
         productsDto.setImages(images);
 
         return productsDto;
+    }
+
+    public List<CoordinateProductDto> getCoordinateProducts(Long productColorId){
+        return productMapper.getCoordinateProducts(productColorId);
     }
 
 

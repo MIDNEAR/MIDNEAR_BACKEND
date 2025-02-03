@@ -236,6 +236,16 @@
         </choose>
         LIMIT #{pageSize} OFFSET #{offset}
     </select>
+    <select id="getCoordinateProducts">
+        select
+            cp.coordinated_product_id AS productColorId,
+            SUBSTRING_INDEX(GROUP_CONCAT(pi.image_url ORDER BY pi.product_image_id ASC), ',', 1) AS frontImageUrl,
+            SUBSTRING_INDEX(SUBSTRING_INDEX(GROUP_CONCAT(pi.image_url ORDER BY pi.product_image_id ASC), ',', 2), ',', -1) AS backImageUrl
+            from coordinate_products cp
+            join product_colors pc on cp.original_product_id = pc.product_color_id
+            join product_images pi ON pc.product_color_id = pi.product_color_id
+        where cp.original_product_id = #{productColorId}
+    </select>
     <sql id="dateCondition">
         <choose>
             <when test="dateRange == '오늘'">
