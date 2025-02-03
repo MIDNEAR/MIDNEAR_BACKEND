@@ -14,6 +14,6 @@ import java.util.Date;
 public class StatisticsDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date date;
-    private Long paymentAmount;
-    private Long refundAmount;
+    private BigDecimal paymentAmount;
+    private BigDecimal refundAmount;
 }

@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -185,12 +186,12 @@ public class StoreManagementService {
             Date date = Date.valueOf(targetDate);
 
             // 결제 금액
-            Long paymentAmount = statisticsMapper.getDailySales(date);
-            if (paymentAmount == null) paymentAmount = 0L;
+            BigDecimal paymentAmount = statisticsMapper.getDailySales(date);
+            if (paymentAmount == null) paymentAmount = BigDecimal.valueOf(0);
 
             // 환불 금액
-            Long refundAmount = statisticsMapper.getRefundedTotalPrice(date);
-            if (refundAmount == null) refundAmount = 0L;
+            BigDecimal refundAmount = statisticsMapper.getRefundedTotalPrice(date);
+            if (refundAmount == null) refundAmount = BigDecimal.valueOf(0);
 
             StatisticsDto statisticsDto = StatisticsDto.builder()
                     .date(date)
@@ -220,12 +221,12 @@ public class StoreManagementService {
             String end = weekEndDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
             // 결제 금액
-            Long paymentAmount = statisticsMapper.getWeeklySales(start, end);
-            if (paymentAmount == null) paymentAmount = 0L; // null인 경우 0으로 반환
+            BigDecimal paymentAmount = statisticsMapper.getWeeklySales(start, end);
+            if (paymentAmount == null) paymentAmount = BigDecimal.valueOf(0); // null인 경우 0으로 반환
 
             // 환불 금액
-            Long refundAmount = statisticsMapper.getWeeklyRefundedTotalPrice(start, end);
-            if (refundAmount == null) refundAmount = 0L; // null인 경우 0으로 반환
+            BigDecimal refundAmount = statisticsMapper.getWeeklyRefundedTotalPrice(start, end);
+            if (refundAmount == null) refundAmount = BigDecimal.valueOf(0); // null인 경우 0으로 반환
 
             // 주 시작일 기준으로 반환
             Date date = Date.valueOf(weekStartDate);
@@ -252,12 +253,12 @@ public class StoreManagementService {
             String yearMonth = localStartDate.format(DateTimeFormatter.ofPattern("yyyy-MM"));
 
             // 결제 금액
-            Long paymentAmount = statisticsMapper.getMonthlySales(yearMonth);
-            if (paymentAmount == null) paymentAmount = 0L; // null인 경우 0으로 반환
+            BigDecimal paymentAmount = statisticsMapper.getMonthlySales(yearMonth);
+            if (paymentAmount == null) paymentAmount = BigDecimal.valueOf(0); // null인 경우 0으로 반환
 
             // 환불 금액
-            Long refundAmount = statisticsMapper.getMonthlyRefundedTotalPrice(yearMonth);
-            if (refundAmount == null) refundAmount = 0L; // null인 경우 0으로 반환
+            BigDecimal refundAmount = statisticsMapper.getMonthlyRefundedTotalPrice(yearMonth);
+            if (refundAmount == null) refundAmount = BigDecimal.valueOf(0L); // null인 경우 0으로 반환
 
             Date date = Date.valueOf(localStartDate.withDayOfMonth(1));
 
