@@ -18,7 +18,7 @@ public class DeliveryAddrDto {
     private String detailAddress;
     private Integer defaultAddressStatus; //기본 배송지 여부?
     private String deliveryRequest; //배송 요청사할
-    private int userId;
+    private Long userId;
 
     public static DeliveryAddrDto toDto(DeliveryAddressVO vo) {
         if (vo == null) {

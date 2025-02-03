@@ -10,5 +10,5 @@ import lombok.*;
 public class UserCouponVO {
     Long userCouponId;
     boolean usedStatus;
-    Integer userId;
+    Long userId;
 }

@@ -13,7 +13,7 @@ public class ReviewRequestDto {
 
     int rating;
     String review;
-    Integer userId;
+    Long userId;
     Long orderProductId;
     private List<MultipartFile> files;
 }
