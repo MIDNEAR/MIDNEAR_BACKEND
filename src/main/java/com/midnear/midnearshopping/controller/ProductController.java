@@ -35,7 +35,7 @@ public class ProductController {
             ProductsDetailDto response = productService.getProductDetails(colorId);
             return ResponseEntity.ok(new ApiResponse(true, "상품 상세 정보 조회 성공", response));
         } catch(Exception ex){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(true, ex.getMessage(), null));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(false, ex.getMessage(), null));
         }
     }
     @GetMapping("/coordinates")
@@ -44,7 +44,7 @@ public class ProductController {
             List<CoordinateProductDto> response = productService.getCoordinateProducts(productColorId);
             return ResponseEntity.ok(new ApiResponse(true, "코디상품 조회 완료", response));
         } catch(Exception ex){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(true, ex.getMessage(), null));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(false, ex.getMessage(), null));
         }
     }
 
@@ -54,7 +54,7 @@ public class ProductController {
             ProductListInfoDto response = productService.getCategoryProductListInfo(categoryId);
             return ResponseEntity.ok(new ApiResponse(true, "카테고리별 전체 수 조회 완료", response));
         } catch(Exception ex){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(true, ex.getMessage(), null));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(false, ex.getMessage() + ex.toString(), null));
         }
     }
 }

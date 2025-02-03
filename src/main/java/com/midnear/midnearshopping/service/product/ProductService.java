@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -98,9 +99,13 @@ public class ProductService {
         return dto;
     }
     public ProductListInfoDto getCategoryProductListInfo(Long categoryId) {
-        ProductListInfoDto dto = productMapper.getCategoryTotalAndPage(categoryId);
-        dto.setPage(pageSize);
-        return dto;
+        return Optional.ofNullable(productMapper.getCategoryTotalAndPage(categoryId))
+                .orElseGet(() -> {
+                    ProductListInfoDto dto = new ProductListInfoDto();
+                    dto.setTotal(0);
+                    dto.setPage(pageSize);
+                    return dto;
+                });
     }
 
 
