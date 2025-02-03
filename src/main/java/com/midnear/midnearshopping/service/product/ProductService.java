@@ -103,13 +103,18 @@ public class ProductService {
     }
     public ProductListInfoDto getCategoryProductListInfo(Long categoryId) {
         return Optional.ofNullable(productMapper.getCategoryTotalAndPage(categoryId))
+                .map(dto -> {
+                    dto.setPage(pageSize); // null이 아닐 때도 pageSize 설정
+                    return dto;
+                })
                 .orElseGet(() -> {
                     ProductListInfoDto dto = new ProductListInfoDto();
                     dto.setTotal(0);
                     dto.setPage(pageSize);
                     return dto;
                 });
-    }
+
+}
 
 
 
