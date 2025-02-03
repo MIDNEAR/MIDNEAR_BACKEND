@@ -117,6 +117,24 @@
         ORDER BY r.created_date DESC
             LIMIT #{pageSize} OFFSET #{offset}
     </select>
+    <select id="getReviewListWithoutPaging" resultMap="ReviewListResultMap">
+        SELECT
+            r.review_id,
+            u.id AS userId,
+            r.created_date AS created,
+            r.rating,
+            op.size,
+            op.color,
+            r.review AS content,
+            r.comment,
+            ri.review_image_url
+        FROM reviews r
+                 JOIN order_products op ON r.order_product_id = op.order_product_id
+                 JOIN users u ON r.user_id = u.user_id
+                 LEFT JOIN review_images ri ON r.review_id = ri.review_id
+        WHERE op.product_name = #{productName} AND r.review_status = 'active'
+        ORDER BY r.created_date DESC
+    </select>
 
     <!-- 리뷰별 이미지 리스트 조회 -->
     <select id="getReviewImages">

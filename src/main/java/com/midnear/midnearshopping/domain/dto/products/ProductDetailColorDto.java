@@ -14,6 +14,7 @@ public class ProductDetailColorDto {
     private Long productColorId;
     private String color;
     private Long productId;
+    private String mainImage;
     private List<ProductDetailSizeDto> sizes = new ArrayList<>();
     private ProductStatus saleStatus;
 }

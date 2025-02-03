@@ -14,4 +14,5 @@ public interface ProductImagesMapper {
     void deleteProductImages(Long productColorId);
 
     List<String> getImageUrlsById(Long colorId);
+    String getMainImageUrlsById(Long colorId);
 }

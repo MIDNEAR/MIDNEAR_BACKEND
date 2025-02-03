@@ -50,6 +50,9 @@ public class ProductService {
             productColorsDto.setColor(productColorVo.getColor());
             productColorsDto.setProductId(productColorVo.getProductId());
             productColorsDto.setSaleStatus(productColorVo.getSaleStatus());
+            //여기에 이미지 가져오는거 추가!!!
+            String mainImage = productImagesMapper.getMainImageUrlsById(productColorVo.getProductColorId());
+            productColorsDto.setMainImage(mainImage);
 
             // Sizes 조회 및 매핑
             List<SizesVo> sizesVoList = sizesMapper.getSizesByProductColorsId(productColorVo.getProductColorId());
