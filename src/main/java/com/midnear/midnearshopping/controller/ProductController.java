@@ -1,10 +1,7 @@
 package com.midnear.midnearshopping.controller;
 
 import com.midnear.midnearshopping.domain.dto.coordinate.CoordinateDto;
-import com.midnear.midnearshopping.domain.dto.products.CoordinateProductDto;
-import com.midnear.midnearshopping.domain.dto.products.ProductsDetailDto;
-import com.midnear.midnearshopping.domain.dto.products.ProductsDto;
-import com.midnear.midnearshopping.domain.dto.products.ProductsListDto;
+import com.midnear.midnearshopping.domain.dto.products.*;
 import com.midnear.midnearshopping.exception.ApiResponse;
 import com.midnear.midnearshopping.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -46,6 +43,16 @@ public class ProductController {
         try{
             List<CoordinateProductDto> response = productService.getCoordinateProducts(productColorId);
             return ResponseEntity.ok(new ApiResponse(true, "코디상품 조회 완료", response));
+        } catch(Exception ex){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(true, ex.getMessage(), null));
+        }
+    }
+
+    @GetMapping("/totalAndPage")
+    public ResponseEntity<?> getProductInfoList() {
+        try{
+            ProductListInfoDto response = productService.getProductListInfo();
+            return ResponseEntity.ok(new ApiResponse(true, "전체 수 조회 완료", response));
         } catch(Exception ex){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(true, ex.getMessage(), null));
         }
