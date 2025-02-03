@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.midnear.midnearshopping.mapper.storeManagement.StatisticsMapper">
-    <select id="getDailySales" resultType="Long">
+    <select id="getDailySales" resultType="java.math.BigDecimal">
         SELECT
         SUM(op.product_price - op.coupon_discount - op.point_discount)
         -
@@ -14,7 +14,7 @@
         FROM order_products op
         WHERE op.buy_confirm_date = #{date};
     </select>
-    <select id="getRefundedTotalPrice" resultType="Long">
+    <select id="getRefundedTotalPrice" resultType="java.math.BigDecimal">
         SELECT
         SUM(op.product_price - op.coupon_discount - op.point_discount)
         FROM returns r
@@ -22,13 +22,13 @@
         WHERE r.return_status = '환불완료'
         AND DATE(r.return_complete_date) = #{date}
     </select>
-    <select id="getWeeklySales" resultType="Long">
+    <select id="getWeeklySales" resultType="java.math.BigDecimal">
         SELECT
         SUM(product_price - coupon_discount - point_discount)
         FROM order_products
         WHERE buy_confirm_date BETWEEN #{start} AND #{end};
     </select>
-    <select id="getWeeklyRefundedTotalPrice" resultType="Long">
+    <select id="getWeeklyRefundedTotalPrice" resultType="java.math.BigDecimal">
         SELECT
         SUM(op.product_price - op.coupon_discount - op.point_discount)
         FROM returns r
@@ -36,7 +36,7 @@
         WHERE r.return_status = '환불완료'
         AND r.return_complete_date BETWEEN #{start} AND #{end};
     </select>
-    <select id="getMonthlySales" resultType="Long">
+    <select id="getMonthlySales" resultType="java.math.BigDecimal">
         SELECT
         SUM(op.product_price - op.coupon_discount - op.point_discount)
         -
@@ -49,7 +49,7 @@
         FROM order_products op
         WHERE DATE_FORMAT(op.buy_confirm_date, '%Y-%m') = #{month};
     </select>
-    <select id="getMonthlyRefundedTotalPrice" resultType="Long">
+    <select id="getMonthlyRefundedTotalPrice" resultType="java.math.BigDecimal">
         SELECT SUM(op.product_price - op.coupon_discount - op.point_discount)
         FROM order_products op
         LEFT JOIN returns r ON op.order_product_id = r.order_product_id

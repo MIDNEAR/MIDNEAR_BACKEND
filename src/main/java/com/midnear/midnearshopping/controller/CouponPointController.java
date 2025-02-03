@@ -48,7 +48,7 @@ public class CouponPointController {
 
     // 사용자 id로 검색(개별 쿠폰, 포인트 지급에서 사용)
     @GetMapping("/point/searchUser")
-    public ResponseEntity<ApiResponse> searchUser(@RequestParam("id") String id, @RequestParam("pageNumber")int pageNumber) {
+    public ResponseEntity<ApiResponse> searchUser(@RequestParam("id") String id, @RequestParam(value = "pageNumber", defaultValue = "1")int pageNumber) {
         try {
             Map<String, Object> response = couponPointService.searchUser(id, pageNumber);
             return ResponseEntity.ok(new ApiResponse(true, "사용자 검색 완료", response));

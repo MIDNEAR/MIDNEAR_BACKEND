@@ -254,7 +254,7 @@ public class StoreManagementController {
             // startDate yyyy-MM-01
             List<StatisticsDto> statisticsDtos = storeManagementService.getWeeklySales(startDate);
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ApiResponse(true, "일간 매출 데이터 불러오기 성공", statisticsDtos));
+                    .body(new ApiResponse(true, "주간 매출 데이터 불러오기 성공", statisticsDtos));
         } catch (Exception ex) {
             ex.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

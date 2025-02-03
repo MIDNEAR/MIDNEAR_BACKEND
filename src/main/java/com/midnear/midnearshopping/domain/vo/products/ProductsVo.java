@@ -31,9 +31,9 @@ public class ProductsVo {
                 .detail(productsDto.getDetail())
                 .discountRate(productsDto.getDiscountRate())
                 .sizeGuide(productsDto.getSizeGuide())
-                .registeredDate(productsDto.getRegisteredDate())
-                .discountStartDate(productsDto.getDiscountStartDate())
-                .discountEndDate(productsDto.getDiscountEndDate())
+                .registeredDate(Date.valueOf(productsDto.getRegisteredDate()))
+                .discountStartDate(Date.valueOf(productsDto.getDiscountStartDate()))
+                .discountEndDate(Date.valueOf(productsDto.getDiscountEndDate()))
                 .categoryId(productsDto.getCategoryId())
                 .build();
     }
