@@ -49,6 +49,13 @@ public class ReviewController {
         ProductReviewDto reviews = reviewsService.getProductReviews(productName, pageNumber);
         return ResponseEntity.ok(new ApiResponse(true, "리뷰 조회 성공", reviews));
     }
+    /*페이징없애달래서만든것 다시 없애기 혹시 마음이 변하면 다시 달라고 할까봐 주석처리좀 할게요
+    @GetMapping("/byProduct")
+    public ResponseEntity<ApiResponse> getProductReviews(
+            @RequestParam String productName) {
+        ProductReviewDto reviews = reviewsService.getProductReviewsWithoutPaging(productName);
+        return ResponseEntity.ok(new ApiResponse(true, "리뷰 조회 성공", reviews));
+    }*/
 
 
     @PatchMapping("/makeInactive")
