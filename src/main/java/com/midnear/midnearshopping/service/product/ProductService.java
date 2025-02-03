@@ -97,6 +97,11 @@ public class ProductService {
         dto.setPage(pageSize);
         return dto;
     }
+    public ProductListInfoDto getCategoryProductListInfo(Long categoryId) {
+        ProductListInfoDto dto = productMapper.getCategoryTotalAndPage(categoryId);
+        dto.setPage(pageSize);
+        return dto;
+    }
 
 
 

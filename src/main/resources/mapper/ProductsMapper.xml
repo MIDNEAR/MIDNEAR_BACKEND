@@ -274,5 +274,26 @@
             null AS page
         from product_colors
     </select>
+    <select id="getCategoryTotalAndPage">
+        WITH RECURSIVE CategoryHierarchy AS (
+            -- 기본적으로 부모 카테고리를 가져옴
+            SELECT category_id, parent_category_id
+            FROM categories
+            WHERE category_id = #{categoryId}
+
+            UNION ALL
+
+            -- 재귀적으로 자식 카테고리 가져오기
+            SELECT c.category_id, c.parent_category_id
+            FROM categories c
+                     INNER JOIN CategoryHierarchy ch ON c.parent_category_id = ch.category_id
+        )
+
+        SELECT COUNT(pc.product_color_id) as total, null AS page
+        FROM CategoryHierarchy ch
+                 LEFT JOIN products p ON ch.category_id = p.category_id
+                 LEFT JOIN product_colors pc ON p.product_id = pc.product_id
+        GROUP BY ch.category_id;
+    </select>
 
 </mapper>

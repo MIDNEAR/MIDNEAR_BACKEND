@@ -49,10 +49,10 @@ public class ProductController {
     }
 
     @GetMapping("/totalAndPage")
-    public ResponseEntity<?> getProductInfoList() {
+    public ResponseEntity<?> getProductInfoList(@RequestParam Long categoryId) {
         try{
-            ProductListInfoDto response = productService.getProductListInfo();
-            return ResponseEntity.ok(new ApiResponse(true, "전체 수 조회 완료", response));
+            ProductListInfoDto response = productService.getCategoryProductListInfo(categoryId);
+            return ResponseEntity.ok(new ApiResponse(true, "카테고리별 전체 수 조회 완료", response));
         } catch(Exception ex){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(true, ex.getMessage(), null));
         }
