@@ -26,7 +26,7 @@
         WHERE cp.cart_id = #{cartId}
     </select>
     <delete id="deleteCartProduct">
-        DELETE FROM cart_producs
+        DELETE FROM cart_products
         WHERE cart_products_id = #{cartProductId}
     </delete>
 

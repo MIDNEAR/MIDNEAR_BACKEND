@@ -24,8 +24,4 @@ public class OrderNumberGenerator {
         return timestamp + formattedRandom;
     }
 
-    public static void main(String[] args) {
-        // 테스트 실행
-        System.out.println("Generated Order Number: " + generateOrderNumber());
-    }
 }

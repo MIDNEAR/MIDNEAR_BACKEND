@@ -94,5 +94,15 @@
         DELETE FROM delivery_address
         WHERE delivery_address_id = #{deliveryAddressId}
     </delete>
+    <select id="getDeliveryCharge" parameterType="string" resultType="decimal">
+        SELECT
+            CASE
+                WHEN #{location} = 'jeju' THEN jeju_delivery_cost
+                WHEN #{location} = 'island' THEN island_mountain_delivery_cost
+                ELSE basic_delivery_cost  -- 기본 배송비를 ELSE로 처리
+                END AS delivery_cost
+        FROM delivery_charge
+    </select>
+
 
 </mapper>

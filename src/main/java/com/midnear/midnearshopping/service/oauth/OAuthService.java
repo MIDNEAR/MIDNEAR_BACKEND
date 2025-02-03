@@ -11,6 +11,7 @@ import com.midnear.midnearshopping.mapper.users.UsersMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Objects;
 
@@ -56,6 +57,7 @@ public class OAuthService {
             user.setPhoneNumber(userInfo.getPhone());
             user.setWithdrawn("Y"); // 기본값 설정 (추후 논의)
             user.setSocialType(provider);
+            user.setPointBalance(BigDecimal.valueOf(0));
             usersMapper.createMember(user);
         }
         if(!Objects.equals(user.getSocialType(), provider)){

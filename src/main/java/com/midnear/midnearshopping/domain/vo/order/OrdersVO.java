@@ -22,7 +22,7 @@ public class OrdersVO {
     String detailedAddress;
     String orderNumber;
     String recipientContact;
-    Integer userId;
+    Long userId;
     BigDecimal allPayment;
     String deliveryRequest;
 }

@@ -8,6 +8,7 @@ import com.midnear.midnearshopping.domain.vo.order.OrdersVO;
 import com.midnear.midnearshopping.domain.vo.products.ProductsVo;
 import com.midnear.midnearshopping.mapper.coupon_point.UserCouponMapper;
 import com.midnear.midnearshopping.mapper.delivery.DeliveryAddressMapper;
+import com.midnear.midnearshopping.mapper.delivery.DeliveryInfoMapper;
 import com.midnear.midnearshopping.mapper.order.OrderMapper;
 import com.midnear.midnearshopping.mapper.order.UserOrderProductsMapper;
 import com.midnear.midnearshopping.mapper.products.ProductColorsMapper;
@@ -41,11 +42,12 @@ public class OrderService {
     private static final int pageSize = 2;
     private final UserOrderProductsMapper userOrderProductsMapper;
     private final UserCouponMapper userCouponMapper;
+    private final DeliveryInfoMapper deliveryInfoMapper;
 
     @Transactional(rollbackFor = Exception.class)
     public void createOrder(String id, UserOrderDto userOrderDto) {
         // 사용자 ID 조회
-        Integer userId = usersMapper.getUserIdById(id);
+        Long userId = usersMapper.getUserIdById(id);
         if (userId == null) {
             throw new RuntimeException("해당 사용자를 찾을 수 없습니다. 사용자 ID: " + id);
         }
@@ -144,14 +146,14 @@ public class OrderService {
         //근데... 이런식으면 쿠폰 디비가 너무 쌓여서 비효율적 서비스 완성후 논의 필요
         userCouponMapper.changeStatus(userOrderDto.getUserCouponId());
         //포인트 차감
-        usersMapper.discountPointsToUserByUserId(userId, totalPointDiscount.longValue());
+        usersMapper.discountPointsToUserByUserId(userId, totalPointDiscount.longValue() * -1);
     }
 
     @Transactional(readOnly = true)
     public List<UserOrderCheckDto> getOrders(String id, int pageNumber, String sort) {
         int offset = (pageNumber - 1) * pageSize;
         // 주문 기본 정보 조회
-        Integer userId = usersMapper.getUserIdById(id);
+        Long userId = usersMapper.getUserIdById(id);
         if (userId == null) {
             throw new UsernameNotFoundException("존재하지 않는 유저입니다.");
         }
@@ -320,7 +322,7 @@ public class OrderService {
                     .quantity(dto.getQuantity())
                     .couponDiscount(dto.getCouponDiscount())
                     .buyConfirmDate(null)
-                    .claimStatus("주문확인중")
+                    .claimStatus(null)
                     .pointDiscount(dto.getPointDiscount())
                     .deliveryId(null)//이건 배송 정보의 아이디다!!!!1
                     .productPrice(dto.getProductPrice())
@@ -347,8 +349,12 @@ public class OrderService {
     @Transactional(rollbackFor = Exception.class)
     public PaymentInfoDto getPayment(Long orderId){
         PaymentInfoDto dto = orderMapper.getPaymentInfoByOrderId(orderId);
-        dto.setDeliveryCharge(dto.getTotalOrderPayment().subtract(dto.getAllPayment()));
         return orderMapper.getPaymentInfoByOrderId(orderId);
+    }
+
+    public BigDecimal getDeliveryCharge(String postalCode){
+        String location = PostalCodeChecker.checkRegion(Integer.parseInt(postalCode));
+        return deliveryAddressMapper.getDeliveryCharge(location);
     }
 }
 

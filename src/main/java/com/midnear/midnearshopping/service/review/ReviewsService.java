@@ -37,7 +37,7 @@ public class ReviewsService {
     @Transactional
     public void createReview(String id, ReviewRequestDto reviewRequestDto) {
         System.out.println("createReview called with id: " + id);
-        Integer userId;
+        Long userId;
         if(id.trim().isEmpty()){
             userId=null;
         } else{
@@ -87,7 +87,7 @@ public class ReviewsService {
     }
 
     public void updateReviewComment(String id, CommentDto dto) {
-        Integer userId = usersMapper.getUserIdById(id);
+        Long userId = usersMapper.getUserIdById(id);
         if(userId == null){
             throw new RuntimeException("존재하지 않는 유저입니다");
         }

@@ -56,7 +56,7 @@ public class CouponPointService {
     public void grantPointsToSelectedUsers(PointToSelectedUserDto pointToSelectedUserDto) {
         List<String> userIdList = pointToSelectedUserDto.getUserIdList();
         for (String id : userIdList) {
-            Long userId = Long.valueOf(usersMapper.getUserIdById(id));
+            Long userId = usersMapper.getUserIdById(id);
             // 포인트 내역 저장
             PointVo pointVo = PointVo.builder()
                     .amount(pointToSelectedUserDto.getAmount())
@@ -131,8 +131,8 @@ public class CouponPointService {
         // 특정 사용자에게 쿠폰 지급
         List<String> userIds = couponDto.getUserIdList(); // 사용자 아이디
         for (String id: userIds) {
-            Integer userId = usersMapper.getUserIdById(id);
-            couponMapper.grantCoupon(Long.valueOf(userId), couponVo.getCouponId());
+            Long userId = usersMapper.getUserIdById(id);
+            couponMapper.grantCoupon(userId, couponVo.getCouponId());
         }
     }
 
@@ -168,7 +168,7 @@ public class CouponPointService {
 
     //여기서부터 사용자 시~작
     public List<CouponInfoDto> getCouponsByUserId(String id) {
-        Integer userId = usersMapper.getUserIdById(id);
+        Long userId = usersMapper.getUserIdById(id);
         if (userId == null){
             throw new UsernameNotFoundException("User not found");
         }
@@ -176,7 +176,7 @@ public class CouponPointService {
     }
     //쿠폰 총 개수
     public int getCouponsCountByUserId(String id) {
-        Integer userId = usersMapper.getUserIdById(id);
+        Long userId = usersMapper.getUserIdById(id);
         if (userId == null){
             throw new UsernameNotFoundException("User not found");
         }
@@ -185,7 +185,7 @@ public class CouponPointService {
 
     //포인트 사용 내역
     public List<UserPointDto> getPointLists(String id) {
-        Integer userId = usersMapper.getUserIdById(id);
+        Long userId = usersMapper.getUserIdById(id);
         if (userId == null){
             throw new UsernameNotFoundException("User not found");
         }
@@ -193,7 +193,7 @@ public class CouponPointService {
     }
     //포인트 총량
     public BigDecimal getPoints(String id) {
-        Integer userId = usersMapper.getUserIdById(id);
+        Long userId = usersMapper.getUserIdById(id);
         if (userId == null){
             throw new UsernameNotFoundException("User not found");
         }

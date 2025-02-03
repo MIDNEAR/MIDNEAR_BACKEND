@@ -74,7 +74,7 @@
     <update id="discountPointsToUserByUserId">
         UPDATE users
         SET point_balance = point_balance + #{amount}
-        WHERE user_id = #userId};
+        WHERE user_id = #{userId};
     </update>
     <select id="findUserByIdPaging">
         select id
