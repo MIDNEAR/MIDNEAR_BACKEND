@@ -27,7 +27,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -81,18 +83,37 @@ public class ClaimService {
     @Transactional(readOnly = true)
     public List<UserOrderCheckDto> getClaimOrders(String id, int pageNumber, String sort, String filter) {
         int offset = (pageNumber - 1) * pageSize;
+
         // 주문 기본 정보 조회
         Integer userId = usersMapper.getUserIdById(id);
         if (userId == null) {
             throw new UsernameNotFoundException("존재하지 않는 유저입니다.");
         }
+
         List<UserOrderCheckDto> orderCheckDtos = orderMapper.getOrdersByUserId(userId, sort, offset, pageSize);
 
-        // 각 주문에 대해 주문 상품 목록 조회 및 payPrice 계산
+        // 주문 상품이 없는 주문을 제외한 리스트 생성
+        List<UserOrderCheckDto> filteredOrderCheckDtos = new ArrayList<>();
+
         for (UserOrderCheckDto order : orderCheckDtos) {
             List<OrderProductsVO> orderProducts = orderProductsMapper.getOrderProductsByOrderIdAndStatus(order.getOrderId(), filter);
 
-            List<UserOrderProductCheckDto> userOrderProductCheckDtos = orderProducts.stream()
+            // 주문 상품 리스트가 null이면 해당 주문 제거
+            if (orderProducts == null) {
+                continue;
+            }
+
+            // 주문 상품 리스트에서 null인 요소 제거
+            List<OrderProductsVO> validOrderProducts = orderProducts.stream()
+                    .filter(Objects::nonNull) // null인 요소 제거
+                    .collect(Collectors.toList());
+
+            // 주문 상품이 모두 null이었거나 비어있다면 해당 주문 제거
+            if (validOrderProducts.isEmpty()) {
+                continue;
+            }
+
+            List<UserOrderProductCheckDto> userOrderProductCheckDtos = validOrderProducts.stream()
                     .map(product -> {
                         BigDecimal payPrice = product.getProductPrice()
                                 .subtract(product.getPointDiscount() != null ? product.getPointDiscount() : BigDecimal.ZERO)
@@ -111,8 +132,11 @@ public class ClaimService {
                     }).collect(Collectors.toList());
 
             order.setUserOrderProductCheckDtos(userOrderProductCheckDtos);
+            filteredOrderCheckDtos.add(order); // 유효한 주문만 리스트에 추가
         }
 
-        return orderCheckDtos;
+        return filteredOrderCheckDtos;
     }
+
+
 }

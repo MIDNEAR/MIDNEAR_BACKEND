@@ -27,10 +27,12 @@ public class SecurityConfig {
     private static final String[] AUTH_WHITELIST = {
             "/api/v1/member/**", "/swagger-ui/**", "/api-docs", "/swagger-ui-custom.html",
             "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html", "/api/v1/auth/**","/oauth/**",
-            "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html", "/api/v1/auth/**","user/signup", "user/login","user/find-id", "disruptive/**","/sms/**","/inquirie/**"
+            "user/signup", "user/login","user/find-id", "disruptive/**","/sms/**","/inquirie/**"
             ,"/magazine/**", "/email/**", "/user/is-duplicate", "/user/find-by-email", "/user/change-password", "/user/change-user-info", "/user/user-info", "/product/**",
             "/productManagement/**" , "/notice/**", "/storeManagement/**", "/coupon/**", "/point/**", "/setReviewPointAmount"
-            ,"/actuator/health","/confirmPurchase/**", "/userMagazine/**", "/orders/getNonUser", "/orders/nonUserCreate", "/orders/forCancel", "/review/**", "/orders/getDeliveryCharge", "/noticeManagement/**","/review/nonUserCreat", "/delivery/getInvoiceNumber"
+            ,"/actuator/health","/confirmPurchase/**", "/userMagazine/**", "/orders/getNonUser", "/orders/nonUserCreate",
+            "/orders/forCancel", "/review/**", "/orders/getDeliveryCharge", "/noticeManagement/**","/review/nonUserCreat",
+            "/delivery/getInvoiceNumber", "/claim/**"
     }; //더 열어둘 엔드포인트 여기에 추가
 
     @Bean

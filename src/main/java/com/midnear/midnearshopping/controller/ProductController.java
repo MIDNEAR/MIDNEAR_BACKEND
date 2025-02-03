@@ -1,5 +1,7 @@
 package com.midnear.midnearshopping.controller;
 
+import com.midnear.midnearshopping.domain.dto.coordinate.CoordinateDto;
+import com.midnear.midnearshopping.domain.dto.products.CoordinateProductDto;
 import com.midnear.midnearshopping.domain.dto.products.ProductsDetailDto;
 import com.midnear.midnearshopping.domain.dto.products.ProductsDto;
 import com.midnear.midnearshopping.domain.dto.products.ProductsListDto;
@@ -35,6 +37,15 @@ public class ProductController {
         try{
             ProductsDetailDto response = productService.getProductDetails(colorId);
             return ResponseEntity.ok(new ApiResponse(true, "상품 상세 정보 조회 성공", response));
+        } catch(Exception ex){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(true, ex.getMessage(), null));
+        }
+    }
+    @GetMapping("/coordinates")
+    public ResponseEntity<?> getCoordinates(@RequestParam Long productColorId) {
+        try{
+            List<CoordinateProductDto> response = productService.getCoordinateProducts(productColorId);
+            return ResponseEntity.ok(new ApiResponse(true, "코디상품 조회 완료", response));
         } catch(Exception ex){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(true, ex.getMessage(), null));
         }
