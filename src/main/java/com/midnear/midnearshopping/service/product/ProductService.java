@@ -24,7 +24,7 @@ public class ProductService {
     private final ProductsMapper productMapper;
     private final ProductColorsMapper productColorsMapper;
     private final SizesMapper sizesMapper;
-    private static final int pageSize = 2;
+    private static final int pageSize = 16;
     private final ProductsMapper productsMapper;
     private final ProductImagesMapper productImagesMapper;
 
@@ -90,6 +90,12 @@ public class ProductService {
 
     public List<CoordinateProductDto> getCoordinateProducts(Long productColorId){
         return productMapper.getCoordinateProducts(productColorId);
+    }
+
+    public ProductListInfoDto getProductListInfo() {
+        ProductListInfoDto dto = productMapper.getTotalAndPage();
+        dto.setPage(pageSize);
+        return dto;
     }
 
 

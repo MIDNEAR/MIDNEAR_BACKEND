@@ -268,5 +268,11 @@
             </otherwise>
         </choose>
     </sql>
+    <select id="getTotalAndPage">
+        select
+            COUNT(*) as total,
+            null AS page
+        from product_colors
+    </select>
 
 </mapper>
