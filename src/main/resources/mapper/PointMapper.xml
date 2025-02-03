@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.midnear.midnearshopping.mapper.coupon_point.PointMapper">
+    <insert id="grantPoints" useGeneratedKeys="true" keyProperty="pointId">
+        INSERT INTO point (
+        amount, reason, review_id, user_id, grant_date
+        ) VALUES (
+        #{amount}, #{reason}, #{reviewId}, #{userId}, NOW()
+        )
+    </insert>
+    <select id="getProductInfoByReviewId" resultType="java.lang.String">
+        select concat(op.product_name, ' _ ', op.color)
+        from reviews r
+        join order_products op on r.order_product_id = op.order_product_id
+        where review_id = #{reviewId}
+    </select>
+<!--얘는 파일 따로 뺴기 애매해서 여기에 넣음-->
+    <select id="getPointList">
+        select
+            p.amount,
+            p.reason,
+            p.grant_date AS grantDate,
+            op.product_name as productName
+        from point p
+        join reviews r on p.review_id = r.review_id
+        join order_products op on r.order_product_id = op.order_product_id
+        where p.user_id = #{userId}
+    </select>
+</mapper>

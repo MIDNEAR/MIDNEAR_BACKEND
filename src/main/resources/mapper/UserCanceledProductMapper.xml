@@ -3,7 +3,7 @@
 
 <mapper namespace="com.midnear.midnearshopping.mapper.claim.UserCanceledProductMapper">
     <insert id="insertCanceledProduct">
-        INSERT INTO canceled_product (
+        INSERT INTO canceled_products (
             canceled_product_id,
             cancellation_request_date,
             cancellation_status,
@@ -19,5 +19,8 @@
                      #{orderProductId}
                  )
     </insert>
+
+
+
 
 </mapper>

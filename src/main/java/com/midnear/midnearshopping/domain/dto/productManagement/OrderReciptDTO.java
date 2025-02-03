@@ -20,14 +20,13 @@ public class OrderReciptDTO {
     String productName;
     BigDecimal productPrice;
     int quantity;
-    String recipient;
+    String recipientName;
     String recipientContact;
     String postalCode;
     String address;
-    String detailAddress;
+    String detailedAddress;
     String deliveryRequest;
     String paymentMethod;
-    BigDecimal totalPaymentAmount;
     BigDecimal deliveryCharge;
     BigDecimal totalOrderPayment;
     BigDecimal allPayment;

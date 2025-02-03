@@ -103,7 +103,7 @@ public class CancelProductController {
         try {
             cancelProductService.denayCancel(canceledProductId);
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ApiResponse(true, "성공적으로 승인되었습니다.", null));
+                    .body(new ApiResponse(true, "성공적으로 거부되었습니다.", null));
 
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

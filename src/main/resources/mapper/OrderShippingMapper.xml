@@ -192,26 +192,38 @@
     </select>
 
 <!-- 발주확인 -->
-    <update id="updateConfirm">
-        update delivery_info di
-            inner join order_products op on op.delivery_id = di.delivery_id
-            set di.tracking_delivery = '배송전'
-        where op.order_product_id in
-        <foreach item="id" index="index" collection="orderProductId" open="(" separator="," close=")">
-            #{id}
-        </foreach>
+    <insert id="insertDeliveryInfo" useGeneratedKeys="true" keyProperty="deliveryId">
+        insert into delivery_info (tracking_delivery)
+        values (#{trackingDelivery})
+    </insert>
+
+    <update id="updateDeliveryId">
+        update order_products
+        set delivery_id = #{deliveryId}
+        where order_product_id = #{orderProductId}
     </update>
 
 <!-- 송장번호 입력 -->
     <update id="insertInvoice">
         update delivery_info di
         inner join order_products op on op.delivery_id = di.delivery_id
-        set di.tracking_delivery = '배송중', di.courier = #{courier}, di.invoice_number=#{invoiceNumber}
+        set di.tracking_delivery = '배송중',
+            di.courier = #{courier},
+            di.invoice_number=#{invoiceNumber},
+            di.carrier_id = #{carrierId},
+            di.delivery_process_date = Now()
         where op.order_product_id in
         <foreach item="id" index="index" collection="orderProductId" open="(" separator="," close=")">
             #{id}
         </foreach>
     </update>
+
+<!-- 이름검사 -->
+    <select id="selectCarrierName">
+        select carrier_id
+        from carrier_mapping
+        where carrier_name = #{carrierName}
+    </select>
 
 <!-- 발송 지연처리 -->
     <update id="delaySipping">
@@ -247,6 +259,25 @@
         group by product_name, color, size
     </select>
 
+<!-- 전체 주문 정보 엑셀 다운로드를 위한 자료조회 -->
+    <select id="selectOrderDetails">
+        select
+        o.order_name,
+        o.recipient_name,
+        op.product_name,
+        op.color,
+        op.size,
+        op.quantity,
+        di.invoice_number
+        from order_products op
+            inner join orders o on op.order_id = o.order_id
+            left join delivery_info di on op.delivery_id = di.delivery_id
+        where order_product_id  in
+        <foreach item="id" index="index" collection="orderProductId" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
 <!-- 선택건 주문서 출력-->
     <select id="selectOrderRecipt">
         select
@@ -256,20 +287,18 @@
             op.product_name,
             op.product_price,
             op.quantity,
-            da.recipient,
-            da.recipient_contact,
-            da.postal_code,
-            da.address,
-            da.detail_address,
-            da.delivery_request,
-            p.payment_method,
-            o.total_payment_amount,
+            o.recipient_name,
+            o.recipient_contact,
+            o.postal_code,
+            o.address,
+            o.detailed_address,
+            o.delivery_request,
+            p.toss_payment_method,
             op.delivery_charge,
             p.total_order_payment,
             p.all_payment
         from order_products op
             inner join delivery_info di on op.delivery_id = di.delivery_id
-            inner join delivery_address da on di.delivery_address_id = da.delivery_address_id
             inner join orders o on op.order_id = o.order_id
             left join payments p on p.order_id = o.order_id
         where op.order_product_id in
@@ -277,6 +306,7 @@
             #{id}
         </foreach>
     </select>
+
 </mapper>
 
 

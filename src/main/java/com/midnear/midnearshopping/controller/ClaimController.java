@@ -3,13 +3,18 @@ package com.midnear.midnearshopping.controller;
 import com.midnear.midnearshopping.domain.dto.claim.CancelRequestDto;
 import com.midnear.midnearshopping.domain.dto.claim.ExchangeRequestDto;
 import com.midnear.midnearshopping.domain.dto.claim.ReturnRequestDto;
+import com.midnear.midnearshopping.domain.dto.order.UserOrderCheckDto;
+import com.midnear.midnearshopping.domain.vo.users.CustomUserDetails;
 import com.midnear.midnearshopping.exception.ApiResponse;
 import com.midnear.midnearshopping.service.claim.ClaimService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/claim")
@@ -52,6 +57,21 @@ public class ClaimController {
             log.error("반품 요청 처리 중 오류 발생: {}", e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse(false, "반품 요청 처리 중 오류가 발생했습니다.", null));
+        }
+    }
+    @GetMapping("/filtering")
+    public ResponseEntity<ApiResponse> getClaimOrders(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestParam int pageNumber,
+            @RequestParam(required = false, defaultValue = "date") String sort,
+            @RequestParam(required = false, defaultValue = "all") String filter
+    ) {
+        try {
+            List<UserOrderCheckDto> orders =claimService.getClaimOrders(customUserDetails.getUsername(), pageNumber, sort, filter);
+            return ResponseEntity.ok(new ApiResponse(true, "주문 정보 조회 성공", orders));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, e.getMessage(), null));
         }
     }
 }

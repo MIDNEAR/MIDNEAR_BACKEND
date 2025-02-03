@@ -17,6 +17,8 @@ public interface InquiriesMapper {
 // 문의 글에 댓글달기
    void insertInquiryComment(Inquiry_commentsDTO inquiryCommentsDTO);
 
+   void updateInquiry(Long updateInquiry);
+
 // 문의 댓글 수정
    void updateInquiryComment(Inquiry_commentsDTO inquiryCommentsDTO);
 

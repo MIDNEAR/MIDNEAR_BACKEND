@@ -17,13 +17,49 @@
                 <when test="searchRange == '상품명' or searchRange == '상품'">
                     AND product_name LIKE CONCAT('%', #{searchText}, '%')
                 </when>
-                <when test="searchRange == '등록일시' or searchRange == '연관상품 등록 일시'">
+                <when test="searchRange == '등록일시'">
                     AND registered_date LIKE CONCAT('%', #{searchText}, '%')
                 </when>
             </choose>
         </if>
         ORDER BY registered_date ${orderBy}
     LIMIT #{size} OFFSET #{offset}
+    </select>
+    <select id="getProductColorsIdsByNameOrDate" resultType="Long">
+        SELECT pc.product_color_id
+        FROM product_colors pc
+        LEFT JOIN products p ON pc.product_id = p.product_id
+        WHERE <include refid="dateCondition" />
+        <if test="searchText != null">
+            <choose>
+                <when test="searchRange == '연관상품'">
+                    AND product_name LIKE CONCAT('%', #{searchText}, '%')
+                </when>
+                <when test="searchRange == '연관상품 등록 일시'">
+                    AND registered_date LIKE CONCAT('%', #{searchText}, '%')
+                </when>
+            </choose>
+        </if>
+        ORDER BY registered_date ${orderBy}
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+    <select id="getOriginalProductProductIdsByCoordinatedIds" resultType="Long">
+        SELECT p.product_id
+        FROM coordinate_products cp
+        LEFT JOIN product_colors pc ON cp.original_product_id = pc.product_color_id
+        LEFT JOIN products p ON pc.product_id = p.product_id
+        WHERE cp.coordinated_product_id IN
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+    <select id ="getProductsByIds">
+        SELECT *
+        FROM products
+        WHERE product_id IN
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
     </select>
     <select id="count">
         SELECT count(*)
@@ -177,7 +213,7 @@
         LEFT JOIN
         order_products op ON op.order_product_id = p.product_id
         WHERE
-        p.category_id IN (SELECT category_id FROM CategoryHierarchy)
+        p.category_id IN (SELECT category_id FROM CategoryHierarchy) AND pc.sale_status = '판매중' OR pc.sale_status = '품절'
         GROUP BY
         pc.product_color_id
         ORDER BY
@@ -199,6 +235,16 @@
             </otherwise>
         </choose>
         LIMIT #{pageSize} OFFSET #{offset}
+    </select>
+    <select id="getCoordinateProducts">
+        select
+            cp.coordinated_product_id AS productColorId,
+            SUBSTRING_INDEX(GROUP_CONCAT(pi.image_url ORDER BY pi.product_image_id ASC), ',', 1) AS frontImageUrl,
+            SUBSTRING_INDEX(SUBSTRING_INDEX(GROUP_CONCAT(pi.image_url ORDER BY pi.product_image_id ASC), ',', 2), ',', -1) AS backImageUrl
+            from coordinate_products cp
+            join product_colors pc on cp.original_product_id = pc.product_color_id
+            join product_images pi ON pc.product_color_id = pi.product_color_id
+        where cp.original_product_id = #{productColorId}
     </select>
     <sql id="dateCondition">
         <choose>
@@ -222,5 +268,11 @@
             </otherwise>
         </choose>
     </sql>
+    <select id="getTotalAndPage">
+        select
+            COUNT(*) as total,
+            null AS page
+        from product_colors
+    </select>
 
 </mapper>

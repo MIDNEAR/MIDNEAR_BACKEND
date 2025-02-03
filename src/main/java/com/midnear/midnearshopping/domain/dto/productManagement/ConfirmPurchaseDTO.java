@@ -4,6 +4,7 @@ import lombok.*;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.math.BigDecimal;
+import java.sql.Struct;
 import java.util.Date;
 
 @Getter
@@ -22,15 +23,14 @@ public class ConfirmPurchaseDTO {
     String address;
     String detailedAddress;
     String courier;
-    Long invoiceNumber;
+    String invoiceNumber;
     String productName;
     String color;
     String size;
     int quantity;
-    BigDecimal price;
+    BigDecimal productPrice;
     BigDecimal pointDiscount;
     BigDecimal couponDiscount;
-    BigDecimal totalPaymentAmount;
     BigDecimal deliveryCharge;
     BigDecimal allPayment;
 }

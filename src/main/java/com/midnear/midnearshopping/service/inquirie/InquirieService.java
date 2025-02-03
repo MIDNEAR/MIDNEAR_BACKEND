@@ -15,6 +15,7 @@ public interface InquirieService {
 
 //  문의 게시글에 댓글 작성하기
     void insertInquirieComment(Inquiry_commentsDTO inquiryCommentsDTO);
+    void updateInquiry(Long updateInquiry);
 
 //  문의 게시글 댓글 수정
     void updateInquiryComment(Inquiry_commentsDTO inquiryCommentsDTO);

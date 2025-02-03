@@ -4,6 +4,7 @@ import com.midnear.midnearshopping.domain.dto.delivery.DeliveryAddrDto;
 import com.midnear.midnearshopping.domain.dto.delivery.UpdateDeliveryRequest;
 import com.midnear.midnearshopping.domain.vo.delivery.DeliveryAddressVO;
 import com.midnear.midnearshopping.mapper.delivery.DeliveryAddressMapper;
+import com.midnear.midnearshopping.mapper.delivery.DeliveryInfoMapper;
 import com.midnear.midnearshopping.mapper.users.UsersMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
@@ -18,11 +19,12 @@ import java.util.List;
 public class DeliveryService {
     private final DeliveryAddressMapper deliveryAddrMapper;
     private final UsersMapper usersmapper;
+    private final DeliveryInfoMapper deliveryInfoMapper;
 
     @Transactional
     public void createDeliveryAddr(String id, DeliveryAddrDto deliveryAddrCreateDto) {
         DeliveryAddressVO deliveryAddressVO = DeliveryAddressVO.toEntity(deliveryAddrCreateDto);
-        Integer userId = usersmapper.getUserIdById(id);
+        Long userId = usersmapper.getUserIdById(id);
         if (userId == null) {
             throw new UsernameNotFoundException("존재하지 않는 유저입니다.");
         }
@@ -31,14 +33,14 @@ public class DeliveryService {
     }
     //유저가 등록한 모든 주소 가져옴
     public List<DeliveryAddrDto> getAllDeliveryAddrs(String id) {
-        Integer userId = usersmapper.getUserIdById(id);
+        Long userId = usersmapper.getUserIdById(id);
         if (userId == null) {
             throw new UsernameNotFoundException("존재하지 않는 유저입니다.");
         }
         return deliveryAddrMapper.getDeliveryAddressesByUserId(userId);
     }
     public DeliveryAddrDto getDefaultAddress(String id) {
-        Integer userId = usersmapper.getUserIdById(id);
+        Long userId = usersmapper.getUserIdById(id);
         if (userId == null) {
             throw new UsernameNotFoundException("존재하지 않는 유저입니다.");
         }
@@ -77,5 +79,9 @@ public class DeliveryService {
             throw new IllegalArgumentException("존재하지 않는 배송지입니다.");
         }
         deliveryAddrMapper.deleteDeliveryAddress(deliveryId);
+    }
+
+    public String getInvoiceNumber(Long deliveryId){
+        return deliveryInfoMapper.getInvoiceNumberById(deliveryId);
     }
 }

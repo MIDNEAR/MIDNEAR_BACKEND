@@ -77,6 +77,12 @@ dependencies {
     implementation 'org.apache.poi:poi:5.2.2' // HSSFWorkbook 사용
     implementation 'org.apache.poi:poi-ooxml:5.2.2' // XSSFWorkbook 사용
 
+    // helthcheck
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    //json 객체 변환
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+
 }
 
 tasks.named('test') {

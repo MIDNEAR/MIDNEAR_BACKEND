@@ -41,6 +41,7 @@ public class ProductManagementService {
     private final ProductImagesMapper productImagesMapper;
     private final ShippingReturnsMapper shippingReturnsMapper;
     private final S3Service s3Service;
+    int size = 23; // 상품 관리에서 페이지에 들어가는 상품 개수 (코디 상품 조회 개수 제한은 지역 변수로 관리함)
 
     public List<CategoryDto> getCategories() {
         List<CategoryVo> categoryVoList = categoriesMapper.getCategories();
@@ -55,8 +56,7 @@ public class ProductManagementService {
         List<CategoryDto> rootCategories = new ArrayList<>(); // 최상위 카테고리 list
         for (CategoryVo vo : categoryVoList) {
             CategoryDto current = dtoMap.get(vo.getCategoryId());
-            if (vo.getParentCategoryId() == null) {
-                // 최상위 카테고리
+            if (vo.getParentCategoryId() == null) { // 부모 카테고리가 null이면 최상위 카테고리
                 rootCategories.add(current);
             } else {
                 // 하위 카테고리를 부모의 children 리스트에 추가
@@ -72,25 +72,14 @@ public class ProductManagementService {
 
     @Transactional
     public void registerProducts(ProductsDto productDto) {
-        // 공통 상품 정보 저장하고 productId 반환
-        ProductsVo productsVo = ProductsVo.builder()
-                .productName(productDto.getProductName())
-                .price(productDto.getPrice())
-                .discountPrice(productDto.getDiscountPrice())
-                .discountRate(productDto.getDiscountRate())
-                .discountStartDate(productDto.getDiscountStartDate())
-                .discountEndDate(productDto.getDiscountEndDate())
-                .detail(productDto.getDetail())
-                .sizeGuide(productDto.getSizeGuide())
-                .registeredDate(productDto.getRegisteredDate())
-                .categoryId(productDto.getCategoryId())
-                .build();
+        // 공통 상품 정보 저장하고 vo에 productId 반환
+        ProductsVo productsVo = ProductsVo.toEntity(productDto);
         productsMapper.registerProducts(productsVo);
 
         // 컬러별 상품 등록
         List<ProductColorsDto> colors = productDto.getColors();
         for (ProductColorsDto color : colors) {
-            // 색상 등록 하고 productColorId 반환
+            // 색상 등록 하고 vo에 productColorId 반환
             ProductColorsVo productColorsVo = ProductColorsVo.builder()
                     .color(color.getColor())
                     .productId(productsVo.getProductId())
@@ -143,7 +132,7 @@ public class ProductManagementService {
         }
     }
 
-    public Map<String, Object> getProductList(int page, int size, String sortOrder, String dateRange, String searchRange, String searchText) {
+    public Map<String, Object> getProductList(int page, String sortOrder, String dateRange, String searchRange, String searchText) {
         Map<String, Object> result = new HashMap<>();
         List<ProductManagementListDto> productList = new ArrayList<>();
 
@@ -269,6 +258,7 @@ public class ProductManagementService {
                 s3Service.deleteFile(imagesVo.getImageUrl());
             }
         }
+        // color 다 삭제 되면기본 정보 거기도 삭제
         // 상품 삭제, 관련 테이블 (productColors, sizes, productImages 에 cascade 걸려있음)
         productsMapper.deleteProducts(deleteList);
     }
@@ -409,10 +399,10 @@ public class ProductManagementService {
         shippingReturnsMapper.updateShippingPolicy(shippingReturnsVo);
     }
 
-    public Map<String, Object> getCoordinatedList(int page, int size, String sortOrder, String dateRange, String searchRange, String searchText) {
+    public Map<String, Object> getCoordinatedList(int page, String sortOrder, String dateRange, String searchRange, String searchText) {
         Map<String, Object> result = new HashMap<>();
         List<MainProductDto> productList = new ArrayList<>();
-
+        int size = 4;
         int offset = (page - 1) * size;
         String orderBy = sortOrder.equals("최신순") ? "DESC" : "ASC";
 
@@ -422,7 +412,16 @@ public class ProductManagementService {
             List<Long> categories = categoriesMapper.getCategoryIdByCategoryName(searchText);
             if (!categories.isEmpty())
                 productsVoList = productsMapper.getProductsByCategoryIds(categories);
-        } else { // searchRange가 상품명 or 등록일시
+        } else if (searchRange.equals("연관상품") || searchRange.equals("연관상품 등록 일시")) { // 연관상품 이름으로 검색
+            // coordinated_product_id에 해당하는 상품 이름으로 검색
+            List<Long> coordinatedProductIds = productsMapper.getProductColorsIdsByNameOrDate(offset, size, orderBy, dateRange, searchRange, searchText);
+            if (!coordinatedProductIds.isEmpty()) {
+                List<Long> originalProductIds = productsMapper.getOriginalProductProductIdsByCoordinatedIds(coordinatedProductIds);
+                if (!originalProductIds.isEmpty()) {
+                    productsVoList = productsMapper.getProductsByIds(originalProductIds);
+                }
+            }
+        }  else { // searchRange가 상품명 or 등록일시
             productsVoList = productsMapper.getProductPaging(offset, size, orderBy, dateRange, searchRange, searchText);
         }
 
@@ -466,7 +465,12 @@ public class ProductManagementService {
 
                 // 코디 상품 찾기
                 List<CoordinatedProductDto> coordinatedProductList =  new ArrayList<>();
-                List<Long> coordinateProductIds = productsMapper.getCoordinatedProductIds(productColorsVo.getProductColorId());
+                List<Long> coordinateProductIds = new ArrayList<>();
+                if (searchRange.equals("연관상품")) {
+                    coordinateProductIds = productsMapper.getProductColorsIdsByNameOrDate(offset, size, orderBy, dateRange, searchRange, searchText);
+                } else  {
+                    coordinateProductIds = productsMapper.getCoordinatedProductIds(productColorsVo.getProductColorId());
+                }
                 if (!coordinateProductIds.isEmpty()) {
                     for (Long id : coordinateProductIds) {
                         ProductColorsVo color = productColorsMapper.getProductColorById(id);

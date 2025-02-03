@@ -2,11 +2,13 @@ package com.midnear.midnearshopping.service.order;
 
 import com.midnear.midnearshopping.domain.dto.delivery.DeliveryAddrDto;
 import com.midnear.midnearshopping.domain.dto.order.*;
+import com.midnear.midnearshopping.domain.dto.payment.PaymentInfoDto;
 import com.midnear.midnearshopping.domain.vo.order.OrderProductsVO;
 import com.midnear.midnearshopping.domain.vo.order.OrdersVO;
 import com.midnear.midnearshopping.domain.vo.products.ProductsVo;
-import com.midnear.midnearshopping.domain.vo.products.SizesVo;
+import com.midnear.midnearshopping.mapper.coupon_point.UserCouponMapper;
 import com.midnear.midnearshopping.mapper.delivery.DeliveryAddressMapper;
+import com.midnear.midnearshopping.mapper.delivery.DeliveryInfoMapper;
 import com.midnear.midnearshopping.mapper.order.OrderMapper;
 import com.midnear.midnearshopping.mapper.order.UserOrderProductsMapper;
 import com.midnear.midnearshopping.mapper.products.ProductColorsMapper;
@@ -22,6 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,11 +40,14 @@ public class OrderService {
     private final ProductColorsMapper productColorsMapper;
     private final SizesMapper sizesMapper;
     private static final int pageSize = 2;
+    private final UserOrderProductsMapper userOrderProductsMapper;
+    private final UserCouponMapper userCouponMapper;
+    private final DeliveryInfoMapper deliveryInfoMapper;
 
     @Transactional(rollbackFor = Exception.class)
     public void createOrder(String id, UserOrderDto userOrderDto) {
         // 사용자 ID 조회
-        Integer userId = usersMapper.getUserIdById(id);
+        Long userId = usersMapper.getUserIdById(id);
         if (userId == null) {
             throw new RuntimeException("해당 사용자를 찾을 수 없습니다. 사용자 ID: " + id);
         }
@@ -65,10 +72,12 @@ public class OrderService {
                 .orderNumber(OrderNumberGenerator.generateOrderNumber())
                 .userId(userId)
                 .allPayment(userOrderDto.getAllPayment())
+                .deliveryRequest(userOrderDto.getDeliveryRequest())
                 .build();
 
         // 주문 정보 DB 저장
         orderMapper.insertOrder(ordersVO);
+
         Long orderId = ordersVO.getOrderId();
         if (orderId == null) {
             throw new RuntimeException("주문 생성 실패: orderId가 NULL입니다.");
@@ -107,13 +116,14 @@ public class OrderService {
             // 재고 차감
             sizesMapper.updateSizeByColorAndSize(dto.getProductColorId(), dto.getSize(), dto.getQuantity());
 
+
             return OrderProductsVO.builder()
                     .orderId(orderId)
                     .size(dto.getSize())
                     .quantity(dto.getQuantity())
                     .couponDiscount(dto.getCouponDiscount())
                     .buyConfirmDate(null)
-                    .claimStatus("0")
+                    .claimStatus(null)
                     .pointDiscount(dto.getPointDiscount())
                     .deliveryId(null)
                     .productPrice(dto.getProductPrice())
@@ -128,15 +138,22 @@ public class OrderService {
         for (OrderProductsVO orderProduct : orderProductsList) {
             orderProductsMapper.insertOrderProduct(orderProduct);
         }
-
-
+        //전체 사용량 저장
+        BigDecimal totalPointDiscount = userOrderDto.getOderProductsRequestDtos().stream()
+                .map(dto -> dto.getPointDiscount() != null ? dto.getPointDiscount() : BigDecimal.ZERO)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        //사용한 쿠폰 상태 사용으로 변경
+        //근데... 이런식으면 쿠폰 디비가 너무 쌓여서 비효율적 서비스 완성후 논의 필요
+        userCouponMapper.changeStatus(userOrderDto.getUserCouponId());
+        //포인트 차감
+        usersMapper.discountPointsToUserByUserId(userId, totalPointDiscount.longValue() * -1);
     }
 
     @Transactional(readOnly = true)
     public List<UserOrderCheckDto> getOrders(String id, int pageNumber, String sort) {
         int offset = (pageNumber - 1) * pageSize;
         // 주문 기본 정보 조회
-        Integer userId = usersMapper.getUserIdById(id);
+        Long userId = usersMapper.getUserIdById(id);
         if (userId == null) {
             throw new UsernameNotFoundException("존재하지 않는 유저입니다.");
         }
@@ -151,12 +168,15 @@ public class OrderService {
                         BigDecimal payPrice = product.getProductPrice()
                                 .subtract(product.getPointDiscount() != null ? product.getPointDiscount() : BigDecimal.ZERO)
                                 .subtract(product.getCouponDiscount() != null ? product.getCouponDiscount() : BigDecimal.ZERO);
+                        String orderState = Optional.ofNullable(product.getClaimStatus())
+                                .orElseGet(() -> userOrderProductsMapper.getDeliveryInfo(product.getDeliveryId()));
+
 
                         return UserOrderProductCheckDto.builder()
                                 .orderProductId(product.getOrderProductId())
                                 .size(product.getSize())
                                 .quantity(product.getQuantity())
-                                .claimStatus(product.getClaimStatus())
+                                .orderStatus(orderState)
                                 .pointDiscount(product.getPointDiscount())
                                 .payPrice(payPrice) // 계산된 값 설정
                                 .productName(product.getProductName())
@@ -187,16 +207,19 @@ public class OrderService {
                     BigDecimal payPrice = product.getProductPrice()
                             .subtract(product.getPointDiscount() != null ? product.getPointDiscount() : BigDecimal.ZERO)
                             .subtract(product.getCouponDiscount() != null ? product.getCouponDiscount() : BigDecimal.ZERO);
+                    String orderState = Optional.ofNullable(product.getClaimStatus())
+                            .orElseGet(() -> userOrderProductsMapper.getDeliveryInfo(product.getDeliveryId()));
 
                     return UserOrderProductCheckDto.builder()
                             .orderProductId(product.getOrderProductId())
                             .size(product.getSize())
                             .quantity(product.getQuantity())
-                            .claimStatus(product.getClaimStatus())
+                            .orderStatus(orderState)
                             .pointDiscount(product.getPointDiscount())
                             .payPrice(payPrice) // 계산된 값 설정
                             .productName(product.getProductName())
                             .productMainImage(product.getProductMainImage())
+                            .deliveryId(product.getDeliveryId())
                             .build();
                 }).collect(Collectors.toList());
 
@@ -213,16 +236,18 @@ public class OrderService {
                 .build();
     }
 
-    public OrderProductDto getOrderProductDetail(Long orderProductId) {
+    public OrderProductDto getOrderProductDetailForCancel(Long orderProductId) {
         OrderProductsVO product = orderProductsMapper.getOrderProductById(orderProductId);
         if (product == null) {
             throw new IllegalArgumentException("해당 주문 상품 정보가 존재하지 않습니다.");
         }
+        String orderState = Optional.ofNullable(product.getClaimStatus())
+                .orElseGet(() -> userOrderProductsMapper.getDeliveryInfo(product.getDeliveryId()));
         return OrderProductDto.builder()
                 .orderProductId(product.getOrderProductId())
                 .size(product.getSize())
                 .quantity(product.getQuantity())
-                .claimStatus(product.getClaimStatus())
+                .claimStatus(orderState)
                 .pointDiscount(product.getPointDiscount())
                 .productPrice(product.getProductPrice()) // 계산된 값 설정
                 .productName(product.getProductName())
@@ -248,6 +273,7 @@ public class OrderService {
                 .orderNumber(OrderNumberGenerator.generateOrderNumber())
                 .userId(null)
                 .allPayment(nonUserOrderDto.getAllPayment())
+                .deliveryRequest(nonUserOrderDto.getDeliveryRequest())
                 .build();
 
         // 주문 정보 DB 저장
@@ -296,9 +322,9 @@ public class OrderService {
                     .quantity(dto.getQuantity())
                     .couponDiscount(dto.getCouponDiscount())
                     .buyConfirmDate(null)
-                    .claimStatus("0")
+                    .claimStatus(null)
                     .pointDiscount(dto.getPointDiscount())
-                    .deliveryId(null)
+                    .deliveryId(null)//이건 배송 정보의 아이디다!!!!1
                     .productPrice(dto.getProductPrice())
                     .productName(productVO.getProductName())
                     .color(color)
@@ -314,5 +340,21 @@ public class OrderService {
         return ordersVO.getOrderNumber();
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    public OrderDetailsDto getOrderNonUser(String orderName, String orderContact, String orderNumber){
+        Long orderId = orderMapper.getOrdersNonUser(orderName, orderContact, orderNumber);
+        return getOrderDetails(orderId);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public PaymentInfoDto getPayment(Long orderId){
+        PaymentInfoDto dto = orderMapper.getPaymentInfoByOrderId(orderId);
+        return orderMapper.getPaymentInfoByOrderId(orderId);
+    }
+
+    public BigDecimal getDeliveryCharge(String postalCode){
+        String location = PostalCodeChecker.checkRegion(Integer.parseInt(postalCode));
+        return deliveryAddressMapper.getDeliveryCharge(location);
+    }
 }
 

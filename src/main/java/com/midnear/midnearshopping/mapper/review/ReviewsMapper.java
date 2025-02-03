@@ -1,5 +1,7 @@
 package com.midnear.midnearshopping.mapper.review;
 
+import com.midnear.midnearshopping.domain.dto.review.ProductReviewDto;
+import com.midnear.midnearshopping.domain.dto.review.ReviewListDto;
 import com.midnear.midnearshopping.domain.vo.review.ReviewsVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -9,8 +11,14 @@ import java.util.List;
 @Mapper
 public interface ReviewsMapper {
     void insertReview(ReviewsVO reviewsVO);
-    ReviewsVO getReviewById(@Param("reviewId") Long reviewId);
-    List<ReviewsVO> getReviewsByProductId(@Param("userProductId") Long userProductId);
     void updateReview(ReviewsVO reviewsVO);
-    void deleteReview(@Param("reviewId") Long reviewId);
+    void updateReviewStatus(Long reviewId);
+    int getImageReviewCount(@Param("productName") String productName);
+    int getReviewCount(@Param("productName") String productName);
+    List<String> getAllReviewImages(@Param("productName") String productName);
+    List<ReviewListDto> getReviewList(@Param("productName") String productName, @Param("offset") int offset, @Param("pageSize") int pageSize);
+    List<String> getReviewImages(@Param("reviewId") Long reviewId);
+    void updateReviewComment(@Param("reviewId") Long reviewId, @Param("comment") String comment);
+    void setApproveStatusTrue(Long reviewId);
+    Long getUserIdByReviewId(Long reviewId);
 }

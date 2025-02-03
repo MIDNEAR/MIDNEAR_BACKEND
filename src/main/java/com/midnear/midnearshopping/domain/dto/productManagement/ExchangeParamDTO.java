@@ -17,5 +17,5 @@ public class ExchangeParamDTO {
     List<Long> orderProductId;
     String exchangeDenayReason;
     String resendCourier;
-    Long resendInvoiceNumber;
+    String resendInvoiceNumber;
 }

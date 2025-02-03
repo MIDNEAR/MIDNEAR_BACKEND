@@ -24,6 +24,13 @@
         LIMIT #{pageSize} OFFSET #{offset}
     </select>
 
+    <!-- 비회원 주문 정보 조회 -->
+    <select id="getOrdersNonUser">
+        SELECT order_id
+        FROM orders
+        WHERE order_name = #{orderName} AND order_contact = #{orderContact} AND order_number = #{orderNumber}
+    </select>
+
     <select id="getOrderById" parameterType="long" resultType="com.midnear.midnearshopping.domain.vo.order.OrdersVO">
         SELECT * FROM orders WHERE order_id = #{orderId}
     </select>
@@ -39,12 +46,12 @@
         INSERT INTO orders (
             order_name, order_contact, order_email,
              order_date, recipient_name, postal_code,
-            address, detailed_address, order_number, user_id, all_payment
+            address, detailed_address, order_number, user_id, all_payment, delivery_request
         ) VALUES (
                      #{orderName}, #{orderContact}, #{orderEmail},
                       #{orderDate}, #{recipientName}, #{postalCode},
                      #{address}, #{detailedAddress},  #{orderNumber}, #{userId},
-                      #{allPayment}
+                      #{allPayment}, #{deliveryRequest}
                  )
     </insert>
 
@@ -73,5 +80,23 @@
     <delete id="deleteOrderById">
         DELETE FROM orders WHERE order_id = #{orderId}
     </delete>
+
+    <select id="getPaymentInfoByOrderId">
+        select
+            p.toss_payment_method AS tossPaymentMethod,
+            p.total_order_payment AS totalOrderPayment,
+            p.payment_status AS paymentStatus,
+            p.toss_order_id AS tossOrderId,
+            p.toss_payment_key AS tossPaymentKey,
+            o.all_payment AS allPayment,
+            p.payment_date AS paymentDate,
+            op.delivery_charge AS deliveryCharge
+        from payments p
+            join orders o on o.order_id=p.order_id
+            join order_products op on op.order_id = o.order_id
+        where p.order_id=#{orderId}
+        limit 1
+    </select>
+
 
 </mapper>

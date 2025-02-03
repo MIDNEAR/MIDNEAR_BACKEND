@@ -22,7 +22,7 @@ public class DeliveryAddressVO {
     private String recipient;
     private String recipientContact;
     private String deliveryRequest;
-    private int userId;
+    private Long userId;
 
     public static DeliveryAddressVO toEntity(DeliveryAddrDto dto) {
         return DeliveryAddressVO.builder()

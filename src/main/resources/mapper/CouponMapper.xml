@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.midnear.midnearshopping.mapper.coupon_point.CouponMapper">
+    <insert id="registerCoupon" useGeneratedKeys="true" keyProperty="couponId">
+        INSERT INTO coupon (
+        coupon_name, discount_rate
+        ) VALUES (
+        #{couponName}, #{discountRate}
+        )
+    </insert>
+    <insert id="grantCoupon">
+        INSERT INTO user_coupon (
+        used_status, user_id, coupon_id
+        ) VALUES (
+        0, #{userId}, #{couponId}
+        )
+    </insert>
+    <delete id="deletePreviousData">
+        delete from review_point
+    </delete>
+    <select id="getCouponsByUserId">
+        select * from user_coupon uc
+        where uc.user_id = #{userId}
+        GROUP BY uc.coupon_id, uc.user_id, uc.issued_date, uc.expiry_date
+    </select>
+    <select id="getCouponsCountByUserId">
+        select COUNT(*) from user_coupon uc
+        where uc.user_id = #{userId}
+    </select>
+    <delete id="deleteCouponByUserId">
+        DELETE FROM user_coupon
+        WHERE user_id = #{userId}
+    </delete>
+
+</mapper>

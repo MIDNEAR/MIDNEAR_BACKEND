@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.midnear.midnearshopping.mapper.coupon_point.UserCouponMapper">
+
+    <select id="getCouponsByUserId">
+        select
+            uc.user_coupon_id,
+            uc.used_status,
+            c.coupon_name,
+            c.discount_rate
+            from user_coupon uc
+                 JOIN coupon c on c.coupon_id = uc.coupon_id
+        where used_status = 0 AND uc.user_id = #{userId}
+        GROUP BY uc.coupon_id
+    </select>
+    <select id="getCouponsCountByUserId">
+        select COUNT(*) from user_coupon uc
+        where used_status = 0 AND uc.user_id = #{userId}
+    </select>
+    <delete id="deleteCouponByUserId">
+        DELETE FROM user_coupon
+        WHERE user_id = #{userId}
+    </delete>
+
+    <update id="changeStatus">
+        update user_coupon
+        set used_status = 1
+        where user_coupon_id = #{userCouponId}
+    </update>
+
+</mapper>

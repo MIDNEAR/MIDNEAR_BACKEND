@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.midnear.midnearshopping.mapper.coupon_point.ReviewPointMapper">
+    <insert id="setReviewPointAmount">
+        INSERT INTO review_point (
+        text_review, photo_review
+        ) VALUES (
+        #{textReview}, #{photoReview}
+        )
+    </insert>
+    <delete id="deletePreviousData">
+        delete from review_point
+    </delete>
+    <select id="getPhotoReview">
+        select photo_review
+        from review_point
+    </select>
+    <select id="getTextReview">
+        select text_review
+        from review_point
+    </select>
+</mapper>
