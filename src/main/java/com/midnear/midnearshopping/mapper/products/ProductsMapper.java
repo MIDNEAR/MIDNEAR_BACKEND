@@ -2,6 +2,7 @@ package com.midnear.midnearshopping.mapper.products;
 
 import com.midnear.midnearshopping.domain.dto.coordinate.CoordinateDto;
 import com.midnear.midnearshopping.domain.dto.products.CoordinateProductDto;
+import com.midnear.midnearshopping.domain.dto.products.ProductListInfoDto;
 import com.midnear.midnearshopping.domain.dto.products.ProductsListDto;
 import com.midnear.midnearshopping.domain.vo.products.ProductsVo;
 import org.apache.ibatis.annotations.Mapper;
@@ -30,4 +31,5 @@ public interface ProductsMapper {
     List<Long> getOriginalProductProductIdsByCoordinatedIds(List<Long> coordinatedProductIds);
     List<ProductsVo> getProductsByIds(List<Long> originalProductIds);
     List<CoordinateProductDto> getCoordinateProducts(Long productColorId);
+    ProductListInfoDto getTotalAndPage();
 }
