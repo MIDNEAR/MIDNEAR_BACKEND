@@ -4,10 +4,9 @@ import com.midnear.midnearshopping.domain.dto.users.SmsRequestDto;
 import com.midnear.midnearshopping.domain.dto.users.SmsVerifyDto;
 import com.midnear.midnearshopping.exception.ApiResponse;
 import com.midnear.midnearshopping.service.SmsService;
-import jakarta.validation.Valid;
+
 import lombok.RequiredArgsConstructor;
-import org.hibernate.validator.internal.IgnoreForbiddenApisErrors;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,7 +22,7 @@ public class SmsController {
     private final SmsService smsService;
 
     @PostMapping("/send")
-    public ResponseEntity<?> SendSMS(@RequestBody @Valid SmsRequestDto smsRequestDto) {
+    public ResponseEntity<?> SendSMS(@RequestBody SmsRequestDto smsRequestDto) {
         try {
             smsService.sendSms(smsRequestDto);
             return ResponseEntity.ok(new ApiResponse(true, "인증 문자 전송 완료", null));
@@ -33,7 +32,7 @@ public class SmsController {
     }
 
     @PostMapping("/verify")
-    public ResponseEntity<?> verifyCode(@RequestBody @Valid SmsVerifyDto smsVerifyDto) {
+    public ResponseEntity<?> verifyCode(@RequestBody SmsVerifyDto smsVerifyDto) {
         boolean verify = smsService.verifyCode(smsVerifyDto);
         if (verify) {
             return ResponseEntity.ok(new ApiResponse(true, "인증에 성공했습니다.", null));
