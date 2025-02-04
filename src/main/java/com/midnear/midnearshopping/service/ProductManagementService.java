@@ -382,21 +382,34 @@ public class ProductManagementService {
         }
     }
 
-    @Transactional
     public ShippingReturnsVo getShippingReturnsVo() {
         return shippingReturnsMapper.getShippingReturns();
     }
 
     @Transactional
     public void updateShippingReturns(ShippingReturnsDto shippingReturnsDto) {
-        ShippingReturnsVo shippingReturnsVo = ShippingReturnsVo.toEntity(shippingReturnsDto);
-        shippingReturnsMapper.updateShippingReturns(shippingReturnsVo);
+        ShippingReturnsVo update = ShippingReturnsVo.builder()
+                .shippingInfo(shippingReturnsDto.getShippingInfo()) //  업데이트
+                .shippingNotice(shippingReturnsDto.getShippingNotice()) // 업데이트
+                .shippingReturnsPolicy(shippingReturnsMapper.getShippingReturnsPolicy()) // 기존 데이터 유지
+                .build();
+        // 기존 데이터 삭제
+        shippingReturnsMapper.deleteShippingReturns();
+        // 저장
+        shippingReturnsMapper.updateShippingReturns(update);
     }
 
     @Transactional
     public void updateShippingPolicy(ShippingReturnsDto shippingReturnsDto) {
-        ShippingReturnsVo shippingReturnsVo = ShippingReturnsVo.toEntity(shippingReturnsDto);
-        shippingReturnsMapper.updateShippingPolicy(shippingReturnsVo);
+        ShippingReturnsVo shippingReturnsVo = ShippingReturnsVo.builder()
+                .shippingInfo(shippingReturnsMapper.getShippingInfo()) // 기존 데이터 유지
+                .shippingNotice(shippingReturnsMapper.getShippingNotice()) // 기존 데이터 유지
+                .shippingReturnsPolicy(shippingReturnsDto.getShippingReturnsPolicy()) // 업데이트
+                .build();
+        // 기존 데이터 삭제
+        shippingReturnsMapper.deleteShippingReturns();
+        // 저장
+        shippingReturnsMapper.updateShippingReturns(shippingReturnsVo);
     }
 
     public Map<String, Object> getCoordinatedList(int page, String sortOrder, String dateRange, String searchRange, String searchText) {

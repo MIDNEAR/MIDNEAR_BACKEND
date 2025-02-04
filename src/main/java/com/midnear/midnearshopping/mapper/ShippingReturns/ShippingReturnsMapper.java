@@ -10,5 +10,8 @@ public interface ShippingReturnsMapper {
 
     void updateShippingReturns(ShippingReturnsVo shippingReturnsVo);
 
-    void updateShippingPolicy(ShippingReturnsVo shippingReturnsVo);
+    String getShippingInfo();
+    String getShippingNotice();
+    String getShippingReturnsPolicy();
+    void deleteShippingReturns();
 }
