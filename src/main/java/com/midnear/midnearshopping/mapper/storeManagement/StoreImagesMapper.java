@@ -5,9 +5,9 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface StoreImagesMapper {
-    StoreImagesVo findMainImage();
-    StoreImagesVo findLogoImage();
+    String findMainImage();
+    String findLogoImage();
     void deleteImageById(Long id);
     void uploadImage(StoreImagesVo storeImagesVo);
-
+    Long findImageIdByUrl(String ImageUrl);
 }

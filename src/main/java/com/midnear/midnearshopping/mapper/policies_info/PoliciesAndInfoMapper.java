@@ -5,10 +5,10 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface PoliciesAndInfoMapper {
-    PoliciesAndInfoVo getPrivacyPolicy();
-    PoliciesAndInfoVo getTermsOfService();
-    PoliciesAndInfoVo getBusinessInfo();
-    PoliciesAndInfoVo getDataUsage();
+    String getPrivacyPolicy();
+    String getTermsOfService();
+    String getBusinessInfo();
+    String getDataUsage();
     void insertData(PoliciesAndInfoVo policiesAndInfoVo);
     void deleteData(String type);
 }
