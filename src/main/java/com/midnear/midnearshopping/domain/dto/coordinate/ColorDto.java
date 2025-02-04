@@ -15,4 +15,5 @@ public class ColorDto {
     private List<SizesDto> sizesDtoList;
     private String imageUrl;
     private Long productColorId;
+    private List<CoordinatedProductDto> coordinatedProductDtoList;
 }
