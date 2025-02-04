@@ -2,6 +2,7 @@ package com.midnear.midnearshopping.domain.dto.policies_info;
 
 import com.midnear.midnearshopping.domain.vo.policies_info.PoliciesAndInfoVo;
 import lombok.*;
+import net.minidev.json.annotate.JsonIgnore;
 
 @Getter
 @Setter

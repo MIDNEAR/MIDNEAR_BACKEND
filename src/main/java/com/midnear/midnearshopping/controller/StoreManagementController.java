@@ -118,9 +118,9 @@ public class StoreManagementController {
     @GetMapping("/getPrivacyPolicy")
     public ResponseEntity<ApiResponse> getPrivacyPolicy() {
         try {
-            PoliciesAndInfoDto policiesAndInfoDto = storeManagementService.getPrivacyPolicy();
+            String text = storeManagementService.getPrivacyPolicy();
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ApiResponse(true, "데이터 불러오기 성공", policiesAndInfoDto));
+                    .body(new ApiResponse(true, "데이터 불러오기 성공", text));
         } catch (Exception ex) {
             ex.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -132,9 +132,9 @@ public class StoreManagementController {
     @GetMapping("/getTermsOfService")
     public ResponseEntity<ApiResponse> getTermsOfService() {
         try {
-            PoliciesAndInfoDto policiesAndInfoDto = storeManagementService.getTermsOfService();
+            String text = storeManagementService.getTermsOfService();
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ApiResponse(true, "데이터 불러오기 성공", policiesAndInfoDto));
+                    .body(new ApiResponse(true, "데이터 불러오기 성공", text));
         } catch (Exception ex) {
             ex.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -146,9 +146,9 @@ public class StoreManagementController {
     @GetMapping("/getBusinessInfo")
     public ResponseEntity<ApiResponse> getBusinessInfo() {
         try {
-            PoliciesAndInfoDto policiesAndInfoDto = storeManagementService.getBusinessInfo();
+            String text = storeManagementService.getBusinessInfo();
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ApiResponse(true, "데이터 불러오기 성공", policiesAndInfoDto));
+                    .body(new ApiResponse(true, "데이터 불러오기 성공", text));
         } catch (Exception ex) {
             ex.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -160,9 +160,9 @@ public class StoreManagementController {
     @GetMapping("/getDataUsage")
     public ResponseEntity<ApiResponse> getDataUsage() {
         try {
-            PoliciesAndInfoDto policiesAndInfoDto = storeManagementService.getDataUsage();
+            String text = storeManagementService.getDataUsage();
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ApiResponse(true, "데이터 불러오기 성공", policiesAndInfoDto));
+                    .body(new ApiResponse(true, "데이터 불러오기 성공", text));
         } catch (Exception ex) {
             ex.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -172,9 +172,12 @@ public class StoreManagementController {
 
     //개인정보 처리 방침 관리 수정
     @PostMapping("/updatePrivacyPolicy")
-    public ResponseEntity<ApiResponse> updatePrivacyPolicy(@RequestBody PoliciesAndInfoDto policiesAndInfoDto) {
+    public ResponseEntity<ApiResponse> updatePrivacyPolicy(@RequestBody String text) {
         try {
-            policiesAndInfoDto.setType("privacy_policy");
+            PoliciesAndInfoDto policiesAndInfoDto = PoliciesAndInfoDto.builder()
+                    .text(text)
+                    .type("privacy_policy")
+                    .build();
             storeManagementService.insertData(policiesAndInfoDto);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "개인정보 처리 방침 관리 수정 완료", null));
@@ -187,9 +190,12 @@ public class StoreManagementController {
 
     //이용 약관 관리 수정
     @PostMapping("/updateTermsOfService")
-    public ResponseEntity<ApiResponse> updateTermsOfService(@RequestBody PoliciesAndInfoDto policiesAndInfoDto) {
+    public ResponseEntity<ApiResponse> updateTermsOfService(@RequestBody String text) {
         try {
-            policiesAndInfoDto.setType("terms_of_service");
+            PoliciesAndInfoDto policiesAndInfoDto = PoliciesAndInfoDto.builder()
+                    .text(text)
+                    .type("terms_of_service")
+                    .build();
             storeManagementService.insertData(policiesAndInfoDto);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "이용 약관 관리 수정 완료", null));
@@ -202,9 +208,12 @@ public class StoreManagementController {
 
     // 주소 및 사업자 정보 관리 수정
     @PostMapping("/updateBusinessInfo")
-    public ResponseEntity<ApiResponse> updateBusinessInfo(@RequestBody PoliciesAndInfoDto policiesAndInfoDto) {
+    public ResponseEntity<ApiResponse> updateBusinessInfo(@RequestBody String text) {
         try {
-            policiesAndInfoDto.setType("business_info");
+            PoliciesAndInfoDto policiesAndInfoDto = PoliciesAndInfoDto.builder()
+                    .text(text)
+                    .type("business_info")
+                    .build();
             storeManagementService.insertData(policiesAndInfoDto);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "주소 및 사업자 정보 관리 수정 완료", null));
@@ -217,9 +226,12 @@ public class StoreManagementController {
 
     //개인정보 수집 및 이용 목적 관리 수정
     @PostMapping("/updateDataUsage")
-    public ResponseEntity<ApiResponse> updateDataUsage(@RequestBody PoliciesAndInfoDto policiesAndInfoDto) {
+    public ResponseEntity<ApiResponse> updateDataUsage(@RequestBody String text) {
         try {
-            policiesAndInfoDto.setType("data_usage");
+            PoliciesAndInfoDto policiesAndInfoDto = PoliciesAndInfoDto.builder()
+                    .text(text)
+                    .type("data_usage")
+                    .build();
             storeManagementService.insertData(policiesAndInfoDto);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "개인정보 수집 및 이용 목적 관리 수정 완료", null));

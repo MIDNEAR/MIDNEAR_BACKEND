@@ -145,24 +145,20 @@ public class StoreManagementService {
         categoriesMapper.deleteCategories(deleteList);
     }
 
-    public PoliciesAndInfoDto getPrivacyPolicy() {
-        PoliciesAndInfoVo policiesAndInfoVo = policiesAndInfoMapper.getPrivacyPolicy();
-        return PoliciesAndInfoDto.toEntity(policiesAndInfoVo);
+    public String getPrivacyPolicy() {
+        return policiesAndInfoMapper.getPrivacyPolicy();
     }
 
-    public PoliciesAndInfoDto getTermsOfService() {
-        PoliciesAndInfoVo policiesAndInfoVo = policiesAndInfoMapper.getTermsOfService();
-        return PoliciesAndInfoDto.toEntity(policiesAndInfoVo);
+    public String getTermsOfService() {
+        return policiesAndInfoMapper.getTermsOfService();
     }
 
-    public PoliciesAndInfoDto getBusinessInfo() {
-        PoliciesAndInfoVo policiesAndInfoVo = policiesAndInfoMapper.getBusinessInfo();
-        return PoliciesAndInfoDto.toEntity(policiesAndInfoVo);
+    public String getBusinessInfo() {
+        return policiesAndInfoMapper.getBusinessInfo();
     }
 
-    public PoliciesAndInfoDto getDataUsage() {
-        PoliciesAndInfoVo policiesAndInfoVo = policiesAndInfoMapper.getDataUsage();
-        return PoliciesAndInfoDto.toEntity(policiesAndInfoVo);
+    public String getDataUsage() {
+        return policiesAndInfoMapper.getDataUsage();
     }
 
     @Transactional
