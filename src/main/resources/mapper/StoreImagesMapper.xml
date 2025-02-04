@@ -8,13 +8,17 @@
         #{imageUrl}, #{fileSize}, #{extension}, NOW(), #{type}
         )
     </insert>
-    <select id="findMainImage" resultType="StoreImagesVo">
-        SELECT * FROM store_images
+    <select id="findMainImage" resultType="String">
+        SELECT image_url FROM store_images
         WHERE type = 'main';
     </select>
-    <select id="findLogoImage" resultType="StoreImagesVo">
-        SELECT * FROM store_images
+    <select id="findLogoImage" resultType="String">
+        SELECT image_url FROM store_images
         WHERE type = 'Logo';
+    </select>
+    <select id="findImageIdByUrl" resultType="Long">
+        SELECT image_id FROM store_images
+        WHERE image_url = #{imageUrl};
     </select>
     <delete id="deleteImageById">
         DELETE FROM store_images

@@ -36,10 +36,10 @@ public class StoreManagementService {
     private final S3Service s3Service;
 
     public StoreImagesDto getMainImage() {
-        StoreImagesVo storeImagesVo = storeImagesMapper.findMainImage();
-        String fileName = storeImagesVo.getImageUrl().substring(storeImagesVo.getImageUrl().lastIndexOf('_') + 1);
+        String imageUrl = storeImagesMapper.findMainImage();
+        String fileName = imageUrl.substring(imageUrl.lastIndexOf('_') + 1);
         return StoreImagesDto.builder()
-                .imageUrl(storeImagesVo.getImageUrl())
+                .imageUrl(imageUrl)
                 .imageName(fileName)
                 .build();
     }
@@ -49,15 +49,16 @@ public class StoreManagementService {
         List<FileDto> fileInfo = null;
         try {
             // 기존 이미지 삭제
-            StoreImagesVo storeImagesVo = storeImagesMapper.findMainImage();
-            if (storeImagesVo.getImageUrl() != null)
-                s3Service.deleteFile(storeImagesVo.getImageUrl());
+            String imageUrl = storeImagesMapper.findMainImage();
+            if (imageUrl != null)
+                s3Service.deleteFile(imageUrl);
 
             // 새로운 파일 업로드
             fileInfo = s3Service.uploadFiles("main", Collections.singletonList(file));
 
             // DB에 이미지 정보 변경
-            storeImagesMapper.deleteImageById(storeImagesVo.getImageId());
+            Long imageId = storeImagesMapper.findImageIdByUrl(imageUrl);
+            storeImagesMapper.deleteImageById(imageId);
             for (FileDto fileDto : fileInfo) {
                 StoreImagesVo newImagesVo = StoreImagesVo.builder()
                         .imageId(null)
@@ -82,10 +83,10 @@ public class StoreManagementService {
     }
 
     public StoreImagesDto getLogoImage() {
-        StoreImagesVo storeImagesVo = storeImagesMapper.findLogoImage();
-        String fileName = storeImagesVo.getImageUrl().substring(storeImagesVo.getImageUrl().lastIndexOf('_') + 1);
+        String imageUrl = storeImagesMapper.findLogoImage();
+        String fileName = imageUrl.substring(imageUrl.lastIndexOf('_') + 1);
         return StoreImagesDto.builder()
-                .imageUrl(storeImagesVo.getImageUrl())
+                .imageUrl(imageUrl)
                 .imageName(fileName)
                 .build();
     }
@@ -95,15 +96,16 @@ public class StoreManagementService {
         List<FileDto> fileInfo = null;
         try {
             // 기존 이미지 삭제
-            StoreImagesVo storeImagesVo = storeImagesMapper.findLogoImage();
-            if (storeImagesVo.getImageUrl() != null)
-                s3Service.deleteFile(storeImagesVo.getImageUrl());
+            String imageUrl = storeImagesMapper.findLogoImage();
+            if (imageUrl != null)
+                s3Service.deleteFile(imageUrl);
 
             // 새로운 파일 업로드
             fileInfo = s3Service.uploadFiles("Logo", Collections.singletonList(file));
 
             // DB에 이미지 정보 변경
-            storeImagesMapper.deleteImageById(storeImagesVo.getImageId());
+            Long imageId = storeImagesMapper.findImageIdByUrl(imageUrl);
+            storeImagesMapper.deleteImageById(imageId);
             for (FileDto fileDto : fileInfo) {
                 StoreImagesVo newImagesVo = StoreImagesVo.builder()
                         .imageId(null)
