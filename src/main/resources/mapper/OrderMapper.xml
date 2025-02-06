@@ -98,5 +98,10 @@
         limit 1
     </select>
 
+    <select id="isFree">
+        SELECT CASE WHEN #{allPayment} > free_delivery_condition THEN TRUE ELSE FALSE END
+        from delivery_charge
+    </select>
+
 
 </mapper>

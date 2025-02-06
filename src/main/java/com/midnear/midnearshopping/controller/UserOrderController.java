@@ -104,6 +104,15 @@ public class UserOrderController {
         } catch (Exception e) {
             return ResponseEntity.internalServerError()
                     .body(new ApiResponse(false, "배송비 조회 중 오류 발생: " + e.toString(), null));
+        }    }
+
+    @GetMapping("/getIsFree")
+    public ResponseEntity<ApiResponse> isFree(@RequestParam BigDecimal allPayment) {
+        try {
+            boolean response = orderService.isFree(allPayment);
+            return ResponseEntity.ok(new ApiResponse(true, "무료배송 여부 조회 완료", response));
+        } catch (Exception e) {            return ResponseEntity.internalServerError()
+                    .body(new ApiResponse(false, "무료배송 여부 조회 중 오류 발생: " + e.toString(), null));
         }
     }
 
