@@ -382,21 +382,34 @@ public class ProductManagementService {
         }
     }
 
-    @Transactional
     public ShippingReturnsVo getShippingReturnsVo() {
         return shippingReturnsMapper.getShippingReturns();
     }
 
     @Transactional
     public void updateShippingReturns(ShippingReturnsDto shippingReturnsDto) {
-        ShippingReturnsVo shippingReturnsVo = ShippingReturnsVo.toEntity(shippingReturnsDto);
-        shippingReturnsMapper.updateShippingReturns(shippingReturnsVo);
+        ShippingReturnsVo update = ShippingReturnsVo.builder()
+                .shippingInfo(shippingReturnsDto.getShippingInfo()) //  업데이트
+                .shippingNotice(shippingReturnsDto.getShippingNotice()) // 업데이트
+                .shippingReturnsPolicy(shippingReturnsMapper.getShippingReturnsPolicy()) // 기존 데이터 유지
+                .build();
+        // 기존 데이터 삭제
+        shippingReturnsMapper.deleteShippingReturns();
+        // 저장
+        shippingReturnsMapper.updateShippingReturns(update);
     }
 
     @Transactional
     public void updateShippingPolicy(ShippingReturnsDto shippingReturnsDto) {
-        ShippingReturnsVo shippingReturnsVo = ShippingReturnsVo.toEntity(shippingReturnsDto);
-        shippingReturnsMapper.updateShippingPolicy(shippingReturnsVo);
+        ShippingReturnsVo shippingReturnsVo = ShippingReturnsVo.builder()
+                .shippingInfo(shippingReturnsMapper.getShippingInfo()) // 기존 데이터 유지
+                .shippingNotice(shippingReturnsMapper.getShippingNotice()) // 기존 데이터 유지
+                .shippingReturnsPolicy(shippingReturnsDto.getShippingReturnsPolicy()) // 업데이트
+                .build();
+        // 기존 데이터 삭제
+        shippingReturnsMapper.deleteShippingReturns();
+        // 저장
+        shippingReturnsMapper.updateShippingReturns(shippingReturnsVo);
     }
 
     public Map<String, Object> getCoordinatedList(int page, String sortOrder, String dateRange, String searchRange, String searchText) {
@@ -454,15 +467,6 @@ public class ProductManagementService {
                         .findFirst()
                         .orElse(null);
 
-                // 색상 정보 묶기
-                ColorDto colorDto = ColorDto.builder()
-                        .color(productColorsVo.getColor())
-                        .sizesDtoList(sizes)
-                        .imageUrl(imageUrl)
-                        .productColorId(productColorsVo.getProductColorId())
-                        .build();
-                colors.add(colorDto);
-
                 // 코디 상품 찾기
                 List<CoordinatedProductDto> coordinatedProductList =  new ArrayList<>();
                 List<Long> coordinateProductIds = new ArrayList<>();
@@ -500,12 +504,20 @@ public class ProductManagementService {
                         coordinatedProductList.add(coordinatedProductDto);
                     }
                 }
+                // 색상 정보 묶기
+                ColorDto colorDto = ColorDto.builder()
+                        .color(productColorsVo.getColor())
+                        .sizesDtoList(sizes)
+                        .imageUrl(imageUrl)
+                        .coordinatedProductDtoList(coordinatedProductList)
+                        .productColorId(productColorsVo.getProductColorId())
+                        .build();
+                colors.add(colorDto);
 
                 MainProductDto mainProductDto = MainProductDto.builder()
                         .category(category)
                         .productName(product.getProductName())
                         .colorList(colors)
-                        .coordinatedProductDtoList(coordinatedProductList)
                         .build();
 
                 productList.add(mainProductDto);
@@ -539,53 +551,53 @@ public class ProductManagementService {
                     .stream()
                     .findFirst()
                     .orElse(null);
+
+            // 코디 상품 찾기
+            List<CoordinatedProductDto> coordinatedProductList = new ArrayList<>();
+            List<Long> coordinateProductIds = productsMapper.getCoordinatedProductIds(productColorsVo.getProductColorId());
+            if (!coordinateProductIds.isEmpty()) {
+                for (Long id : coordinateProductIds) {
+                    ProductColorsVo color = productColorsMapper.getProductColorById(id);
+                    // 상품의 공통 정보 불러오기
+                    ProductsVo productsVo = productsMapper.getProductById(color.getProductId());
+                    // 카테고리
+                    String coordinatedCategory = getCategoryName(productsVo.getCategoryId());
+                    // 대표 이미지 url
+                    String coordinatedImageUrl = productImagesMapper.getImageUrlsById(color.getProductColorId())
+                            .stream()
+                            .findFirst()
+                            .orElse(null);
+                    // 사이즈 정보
+                    List<SizesDto> coordinatedSizes = sizesMapper.getSizesByProductColorsId(color.getProductColorId())
+                            .stream()
+                            .map(SizesDto::toDto)
+                            .toList();
+                    CoordinatedProductDto coordinatedProductDto = CoordinatedProductDto.builder()
+                            .category(coordinatedCategory)
+                            .productName(productsVo.getProductName())
+                            .color(color.getColor())
+                            .sizesDtoList(coordinatedSizes)
+                            .imageUrl(coordinatedImageUrl)
+                            .registeredDate(productsVo.getRegisteredDate())
+                            .build();
+
+                    coordinatedProductList.add(coordinatedProductDto);
+                }
+            }
             // 색상 정보 묶기
             ColorDto colorDto = ColorDto.builder()
                     .color(productColorsVo.getColor())
                     .sizesDtoList(sizes)
                     .imageUrl(imageUrl)
+                    .coordinatedProductDtoList(coordinatedProductList)
                     .productColorId(productColorsVo.getProductColorId())
                     .build();
             colors.add(colorDto);
-
-                // 코디 상품 찾기
-                List<CoordinatedProductDto> coordinatedProductList = new ArrayList<>();
-                List<Long> coordinateProductIds = productsMapper.getCoordinatedProductIds(productColorsVo.getProductColorId());
-                if (!coordinateProductIds.isEmpty()) {
-                    for (Long id : coordinateProductIds) {
-                        ProductColorsVo color = productColorsMapper.getProductColorById(id);
-                        // 상품의 공통 정보 불러오기
-                        ProductsVo productsVo = productsMapper.getProductById(color.getProductId());
-                        // 카테고리
-                        String coordinatedCategory = getCategoryName(productsVo.getCategoryId());
-                        // 대표 이미지 url
-                        String coordinatedImageUrl = productImagesMapper.getImageUrlsById(color.getProductColorId())
-                                .stream()
-                                .findFirst()
-                                .orElse(null);
-                        // 사이즈 정보
-                        List<SizesDto> coordinatedSizes = sizesMapper.getSizesByProductColorsId(color.getProductColorId())
-                                .stream()
-                                .map(SizesDto::toDto)
-                                .toList();
-                        CoordinatedProductDto coordinatedProductDto = CoordinatedProductDto.builder()
-                                .category(coordinatedCategory)
-                                .productName(productsVo.getProductName())
-                                .color(color.getColor())
-                                .sizesDtoList(coordinatedSizes)
-                                .imageUrl(coordinatedImageUrl)
-                                .registeredDate(productsVo.getRegisteredDate())
-                                .build();
-
-                        coordinatedProductList.add(coordinatedProductDto);
-                    }
-                }
 
                 mainProductDto = MainProductDto.builder()
                         .category(category)
                         .productName(product.getProductName())
                         .colorList(colors)
-                        .coordinatedProductDtoList(coordinatedProductList)
                         .build();
             }
         return mainProductDto;

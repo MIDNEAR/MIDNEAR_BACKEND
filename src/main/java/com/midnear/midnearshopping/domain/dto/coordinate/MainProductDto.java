@@ -15,5 +15,4 @@ public class MainProductDto {
     private String category;
     private String productName;
     private List<ColorDto> colorList;
-    private List<CoordinatedProductDto> coordinatedProductDtoList;
 }

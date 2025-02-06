@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -49,6 +50,9 @@ public class ProductService {
             productColorsDto.setColor(productColorVo.getColor());
             productColorsDto.setProductId(productColorVo.getProductId());
             productColorsDto.setSaleStatus(productColorVo.getSaleStatus());
+            //여기에 이미지 가져오는거 추가!!!
+            String mainImage = productImagesMapper.getMainImageUrlsById(productColorVo.getProductColorId());
+            productColorsDto.setMainImage(mainImage);
 
             // Sizes 조회 및 매핑
             List<SizesVo> sizesVoList = sizesMapper.getSizesByProductColorsId(productColorVo.getProductColorId());
@@ -97,6 +101,20 @@ public class ProductService {
         dto.setPage(pageSize);
         return dto;
     }
+    public ProductListInfoDto getCategoryProductListInfo(Long categoryId) {
+        return Optional.ofNullable(productMapper.getCategoryTotalAndPage(categoryId))
+                .map(dto -> {
+                    dto.setPage(pageSize); // null이 아닐 때도 pageSize 설정
+                    return dto;
+                })
+                .orElseGet(() -> {
+                    ProductListInfoDto dto = new ProductListInfoDto();
+                    dto.setTotal(0);
+                    dto.setPage(pageSize);
+                    return dto;
+                });
+
+}
 
 
 

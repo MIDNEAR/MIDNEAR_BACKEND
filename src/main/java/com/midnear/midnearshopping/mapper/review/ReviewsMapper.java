@@ -21,4 +21,5 @@ public interface ReviewsMapper {
     void updateReviewComment(@Param("reviewId") Long reviewId, @Param("comment") String comment);
     void setApproveStatusTrue(Long reviewId);
     Long getUserIdByReviewId(Long reviewId);
+    List<ReviewListDto> getReviewListWithoutPaging(String productName);
 }

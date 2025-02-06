@@ -5,17 +5,26 @@
         SELECT * FROM shipping_returns
         LIMIT 1
     </select>
-    <update id="updateShippingReturns">
-        UPDATE shipping_returns
-        SET
-        shipping_info = #{shippingInfo},
-        shipping_notice = #{shippingNotice}
-        WHERE id = #{id}
-    </update>
-    <update id="updateShippingPolicy">
-        UPDATE shipping_returns
-        SET
-        shipping_returns_policy = #{shippingReturnsPolicy}
-        WHERE id = #{id}
-    </update>
+    <select id="getShippingInfo">
+        SELECT shipping_info FROM shipping_returns
+        LIMIT 1
+    </select>
+    <select id="getShippingNotice">
+        SELECT shipping_notice FROM shipping_returns
+        LIMIT 1
+    </select>
+    <select id="getShippingReturnsPolicy">
+        SELECT shipping_returns_policy FROM shipping_returns
+        LIMIT 1
+    </select>
+    <delete id="deleteShippingReturns">
+        delete from shipping_returns
+    </delete>
+    <insert id="updateShippingReturns">
+        INSERT INTO shipping_returns (
+        shipping_info, shipping_notice, shipping_returns_policy
+        ) VALUES (
+        #{shippingInfo}, #{shippingNotice}, #{shippingReturnsPolicy}
+        )
+    </insert>
 </mapper>

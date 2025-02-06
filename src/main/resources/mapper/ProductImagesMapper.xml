@@ -20,4 +20,12 @@
         SELECT image_url FROM product_images
         WHERE product_color_id = #{colorId};
     </select>
+
+    <select id="getMainImageUrlsById">
+        SELECT image_url
+        FROM product_images
+        WHERE product_color_id = #{colorId}
+            LIMIT 1
+    </select>
+
 </mapper>
