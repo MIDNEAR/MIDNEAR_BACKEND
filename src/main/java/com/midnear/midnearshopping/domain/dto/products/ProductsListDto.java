@@ -22,6 +22,9 @@ public class ProductsListDto {
     private BigDecimal price;
     private BigDecimal discountPrice;
     private int discountRate;
+    private Date discountStartDate;
+    private Date discountEndDate;
+    private String saleStatus;
     private Long categoryId;
     private String frontImageUrl;
     private String backImageUrl;
