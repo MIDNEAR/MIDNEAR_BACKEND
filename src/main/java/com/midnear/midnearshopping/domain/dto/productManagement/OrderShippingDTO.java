@@ -20,7 +20,7 @@ public class OrderShippingDTO {
     BigDecimal productPrice;
     BigDecimal couponDiscount;
     BigDecimal pointDiscount;
-    BigDecimal allPayment;
+    BigDecimal totalOrderPayment;
     BigDecimal deliveryCharge;
     String orderName;
     String id;
