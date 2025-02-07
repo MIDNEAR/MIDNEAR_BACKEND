@@ -83,7 +83,12 @@ public class OrderShippingServiceImpl implements OrderShippingService {
         orderShippingMapper.directCancel(orderProductId);
     }
 
-//  선택건 옵션별 주문수량 엑셀로
+    @Override
+    public List<Long> selectCancelProduct(List<Long> orderProductId) {
+        return orderShippingMapper.selectCancelProduct(orderProductId);
+    }
+
+    //  선택건 옵션별 주문수량 엑셀로
     @Override
     public List<OptionQuantityDTO> selectOptionQuantity(List<Long> orderProductId) {
         return orderShippingMapper.selectOptionQuantity(orderProductId);

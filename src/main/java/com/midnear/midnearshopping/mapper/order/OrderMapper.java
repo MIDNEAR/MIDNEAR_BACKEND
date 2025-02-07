@@ -6,6 +6,7 @@ import com.midnear.midnearshopping.domain.vo.order.OrdersVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Mapper
@@ -19,6 +20,6 @@ public interface OrderMapper {
     List<UserOrderCheckDto> getOrdersByUserId(@Param("userId") Long userId, @Param("sort") String sort, @Param("offset") int offset, @Param("pageSize") int pageSize);
     Long getOrdersNonUser(@Param("orderName")String orderName, @Param("orderContact") String order_contact, @Param("orderNumber") String orderNumber);
     // 주문 상품 목록 조회
-
+    boolean isFree(BigDecimal allPayment);
 
 }

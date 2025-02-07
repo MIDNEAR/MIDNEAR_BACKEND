@@ -356,5 +356,9 @@ public class OrderService {
         String location = PostalCodeChecker.checkRegion(Integer.parseInt(postalCode));
         return deliveryAddressMapper.getDeliveryCharge(location);
     }
+
+    public boolean isFree(BigDecimal allPayment){
+        return orderMapper.isFree(allPayment);
+    }
 }
 

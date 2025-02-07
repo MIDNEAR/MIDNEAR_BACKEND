@@ -34,6 +34,8 @@ public interface OrderShippingService {
    @Transactional
    void directCancel(List<Long> orderProductId);
 
+   List<Long> selectCancelProduct(List<Long> orderProductId);
+
 // 옵션별 주문수량 보기
    List<OptionQuantityDTO> selectOptionQuantity(List<Long> orderProductId);
 
