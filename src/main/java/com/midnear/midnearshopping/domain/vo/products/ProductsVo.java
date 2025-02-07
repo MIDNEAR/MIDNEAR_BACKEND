@@ -31,10 +31,14 @@ public class ProductsVo {
                 .detail(productsDto.getDetail())
                 .discountRate(productsDto.getDiscountRate())
                 .sizeGuide(productsDto.getSizeGuide())
-                .registeredDate(Date.valueOf(productsDto.getRegisteredDate()))
-                .discountStartDate(Date.valueOf(productsDto.getDiscountStartDate()))
-                .discountEndDate(Date.valueOf(productsDto.getDiscountEndDate()))
+                .registeredDate(convertToSqlDate(productsDto.getRegisteredDate()))
+                .discountStartDate(convertToSqlDate(productsDto.getDiscountStartDate()))
+                .discountEndDate(convertToSqlDate(productsDto.getDiscountEndDate()))
                 .categoryId(productsDto.getCategoryId())
                 .build();
+    }
+
+    private static Date convertToSqlDate(String dateString) {
+        return (dateString == null || dateString.trim().isEmpty()) ? null : Date.valueOf(dateString);
     }
 }
