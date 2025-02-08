@@ -47,7 +47,7 @@ public class CartController {
             cartService.addCart(id, productColorId, quantity, size);
             return ResponseEntity.ok(new ApiResponse(true, "상품이 장바구니에 추가되었습니다.", null));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new ApiResponse(false, e.getMessage(), null));
+            return ResponseEntity.badRequest().body(new ApiResponse(false, e.getMessage()+e.toString(), null));
         }
     }
 

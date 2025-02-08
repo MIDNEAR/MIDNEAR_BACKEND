@@ -96,10 +96,12 @@
         p.discount_start_date AS discountStartDate,
         p.discount_end_date AS discountEndDate,
         p.category_id AS categoryId
-        FROM products p
-        left JOIN product_colors pc ON p.product_id = pc.product_id
-        WHERE pc.sale_status = #{searchText} <!-- 판매상태에 맞는 조건 -->
-        <include refid="dateCondition" />
+        FROM product_colors pc
+        LEFT JOIN products p ON pc.product_id = p.product_id
+        WHERE <include refid="dateCondition" />
+        <if test="searchText != null">
+                AND pc.sale_status = #{searchText}
+        </if> <!-- 판매상태에 맞는 조건 -->
         GROUP BY p.product_id
         ORDER BY p.registered_date ${orderBy}
         LIMIT #{size} OFFSET #{offset}
