@@ -25,7 +25,7 @@ public class ProductService {
     private final ProductsMapper productMapper;
     private final ProductColorsMapper productColorsMapper;
     private final SizesMapper sizesMapper;
-    private static final int pageSize = 16;
+    private static final int pageSize = 4;
     private final ProductsMapper productsMapper;
     private final ProductImagesMapper productImagesMapper;
 

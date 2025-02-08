@@ -28,7 +28,8 @@ public class ReviewsService {
     private final ReviewImagesMapper reviewImagesMapper;
     private final UsersMapper usersMapper;
     private final S3Service s3Service;
-    private static final int pageSize = 16;
+    private static final int gPageSize = 16;
+    private static final int pageSize=4;
     @Transactional
     public void nonUserCreateReview(ReviewRequestDto reviewRequestDto) {
          createReview("", reviewRequestDto);
