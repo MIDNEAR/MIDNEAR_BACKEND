@@ -19,4 +19,5 @@ public interface ProductColorsMapper {
     String getColorById(Long colorId);
     void updateProductColor(ProductColorsVo productColorsVo);
     ProductColorsVo getProductColorById(Long productColorId);
+    int getColorsCountByProductId(Long productId);
 }
