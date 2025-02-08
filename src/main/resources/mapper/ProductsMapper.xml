@@ -279,27 +279,28 @@
     </select>
     <select id="getCategoryTotalAndPage">
         WITH RECURSIVE CategoryHierarchy AS (
-            SELECT
-                category_id
-            FROM
-                categories
-            WHERE
-                category_id = #{categoryId}
+            SELECT category_id
+            FROM categories
+            WHERE category_id = #{categoryId}
             UNION ALL
-            SELECT
-                c.category_id
-            FROM
-                categories c
-                    INNER JOIN
-                CategoryHierarchy ch ON c.parent_category_id = ch.category_id
+            SELECT c.category_id
+            FROM categories c
+                     INNER JOIN CategoryHierarchy ch ON c.parent_category_id = ch.category_id
         )
+        SELECT
+            SUM(total) AS total,
+            1 AS page
+        FROM (
+                 SELECT
+                     COUNT(pc.product_color_id) AS total
+                 FROM CategoryHierarchy ch
+                          LEFT JOIN products p ON ch.category_id = p.category_id
+                          LEFT JOIN product_colors pc ON p.product_id = pc.product_id
+                 WHERE (p.category_id IN (SELECT category_id FROM CategoryHierarchy) OR p.category_id IS NULL)
+                 GROUP BY ch.category_id
+             ) AS grouped_results;
 
-        SELECT COUNT(pc.product_color_id) as total, 1 AS page
-        FROM CategoryHierarchy ch
-                 LEFT JOIN products p ON ch.category_id = p.category_id
-                 LEFT JOIN product_colors pc ON p.product_id = pc.product_id
-        where p.category_id IN (SELECT category_id FROM CategoryHierarchy)
-        GROUP BY ch.category_id;
+
     </select>
 
 </mapper>
