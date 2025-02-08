@@ -368,10 +368,25 @@ public class ProductManagementService {
         // 색상 삭제
         if (deleteColorsIds != null && !deleteColorsIds.isEmpty()) {
             for (Long id : deleteColorsIds) {
+                // 1. 해당 id의 productId를 가져옴
+                Long productId = productColorsMapper.getProductIdByColor(id);
+
+                // 2. 색상 삭제
                 productColorsMapper.deleteColors(Collections.singletonList(id));
+
+                if (productId != null) {
+                    // 3. productId에 남아 있는 컬러가 있는지 확인
+                    int remainingColorsCount = productColorsMapper.getColorsCountByProductId(productId);
+
+                    // 4. 남아 있는 컬러가 없으면 product 삭제
+                    if (remainingColorsCount == 0) {
+                        productsMapper.deleteProducts(Collections.singletonList(productId));
+                    }
+                }
             }
         }
     }
+
 
     @Transactional
     public void deleteSizes(List<Long> deleteSizesIds) throws Exception {

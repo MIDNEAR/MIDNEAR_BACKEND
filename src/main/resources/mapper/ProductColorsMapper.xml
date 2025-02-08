@@ -82,4 +82,9 @@
         SELECT color FROM product_colors
         WHERE product_color_id= #{colorId}
     </select>
+    <select id="getColorsCountByProductId" resultType="int">
+        SELECT COUNT(*)
+        FROM product_colors
+        WHERE product_id = #{productId}
+    </select>
 </mapper>
