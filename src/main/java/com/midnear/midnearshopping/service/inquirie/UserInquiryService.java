@@ -20,7 +20,7 @@ import java.util.List;
 public class UserInquiryService {
     private final UserInquiryMapper userInquiryMapper;
     private final UsersMapper usersMapper;
-    private static final int pageSize = 2;
+    private static final int pageSize = 4;
 
     @Transactional
     public void createInquiry(String id, InquiryRequestDto requestDto) {
