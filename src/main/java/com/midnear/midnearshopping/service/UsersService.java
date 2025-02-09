@@ -5,6 +5,7 @@ import com.midnear.midnearshopping.domain.dto.users.UserInfoChangeDto;
 import com.midnear.midnearshopping.domain.dto.users.UsersDto;
 import com.midnear.midnearshopping.domain.vo.users.UsersVO;
 import com.midnear.midnearshopping.jwt.JwtUtil;
+import com.midnear.midnearshopping.mapper.cart.CartMapper;
 import com.midnear.midnearshopping.mapper.users.UsersMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -20,6 +21,7 @@ public class UsersService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JwtUtil jwtUtil;
     private final UsersMapper usersMapper;
+    private final CartMapper cartMapper;
 
     @Transactional
     public void signUp(UsersDto memberDto) {
@@ -30,7 +32,9 @@ public class UsersService {
             throw new IllegalArgumentException("이미 가입된 전화번호 입니다.");
         }
         memberDto.setPassword(bCryptPasswordEncoder.encode(memberDto.getPassword()));
-        memberMapper.createMember(UsersVO.toEntity(memberDto));
+        UsersVO vo = UsersVO.toEntity(memberDto);
+        memberMapper.createMember(vo);
+        cartMapper.createCart(vo.getUserId());
 
     }
 

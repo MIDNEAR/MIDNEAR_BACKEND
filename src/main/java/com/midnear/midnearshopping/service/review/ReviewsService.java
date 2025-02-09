@@ -92,7 +92,7 @@ public class ReviewsService {
         if(userId == null){
             throw new RuntimeException("존재하지 않는 유저입니다");
         }
-        if(userId !=1){
+        if(!id.equals("admin")){
             throw new RuntimeException("관리자만 리뷰에 댓글을 달 수 있습니다");
         }
         reviewsMapper.updateReviewComment(dto.getReviewId(), dto.getComment());
