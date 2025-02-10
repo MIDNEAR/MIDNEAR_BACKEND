@@ -7,4 +7,7 @@ import org.springframework.stereotype.Service;
 public interface ShippingManageService {
     // 배송비 업데이트
     void updateShipping(ShippingManageDTO ShippingManageDTO);
+
+    // 배송비 보기
+    ShippingManageDTO selectShippingFee();
 }
