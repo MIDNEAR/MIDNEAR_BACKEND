@@ -15,11 +15,16 @@
             cp.cart_products_id,
             p.product_name,
             p.price,
+            p.discount_rate,
+            p.discount_price,
+            p.discount_start_date,
+            p.discount_end_date,
             (SELECT pi.image_url
              FROM product_images pi
              WHERE pi.product_color_id = pc.product_color_id
              ORDER BY pi.image_created_date ASC
-                LIMIT 1) AS product_image
+                LIMIT 1) AS product_image,
+            pc.color
         FROM cart_products cp
             JOIN product_colors pc ON cp.product_color_id = pc.product_color_id
             JOIN products p ON pc.product_id = p.product_id
