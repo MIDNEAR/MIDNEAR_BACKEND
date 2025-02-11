@@ -1,5 +1,6 @@
 package com.midnear.midnearshopping.controller;
 
+import com.midnear.midnearshopping.domain.dto.policies_info.PolicyDto;
 import com.midnear.midnearshopping.domain.dto.Statistics.StatisticsDto;
 import com.midnear.midnearshopping.domain.dto.category.CreateCategoryDto;
 import com.midnear.midnearshopping.domain.dto.policies_info.PoliciesAndInfoDto;
@@ -172,8 +173,9 @@ public class StoreManagementController {
 
     //개인정보 처리 방침 관리 수정
     @PostMapping("/updatePrivacyPolicy")
-    public ResponseEntity<ApiResponse> updatePrivacyPolicy(@RequestBody String text) {
+    public ResponseEntity<ApiResponse> updatePrivacyPolicy(@RequestBody PolicyDto policyDto) {
         try {
+            String text = policyDto.getContent();
             PoliciesAndInfoDto policiesAndInfoDto = PoliciesAndInfoDto.builder()
                     .text(text)
                     .type("privacy_policy")
@@ -190,8 +192,9 @@ public class StoreManagementController {
 
     //이용 약관 관리 수정
     @PostMapping("/updateTermsOfService")
-    public ResponseEntity<ApiResponse> updateTermsOfService(@RequestBody String text) {
+    public ResponseEntity<ApiResponse> updateTermsOfService(@RequestBody PolicyDto policyDto) {
         try {
+            String text = policyDto.getContent();
             PoliciesAndInfoDto policiesAndInfoDto = PoliciesAndInfoDto.builder()
                     .text(text)
                     .type("terms_of_service")
@@ -208,8 +211,9 @@ public class StoreManagementController {
 
     // 주소 및 사업자 정보 관리 수정
     @PostMapping("/updateBusinessInfo")
-    public ResponseEntity<ApiResponse> updateBusinessInfo(@RequestBody String text) {
+    public ResponseEntity<ApiResponse> updateBusinessInfo(@RequestBody PolicyDto policyDto) {
         try {
+            String text = policyDto.getContent();
             PoliciesAndInfoDto policiesAndInfoDto = PoliciesAndInfoDto.builder()
                     .text(text)
                     .type("business_info")
@@ -226,8 +230,9 @@ public class StoreManagementController {
 
     //개인정보 수집 및 이용 목적 관리 수정
     @PostMapping("/updateDataUsage")
-    public ResponseEntity<ApiResponse> updateDataUsage(@RequestBody String text) {
+    public ResponseEntity<ApiResponse> updateDataUsage(@RequestBody PolicyDto policyDto) {
         try {
+            String text = policyDto.getContent();
             PoliciesAndInfoDto policiesAndInfoDto = PoliciesAndInfoDto.builder()
                     .text(text)
                     .type("data_usage")
