@@ -4,6 +4,7 @@ import com.midnear.midnearshopping.domain.dto.delivery.DeliveryAddrDto;
 import com.midnear.midnearshopping.domain.dto.delivery.UpdateDeliveryRequest;
 import com.midnear.midnearshopping.domain.vo.delivery.DeliveryAddressVO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -18,5 +19,9 @@ public interface DeliveryAddressMapper {
     void updateDeliveryRequest(UpdateDeliveryRequest updateDeliveryRequest);
     void deleteDeliveryAddress(int deliveryAddressId);
     BigDecimal getDeliveryCharge(String location);
+    void updateDefault(@Param("deliveryAddressId") int deliveryAddressId, @Param("defaultAddressStatus") int defaultAddressStatus);
+    int getDefaultAddrId(Long userId);
+    int countAddr(Long userId);
+
 }
 
