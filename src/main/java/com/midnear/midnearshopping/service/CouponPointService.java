@@ -36,19 +36,19 @@ public class CouponPointService {
 
     @Transactional
     public void grantPointsToAll(PointDto pointDto) {
-        // 포인트 내역 저장
-        PointVo pointVo = PointVo.builder()
-                .amount(pointDto.getAmount())
-                .reason(pointDto.getReason())
-                .reviewId(null)
-                .userId(pointDto.getUserId())
-                .build();
-        pointMapper.grantPoints(pointVo);
-
         // 모든 사용자에게 포인트 지급
         List<String> userIds = usersMapper.getAllId();
         for (String id : userIds) {
             usersMapper.addPointsToUser(id, pointDto.getAmount());
+            Long userId = usersMapper.getUserIdById(id);
+            // 포인트 내역 저장
+            PointVo pointVo = PointVo.builder()
+                    .amount(pointDto.getAmount())
+                    .reason(pointDto.getReason())
+                    .reviewId(null)
+                    .userId(userId)
+                    .build();
+            pointMapper.grantPoints(pointVo);
         }
     }
 
