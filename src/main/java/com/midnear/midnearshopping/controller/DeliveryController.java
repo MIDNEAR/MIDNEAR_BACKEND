@@ -92,6 +92,17 @@ public class DeliveryController {
             return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(false, ex.getMessage(), null));
         }
     }
+    @PatchMapping("/setDefault")
+    public ResponseEntity<?> updateDeliveryRequest(@RequestParam int deliveryAddrId) {
+        try {
+            deliveryService.updateDefault(deliveryAddrId);
+            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(true, "기본 베송지로 설정", null));
+        } catch (IllegalArgumentException ex){
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, ex.getMessage(), null));
+        } catch (Exception ex){
+            return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(false, ex.getMessage(), null));
+        }
+    }
     @DeleteMapping
     public ResponseEntity<?> deleteAddr(@RequestParam Integer addrId) {
         try {

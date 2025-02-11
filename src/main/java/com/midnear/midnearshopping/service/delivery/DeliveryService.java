@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static io.lettuce.core.KillArgs.Builder.id;
+
 @Service
 @RequiredArgsConstructor
 public class DeliveryService {
@@ -29,6 +31,9 @@ public class DeliveryService {
             throw new UsernameNotFoundException("존재하지 않는 유저입니다.");
         }
         deliveryAddressVO.setUserId(userId);
+        if(deliveryAddrMapper.countAddr(userId)==0 && deliveryAddressVO.getDefaultAddressStatus()==0){
+            deliveryAddressVO.setDefaultAddressStatus(1);
+        }
         deliveryAddrMapper.createDeliveryAddress(deliveryAddressVO);
     }
     //유저가 등록한 모든 주소 가져옴
@@ -46,6 +51,20 @@ public class DeliveryService {
         }
         return deliveryAddrMapper.getDefaultAddr(userId);
     }
+
+
+
+    public void updateDefault(int deliveryId) {
+        DeliveryAddrDto addr = deliveryAddrMapper.getDeliveryAddressById(deliveryId);
+        Integer oldDefault = deliveryAddrMapper.getDefaultAddrId(addr.getUserId());
+        deliveryAddrMapper.updateDefault(deliveryId, 1);
+        deliveryAddrMapper.updateDefault(oldDefault, 0);
+    }
+
+
+
+
+
     public DeliveryAddrDto getDeliveryAddr(int deliveryId) {
         DeliveryAddrDto addr = deliveryAddrMapper.getDeliveryAddressById(deliveryId);
         if(addr == null) {
