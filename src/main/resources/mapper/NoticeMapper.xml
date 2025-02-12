@@ -107,6 +107,9 @@
         </if>
         LIMIT #{size} OFFSET #{offset}
     </select>
+    <select id="getCount">
+        SELECT count(*) FROM notices
+    </select>
     <sql id="dateCondition">
         <choose>
             <when test="dateRange == '오늘'">

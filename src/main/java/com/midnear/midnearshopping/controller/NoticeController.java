@@ -101,4 +101,17 @@ public class NoticeController {
                     .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
         }
     }
+
+    @GetMapping("/totalPageNum")
+    public ResponseEntity<ApiResponse> getTotalCount() {
+        try {
+            int size = noticeService.getTotalCount();
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse(true, "전체 공지사항 개수 조회 성공", size));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
 }
