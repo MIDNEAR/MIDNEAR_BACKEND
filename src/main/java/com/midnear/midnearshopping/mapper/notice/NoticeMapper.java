@@ -21,4 +21,5 @@ public interface NoticeMapper {
     NoticeVo findNextFixedNotice(Long noticeId);
     NoticeVo findNextNotice(Long noticeId);
     List<NoticeListDto> getNoticesPaging(int offset, int size, String dateRange, String searchText);
+    int getCount();
 }
