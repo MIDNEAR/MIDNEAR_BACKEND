@@ -34,7 +34,7 @@ public class DeliveryService {
         if(deliveryAddrMapper.countAddr(userId)==0 && deliveryAddressVO.getDefaultAddressStatus()==0){
             deliveryAddressVO.setDefaultAddressStatus(1);
         }
-        if(deliveryAddressVO.getDefaultAddressStatus()==1){
+        if(deliveryAddrMapper.countAddr(userId)!=0 &&deliveryAddressVO.getDefaultAddressStatus()==1){
             Integer oldDefault = deliveryAddrMapper.getDefaultAddrId(userId);
             deliveryAddrMapper.updateDefault(oldDefault, 0);
         }
