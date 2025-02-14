@@ -83,7 +83,12 @@ public class DeliveryService {
        if(updateAddr == null) {
            throw new IllegalArgumentException("존재하지 않는 배송지입니다.");
        }
-       deliveryAddrMapper.updateDeliveryAddress(DeliveryAddressVO.toEntity(deliveryAddrUpdateDto));
+        if(deliveryAddrUpdateDto.getDefaultAddressStatus()==1){
+            int oldDefault = deliveryAddrMapper.getDefaultAddrId(deliveryAddrUpdateDto.getUserId());
+            deliveryAddrMapper.updateDefault(deliveryAddrUpdateDto.getDeliveryAddressId(), 1);
+            deliveryAddrMapper.updateDefault(oldDefault, 0);
+        }
+        deliveryAddrMapper.updateDeliveryAddress(DeliveryAddressVO.toEntity(deliveryAddrUpdateDto));
     }
     // 배송 메세지 수정
     @Transactional
