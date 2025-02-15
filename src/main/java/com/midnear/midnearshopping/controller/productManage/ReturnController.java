@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,10 +25,20 @@ public class ReturnController {
 
     private final ReturnService returnService;
 
+    private boolean isAdmin() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info(authentication.getName());
+        return authentication != null && "admin".equals(authentication.getName());
+    }
+
     @GetMapping("/getAll")
     @Transactional
     public ResponseEntity<ApiResponse> sellectAll(@RequestParam(value = "pageNumber", defaultValue = "1") int pageNumber) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             //      페이징 번호에 맞는 List
             List<ReturnDTO> returns = returnService.selectAll(pageNumber);
             //      총 게시물 수
@@ -56,6 +68,10 @@ public class ReturnController {
     @Transactional
     public ResponseEntity<ApiResponse> filterSearch(@ModelAttribute ParamDTO ParamDTO) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             //      페이징 번호에 맞는 List
             List<ReturnDTO> returns = returnService.filterSearch(ParamDTO);
             //      총 게시물 수
@@ -84,6 +100,10 @@ public class ReturnController {
     @PutMapping("/confirmReturn")
     public ResponseEntity<ApiResponse> confirmReturn(@RequestParam List<Long> returnId) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             returnService.confirmReturn(returnId);
             // 200 OK 응답으로 JSON 반환
             return ResponseEntity.status(HttpStatus.OK)
@@ -99,6 +119,10 @@ public class ReturnController {
     @PutMapping("/denayReturn")
     public ResponseEntity<ApiResponse> denayReturn(@RequestBody ReturnParamDTO returnParamDTO) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             returnService.denayReturn(returnParamDTO);
             // 200 OK 응답으로 JSON 반환
             return ResponseEntity.status(HttpStatus.OK)
@@ -114,6 +138,10 @@ public class ReturnController {
     @PostMapping ("/returnToExchange")
     public ResponseEntity<ApiResponse> returnToExchange(@RequestBody List<Long> returnId) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             returnService.updateEx(returnId);
             // 200 OK 응답으로 JSON 반환
             return ResponseEntity.status(HttpStatus.OK)
@@ -129,6 +157,10 @@ public class ReturnController {
     @PutMapping("/Invoice")
     public ResponseEntity<ApiResponse> filterSearch(@RequestBody InvoiceInsertDTO invoiceInsertDTO) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             Long courierNumber = returnService.selectCarrierName(invoiceInsertDTO.getCourier());
 
             if (courierNumber == null) {
@@ -151,6 +183,10 @@ public class ReturnController {
     @PutMapping("/pickupProduct")
     public ResponseEntity<ApiResponse> pickupProduct(@RequestBody List<Long> returnId) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             returnService.pickupProduct(returnId);
             // 200 OK 응답으로 JSON 반환
             return ResponseEntity.status(HttpStatus.OK)

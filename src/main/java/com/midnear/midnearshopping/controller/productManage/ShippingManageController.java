@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,9 +20,20 @@ public class ShippingManageController {
 
     private final ShippingManageService shippingManageService;
 
+    private boolean isAdmin() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info(authentication.getName());
+        return authentication != null && "admin".equals(authentication.getName());
+    }
+
+
     @PutMapping("/updateShipping")
     public ResponseEntity<ApiResponse> updateShipping(@RequestBody ShippingManageDTO shippingManageDTO) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             shippingManageService.updateShipping(shippingManageDTO);
             // 200 OK 응답으로 JSON 반환
             return ResponseEntity.status(HttpStatus.OK)
@@ -36,6 +49,10 @@ public class ShippingManageController {
     @GetMapping("/selectShippingFee")
     public ResponseEntity<ApiResponse> selectShippingFee() {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             ShippingManageDTO shippingManageDTO = shippingManageService.selectShippingFee();
             // 200 OK 응답으로 JSON 반환
             return ResponseEntity.status(HttpStatus.OK)
@@ -52,6 +69,10 @@ public class ShippingManageController {
     @GetMapping("/selectFreeBasicFee")
     public ResponseEntity<ApiResponse> FreeBasicFee() {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             FreeBasicConditionDTO freeBasicConditionDTO = shippingManageService.selectFreeBasicFee();
             // 200 OK 응답으로 JSON 반환
             return ResponseEntity.status(HttpStatus.OK)

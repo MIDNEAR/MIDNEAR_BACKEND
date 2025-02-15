@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -20,10 +22,21 @@ import java.util.Map;
 public class DisruptiveController {
     private final DisruptiveService disruptiveService;
 
+
+    private boolean isAdmin() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info(authentication.getName());
+        return authentication != null && "admin".equals(authentication.getName());
+    }
+
     //  아이디 검색
     @GetMapping("/searchId/{id}")
     public ResponseEntity<ApiResponse> getInquirie(@PathVariable("id") String id) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             List<String> userID = disruptiveService.searchId(id);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "아이디 불러오기 성공.", userID));
@@ -37,6 +50,10 @@ public class DisruptiveController {
     @PostMapping("/insertDisrupt")
     public ResponseEntity<ApiResponse> insertDisruptive(@RequestBody disruptiveDTO disruptiveDTO) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             disruptiveService.insertDisruptive(disruptiveDTO);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "제한 아이디 등록 성공.", null));
@@ -50,6 +67,10 @@ public class DisruptiveController {
     @GetMapping("/getDisruptList")
     public ResponseEntity<ApiResponse> list(@RequestParam(value = "pageNumber", defaultValue = "1") int pageNumber) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             //      페이징 번호에 맞는 List
             List<disruptiveListDTO> disruptive = disruptiveService.SelectDisruptlist(pageNumber);
 
@@ -80,6 +101,10 @@ public class DisruptiveController {
     public ResponseEntity<ApiResponse> getDisruptSearchList(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "dateFilter") String dateFilter, @RequestParam(value = "orderBy") String orderBy, @RequestParam(value = "search") String search, @RequestParam(value = "searchValue") String searchValue) {
 
             try {
+                if (!isAdmin()) {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                            .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+                }
                 //      페이징 번호에 맞는  List
                 List<disruptiveListDTO> disruptive = disruptiveService.disruptiveSearch(pageNumber, dateFilter, orderBy, search, searchValue);
 
@@ -108,6 +133,10 @@ public class DisruptiveController {
     @DeleteMapping("/deleteDisruptSearchList")
     public ResponseEntity<ApiResponse> deleteDisrupt(@RequestBody List<Integer> disruptiveCustomerId){
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             disruptiveService.deleteDisrupt(disruptiveCustomerId);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "성공적으로 삭제되었습니다.", null));

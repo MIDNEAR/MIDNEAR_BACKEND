@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import java.sql.Date;
@@ -24,10 +26,21 @@ public class InquirieController {
 
     private final InquirieService inquirieService;
 
+
+    private boolean isAdmin() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info(authentication.getName());
+        return authentication != null && "admin".equals(authentication.getName());
+    }
+
     //  문의글 하나 띄우기
     @GetMapping("/getInquirie")
     public ResponseEntity<ApiResponse> getInquirie(@RequestParam("inquiryId") Long inquiryId){
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             InquiriesDTO inquiries = inquirieService.selectInquirie(inquiryId);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "문의글 불러오기 성공.", inquiries));
@@ -44,6 +57,10 @@ public class InquirieController {
     @Transactional
     public ResponseEntity<ApiResponse> postInquirieComment(@RequestBody Inquiry_commentsDTO inquiryCommentsDTO){
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             Date today = new Date(System.currentTimeMillis());
             inquiryCommentsDTO.setReplyDate(today);
             inquirieService.insertInquirieComment(inquiryCommentsDTO);
@@ -61,6 +78,10 @@ public class InquirieController {
     @PutMapping("/putInquirieComment")
     public ResponseEntity<ApiResponse> putInquirieComment(@RequestBody Inquiry_commentsDTO inquiryCommentsDTO){
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             Date today = new Date(System.currentTimeMillis());
             inquiryCommentsDTO.setReplyDate(today);
             inquirieService.updateInquiryComment(inquiryCommentsDTO);
@@ -77,6 +98,10 @@ public class InquirieController {
     @GetMapping("/getInquiryList")
     public ResponseEntity<ApiResponse> list(@RequestParam(value = "pageNumber", defaultValue = "1") int pageNumber) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             //      페이징 번호에 맞는 문의글 List
             List<InquiriesListDTO> inquiryList = inquirieService.SelectInquirylist(pageNumber);
 
@@ -106,6 +131,10 @@ public class InquirieController {
     @GetMapping("/getInquiryReplyList")
     public ResponseEntity<ApiResponse> Inquirylist(@RequestParam(value = "pageNumber", defaultValue = "1") int pageNumber, @RequestParam(value = "hasReply")  String hasReply) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             //      페이징 번호에 맞는 문의글 List
             List<InquiriesListDTO> inquiryList = inquirieService.SelectReplyInquirylist(pageNumber,hasReply);
 
@@ -134,6 +163,10 @@ public class InquirieController {
     @GetMapping("/getInquirySearchList")
     public ResponseEntity<ApiResponse> SearchInquiries(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "search")String search, @RequestParam(value = "dateFilter")  String dateFilter, @RequestParam(value = "orderBy")String orderBy, @RequestParam(value = "searchValue")String searchValue) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             //      페이징 번호에 맞는 문의글 List
             List<InquiriesListDTO> inquiryList = inquirieService.SearchInquiries(pageNumber,search,dateFilter,orderBy,searchValue);
 
@@ -162,6 +195,10 @@ public class InquirieController {
     @DeleteMapping("/deleteInquiryList")
     public ResponseEntity<ApiResponse> deleteInquiriy( @RequestBody List<Integer> inquiryId){
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             inquirieService.deleteInquiriy(inquiryId);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "문의글이 성공적으로 삭제되었습니다..", null));

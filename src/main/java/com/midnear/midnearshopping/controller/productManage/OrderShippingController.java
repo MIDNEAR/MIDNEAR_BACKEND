@@ -19,6 +19,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,11 +35,24 @@ public class OrderShippingController {
 
     private final OrderShippingService orderShippingService;
 
+    private boolean isAdmin() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info(authentication.getName());
+        return authentication != null && "admin".equals(authentication.getName());
+    }
+
+
+
     //  주문 내역 최신순 조회
     @GetMapping("/getAll")
     @Transactional
     public ResponseEntity<ApiResponse> selectAll(@RequestParam(value = "pageNumber", defaultValue = "1") int pageNumber) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
+
             //      페이징 번호에 맞는 List
             List<OrderShippingDTO> orderShipping = orderShippingService.selectAll(pageNumber);
             //      총 게시물 수
@@ -66,6 +81,10 @@ public class OrderShippingController {
     @GetMapping("/filterSearch")
     public ResponseEntity<ApiResponse> filterSearch(@ModelAttribute @Valid ParamDTO ParamDTO) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
 
             //      페이징 번호에 맞는 List
             List<OrderShippingDTO> orderShipping = orderShippingService.filterSearch(ParamDTO);
@@ -96,6 +115,10 @@ public class OrderShippingController {
     @PostMapping("/orderConfirmation")
     public ResponseEntity<ApiResponse> filterSearch(@RequestBody List<Long> orderProductId) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             orderShippingService.updateConfirm(orderProductId);
             // 200 OK 응답으로 JSON 반환
             return ResponseEntity.status(HttpStatus.OK)
@@ -111,6 +134,10 @@ public class OrderShippingController {
     @PutMapping("/Invoice")
     public ResponseEntity<ApiResponse> filterSearch(@RequestBody InvoiceInsertDTO invoiceInsertDTO) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             Long courierNumber = orderShippingService.selectCarrierName(invoiceInsertDTO.getCourier());
 
             if (courierNumber == null) {
@@ -134,6 +161,10 @@ public class OrderShippingController {
     @PutMapping("/delayShipping")
     public ResponseEntity<ApiResponse> delayShipping(@RequestBody List<Long> orderProductId) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             orderShippingService.delaySipping(orderProductId);
             // 200 OK 응답으로 JSON 반환
             return ResponseEntity.status(HttpStatus.OK)
@@ -149,6 +180,10 @@ public class OrderShippingController {
     @PostMapping("/directCancel")
     public ResponseEntity<ApiResponse> directCancel(@RequestBody List<Long> orderProductId) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             List<Long> orderCancelList = orderShippingService.selectCancelProduct(orderProductId);
             // 조회된 취소 완료된 상품이 있는지 검사
             for (Long id : orderProductId) {
@@ -172,6 +207,10 @@ public class OrderShippingController {
     // 총수량 엑셀 다운로드
     @GetMapping("/exelDownload")
     public ResponseEntity<?> excelDownload(@RequestParam("orderProductId") List<Long> orderProductId) throws IOException {
+        if (!isAdmin()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+        }
         try (Workbook wb = new XSSFWorkbook();
              ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             Sheet sheet = wb.createSheet("주문서");
@@ -229,6 +268,10 @@ public class OrderShippingController {
     @GetMapping("/selectOrderRecipt")
     public ResponseEntity<ApiResponse> selectOrderRecipt(@RequestParam List<Long> orderProductId) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             List<OrderReciptDTO> orderRecipt = orderShippingService.selectOrderRecipt(orderProductId);
             // 200 OK 응답으로 JSON 반환
             return ResponseEntity.status(HttpStatus.OK)
@@ -243,6 +286,10 @@ public class OrderShippingController {
     // 총수량 엑셀 다운로드
     @GetMapping("/AllExel")
     public ResponseEntity<?> AllExel(@RequestParam("orderProductId") List<Long> orderProductId) throws IOException {
+        if (!isAdmin()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+        }
         try (Workbook wb = new XSSFWorkbook();
              ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             Sheet sheet = wb.createSheet("전체 주문서");
