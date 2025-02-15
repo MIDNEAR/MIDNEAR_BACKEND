@@ -69,10 +69,6 @@ public class ShippingManageController {
     @GetMapping("/selectFreeBasicFee")
     public ResponseEntity<ApiResponse> FreeBasicFee() {
         try {
-            if (!isAdmin()) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
-            }
             FreeBasicConditionDTO freeBasicConditionDTO = shippingManageService.selectFreeBasicFee();
             // 200 OK 응답으로 JSON 반환
             return ResponseEntity.status(HttpStatus.OK)
