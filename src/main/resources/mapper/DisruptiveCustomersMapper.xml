@@ -14,7 +14,7 @@
 <!-- 제한 id 사유와 함께 등록 -->
     <insert id="insertDisruptive">
         insert into disruptive_customers(restriction_reason,user_id,created_at)
-        select #{restrictionReason},u.user_id,NOW()
+        select #{restrictionReason},u.user_id, NOW()
         from users u
         where u.id = #{id};
     </insert>

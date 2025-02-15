@@ -122,7 +122,7 @@
     </delete>
 
     <!-- 매거진 등록 -->
-    <insert id="insertMagazine" useGeneratedKeys="true" keyProperty="magazineId">
+    <insert id="insertMagazine">
         insert into magazines (title, content, created_date, view_count ,main_image)
         values ( #{title}, #{content}, NOW(),#{viewCount}, #{mainImage})
     </insert>

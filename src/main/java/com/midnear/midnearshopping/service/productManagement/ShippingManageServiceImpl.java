@@ -14,4 +14,9 @@ public class ShippingManageServiceImpl implements ShippingManageService {
     public void updateShipping(ShippingManageDTO ShippingManageDTO) {
         shippingManagementMapper.updateShipping(ShippingManageDTO);
     }
+
+    @Override
+    public ShippingManageDTO selectShippingFee() {
+        return shippingManagementMapper.selectShippingFee();
+    }
 }

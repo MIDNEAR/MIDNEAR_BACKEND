@@ -84,4 +84,9 @@
         WHERE e.exchange_id= #{exchangeId}
     </update>
 
+    <select id="selectShippingFee">
+        select *
+        from delivery_charge
+    </select>
+
 </mapper>
