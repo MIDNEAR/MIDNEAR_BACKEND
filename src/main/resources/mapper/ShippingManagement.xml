@@ -84,8 +84,15 @@
         WHERE e.exchange_id= #{exchangeId}
     </update>
 
+    <!-- 배송비 띄우기   -->
     <select id="selectShippingFee">
         select *
+        from delivery_charge
+    </select>
+
+    <!-- 배송비, 무료배송비 띄우기  -->
+    <select id="selectFreeBasicFee">
+        select basic_delivery_cost, free_delivery_condition
         from delivery_charge
     </select>
 
