@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,12 +25,23 @@ import java.util.Map;
 public class OrderController {
     private final OrderProductService orderProductService;
 
+    private boolean isAdmin() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info(authentication.getName());
+        return authentication != null && "admin".equals(authentication.getName());
+    }
 
-//  주문정보 최신순 조회
+
+
+    //  주문정보 최신순 조회
     @GetMapping("/getAll")
     @Transactional
     public ResponseEntity<ApiResponse> selectAll(@RequestParam(value = "pageNumber", defaultValue = "1") int pageNumber){
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             //      페이징 번호에 맞는 List
             List<OrderDTO> orders = orderProductService.selectAll(pageNumber);
 
@@ -56,7 +69,10 @@ public class OrderController {
     //  주문정보 필터링 조회
     @GetMapping("/filterSearch")
     public ResponseEntity<ApiResponse> filterSearch(@ModelAttribute @Valid ParamDTO OrderParamDTO){
-
+        if (!isAdmin()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+        }
 
             //      페이징 번호에 맞는 List
             List<OrderDTO> orders = orderProductService.filterSearch(OrderParamDTO);

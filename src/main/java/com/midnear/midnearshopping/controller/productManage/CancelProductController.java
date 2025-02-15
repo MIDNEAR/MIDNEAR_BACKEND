@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,10 +27,22 @@ public class CancelProductController {
 
     private final CancelProductService cancelProductService;
 
+
+    private boolean isAdmin() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info(authentication.getName());
+        return authentication != null && "admin".equals(authentication.getName());
+    }
+
     @GetMapping("/selectAll")
     @Transactional
     public ResponseEntity<ApiResponse> selectAll(@RequestParam(value = "pageNumber", defaultValue = "1") int pageNumber) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
+
             //      페이징 번호에 맞는 List
             List<CancelProductDTO> cancelProduct = cancelProductService.selectAll(pageNumber);
             //      총 게시물 수
@@ -58,6 +72,10 @@ public class CancelProductController {
     @Transactional
     public ResponseEntity<ApiResponse> filterSearch(@ModelAttribute @Valid ParamDTO ParamDTO) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             //      페이징 번호에 맞는 List
             List<CancelProductDTO> cancelProduct = cancelProductService.filterSearch(ParamDTO);
             //      총 게시물 수
@@ -86,6 +104,11 @@ public class CancelProductController {
     @PutMapping("/confirmCancel")
     public ResponseEntity<ApiResponse> confirmCancel(@RequestBody List<Long> canceledProductId) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
+
             cancelProductService.confirmCancel(canceledProductId);
             // 200 OK 응답으로 JSON 반환
             return ResponseEntity.status(HttpStatus.OK)
@@ -101,6 +124,10 @@ public class CancelProductController {
     @PutMapping("/denayCancel")
     public ResponseEntity<ApiResponse> denayCancel(@RequestBody List<Long> canceledProductId) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             cancelProductService.denayCancel(canceledProductId);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "성공적으로 거부되었습니다.", null));

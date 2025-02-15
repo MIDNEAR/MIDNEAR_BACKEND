@@ -2,6 +2,7 @@ package com.midnear.midnearshopping.mapper.productManagement;
 
 import com.midnear.midnearshopping.controller.productManage.ReturnController;
 import com.midnear.midnearshopping.domain.dto.delivery.DeliveryInfoDTO;
+import com.midnear.midnearshopping.domain.dto.delivery.FreeBasicConditionDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.ShippingManageDTO;
 import com.midnear.midnearshopping.domain.vo.delivery.DeliveryInfoVO;
 import org.apache.ibatis.annotations.Mapper;
@@ -36,4 +37,6 @@ public interface ShippingManagementMapper {
 
     // 배송비 정보 가져오기
     ShippingManageDTO selectShippingFee();
+
+    FreeBasicConditionDTO selectFreeBasicFee();
 }

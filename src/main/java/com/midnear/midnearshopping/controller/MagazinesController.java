@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,10 +25,20 @@ import java.util.Map;
 public class MagazinesController {
     private final MagazinesService magazinesService;
 
+    private boolean isAdmin() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info(authentication.getName());
+        return authentication != null && "admin".equals(authentication.getName());
+    }
+
     //  매거진 List 전체 / 최신순 조회
     @GetMapping("/getMagazineList")
     public ResponseEntity<ApiResponse> getMagazineList(@RequestParam(value = "pageNumber", defaultValue = "1") int pageNumber) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             //      페이징 번호에 맞는 문의글 List
             List<MagazinesListDTO> magazinesList = magazinesService.selectMagazineList(pageNumber);
 
@@ -57,6 +69,10 @@ public class MagazinesController {
     public ResponseEntity<ApiResponse> getMagazineSearchList(@RequestParam(value = "page", defaultValue = "1") int pageNumber, @RequestParam(value = "dateFilter") String dateFilter, @RequestParam(value = "orderBy") String orderBy, @RequestParam(value = "search") String search, @RequestParam(value = "searchValue") String searchValue) {
 
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             //      페이징 번호에 맞는  List
             List<MagazinesListDTO> magazineList = magazinesService.magazineSearch(pageNumber, dateFilter, orderBy, search, searchValue);
 
@@ -86,6 +102,10 @@ public class MagazinesController {
     @DeleteMapping("/deleteMagazines")
     public ResponseEntity<ApiResponse> deleteMagazine(@RequestBody List<Long> magazineId){
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             magazinesService.deleteMagazine(magazineId);
             // 200 OK 응답으로 JSON 반환
             return ResponseEntity.status(HttpStatus.OK)
@@ -101,6 +121,10 @@ public class MagazinesController {
     @PostMapping(value = "/insertMagazine")
     public ResponseEntity<ApiResponse> insertMagazine(@ModelAttribute  MagazinesDTO magazinesDTO){
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             magazinesService.insertMagazine(magazinesDTO);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "작성이 완료되었습니다.", null));
@@ -115,6 +139,10 @@ public class MagazinesController {
     @GetMapping("/selectMagazine/{magazineId}")
     public ResponseEntity<ApiResponse> selectMagazine(@PathVariable("magazineId")  Long magazineId){
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             MagazinesDTO magazines =  magazinesService.selectMagazine(magazineId);
             List<MagazineImagesDTO> magazineImage= magazinesService.selectMagazineImage(magazineId);
             Map<String, Object> response = new HashMap<>();
@@ -135,6 +163,10 @@ public class MagazinesController {
     @PutMapping("/updateMagazine")
     public ResponseEntity<ApiResponse> updateMagazine(@ModelAttribute  MagazinesDTO magazinesDTO){
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             magazinesService.updateMagazine(magazinesDTO);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "작성이 완료되었습니다.", null));

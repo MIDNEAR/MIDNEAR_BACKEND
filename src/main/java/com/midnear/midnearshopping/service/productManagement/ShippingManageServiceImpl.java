@@ -1,5 +1,6 @@
 package com.midnear.midnearshopping.service.productManagement;
 
+import com.midnear.midnearshopping.domain.dto.delivery.FreeBasicConditionDTO;
 import com.midnear.midnearshopping.domain.dto.productManagement.ShippingManageDTO;
 import com.midnear.midnearshopping.mapper.productManagement.ShippingManagementMapper;
 import lombok.RequiredArgsConstructor;
@@ -18,5 +19,10 @@ public class ShippingManageServiceImpl implements ShippingManageService {
     @Override
     public ShippingManageDTO selectShippingFee() {
         return shippingManagementMapper.selectShippingFee();
+    }
+
+    @Override
+    public FreeBasicConditionDTO selectFreeBasicFee() {
+        return shippingManagementMapper.selectFreeBasicFee();
     }
 }
