@@ -32,7 +32,7 @@ public class SecurityConfig {
             "/productManagement/**" , "/notice/**", "/storeManagement/**", "/coupon/**", "/point/**", "/setReviewPointAmount"
             ,"/actuator/health","/confirmPurchase/**", "/userMagazine/**", "/orders/getNonUser", "/orders/nonUserCreate",
             "/orders/forCancel", "/review/**", "/orders/getDeliveryCharge", "/noticeManagement/**","/review/nonUserCreat",
-            "/delivery/getInvoiceNumber", "/claim/**","/orders/getIsFree/**"
+            "/delivery/getInvoiceNumber", "/claim/**","/orders/getIsFree/**","/shippingManage/selectFreeBasicFee"
 
     }; //더 열어둘 엔드포인트 여기에 추가
 
