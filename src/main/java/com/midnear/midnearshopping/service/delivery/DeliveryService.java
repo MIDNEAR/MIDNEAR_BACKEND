@@ -34,6 +34,10 @@ public class DeliveryService {
         if(deliveryAddrMapper.countAddr(userId)==0 && deliveryAddressVO.getDefaultAddressStatus()==0){
             deliveryAddressVO.setDefaultAddressStatus(1);
         }
+        if(deliveryAddrMapper.countAddr(userId)!=0 &&deliveryAddressVO.getDefaultAddressStatus()==1){
+            Integer oldDefault = deliveryAddrMapper.getDefaultAddrId(userId);
+            deliveryAddrMapper.updateDefault(oldDefault, 0);
+        }
         deliveryAddrMapper.createDeliveryAddress(deliveryAddressVO);
     }
     //유저가 등록한 모든 주소 가져옴
@@ -79,7 +83,12 @@ public class DeliveryService {
        if(updateAddr == null) {
            throw new IllegalArgumentException("존재하지 않는 배송지입니다.");
        }
-       deliveryAddrMapper.updateDeliveryAddress(DeliveryAddressVO.toEntity(deliveryAddrUpdateDto));
+        if(deliveryAddrUpdateDto.getDefaultAddressStatus()==1){
+            int oldDefault = deliveryAddrMapper.getDefaultAddrId(deliveryAddrUpdateDto.getUserId());
+            deliveryAddrMapper.updateDefault(deliveryAddrUpdateDto.getDeliveryAddressId(), 1);
+            deliveryAddrMapper.updateDefault(oldDefault, 0);
+        }
+        deliveryAddrMapper.updateDeliveryAddress(DeliveryAddressVO.toEntity(deliveryAddrUpdateDto));
     }
     // 배송 메세지 수정
     @Transactional
@@ -96,6 +105,9 @@ public class DeliveryService {
         DeliveryAddrDto updateAddr = deliveryAddrMapper.getDeliveryAddressById(deliveryId);
         if(updateAddr == null) {
             throw new IllegalArgumentException("존재하지 않는 배송지입니다.");
+        }
+        if (updateAddr.getDefaultAddressStatus() ==1){
+            throw new IllegalArgumentException("기본 배송지는 삭제할 수 없습니다.");
         }
         deliveryAddrMapper.deleteDeliveryAddress(deliveryId);
     }

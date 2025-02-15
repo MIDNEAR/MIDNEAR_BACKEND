@@ -86,4 +86,8 @@ public class NoticeService {
     public List<PopupDto> getNoticePopupImages() {
         return noticeImagesMapper.getPopupImages();
     }
+
+    public int getTotalCount() {
+        return noticeMapper.getCount();
+    }
 }
