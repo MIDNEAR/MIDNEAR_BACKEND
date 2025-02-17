@@ -105,7 +105,12 @@ public class ReviewsService {
         dto.setImageReviewCount(reviewsMapper.getImageReviewCount(productName));
         dto.setReviewCount(reviewsMapper.getReviewCount(productName));
         dto.setAllReviewImages(reviewsMapper.getAllReviewImages(productName));
-        dto.setReviewList(reviewsMapper.getReviewList(productName, offset, pageSize));
+        List<ReviewListDto> reviews = reviewsMapper.getReviewList(productName, offset, pageSize);
+        for(ReviewListDto review : reviews){
+            List<String> urls = reviewImagesMapper.getReviewImagesById(review.getReviewId());
+            review.setImagesPerReview(urls);
+        }
+        dto.setReviewList(reviews);
         return dto;
     }
     public ProductReviewDto getProductReviewsWithoutPaging(String productName) {
