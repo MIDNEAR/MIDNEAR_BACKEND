@@ -5,9 +5,12 @@ import com.midnear.midnearshopping.exception.ApiResponse;
 import com.midnear.midnearshopping.service.notice.NoticeManagementService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.javassist.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 
@@ -17,14 +20,25 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/noticeManagement")
+@Slf4j
 public class NoticeManagementController {
     private final NoticeManagementService noticeManagementService;
+
+    private boolean isAdmin() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info(authentication.getName());
+        return authentication != null && "admin".equals(authentication.getName());
+    }
 
     // 공지사항 작성
     @PostMapping("/write")
     public ResponseEntity<ApiResponse> writeNotice(
             @ModelAttribute @Valid NoticeDto noticeDto) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             noticeManagementService.writeNotice(noticeDto);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "작성이 완료되었습니다.", null));
@@ -38,6 +52,10 @@ public class NoticeManagementController {
     @GetMapping("/modify/{noticeId}")
     public ResponseEntity<ApiResponse> getNotice(@PathVariable("noticeId")  Long noticeId) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             NoticeDto notice = noticeManagementService.getNotice(noticeId);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "수정할 공지사항 불러오기 성공.", notice));
@@ -52,6 +70,10 @@ public class NoticeManagementController {
     @PutMapping("/modify")
     public ResponseEntity<ApiResponse> modifyNotice(@ModelAttribute @Valid NoticeDto noticeDto) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             noticeManagementService.modifyNotice(noticeDto);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "수정이 완료되었습니다.", null));
@@ -71,6 +93,10 @@ public class NoticeManagementController {
     @DeleteMapping("/delete")
     public ResponseEntity<ApiResponse> deleteNotices(@RequestBody List<Long> deleteList) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             noticeManagementService.deleteNotices(deleteList);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "삭제가 완료되었습니다.", null));
@@ -84,6 +110,10 @@ public class NoticeManagementController {
     @GetMapping("/fixed")
     public ResponseEntity<ApiResponse> getFixedNoticeList() {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             List<NoticeDto> fixedNoticeList = noticeManagementService.getFixedNoticeList();
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "데이터 불러오기 성공.", fixedNoticeList));
@@ -103,6 +133,10 @@ public class NoticeManagementController {
             @RequestParam(name = "searchText", required = false) String searchText
     ) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             // List<noticeDto> + 전체 페이지 수
             Map<String, Object> response = noticeManagementService.getNoticeList(page, sortOrder, dateRange, searchRange, searchText);
             return ResponseEntity.status(HttpStatus.OK)
@@ -118,6 +152,10 @@ public class NoticeManagementController {
     @PatchMapping("/fix")
     public ResponseEntity<ApiResponse> fixNotices(@RequestBody List<Long> fixList) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             noticeManagementService.fixNotices(fixList);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "선택 글 고정에 성공하였습니다.", null));
@@ -134,6 +172,10 @@ public class NoticeManagementController {
     @PatchMapping("/unfix")
     public ResponseEntity<ApiResponse> unfixNotices(@RequestBody List<Long> unfixList) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             noticeManagementService.unfixNotices(unfixList);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "선택 글 고정을 해제하였습니다.", null));
