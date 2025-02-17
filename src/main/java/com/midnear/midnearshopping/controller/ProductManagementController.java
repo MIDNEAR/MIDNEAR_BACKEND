@@ -11,8 +11,11 @@ import com.midnear.midnearshopping.exception.ApiResponse;
 import com.midnear.midnearshopping.service.ProductManagementService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,13 +24,24 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/productManagement")
+@Slf4j
 public class ProductManagementController {
     private final ProductManagementService productManagementService;
+
+    private boolean isAdmin() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info(authentication.getName());
+        return authentication != null && "admin".equals(authentication.getName());
+    }
 
     // 등록된 카테고리 목록 불러오기
     @GetMapping("/categories")
     public ResponseEntity<ApiResponse> getCategories() {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             List<CategoryDto> categories = productManagementService.getCategories();
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "데이터 불러오기 성공", categories));
@@ -42,6 +56,10 @@ public class ProductManagementController {
     @PostMapping("/registerProducts")
     public ResponseEntity<ApiResponse> registerProducts(@ModelAttribute @Valid ProductsDto productsDto) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             productManagementService.registerProducts(productsDto);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "상품이 성공적으로 등록되었습니다.", null));
@@ -66,6 +84,10 @@ public class ProductManagementController {
             @RequestParam(name = "searchText", required = false) String searchText
     ) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             //List<ProductsListDto> + 전체 페이지 수
             Map<String, Object> response = productManagementService.getProductList(page, sortOrder, dateRange, searchRange, searchText);
             return ResponseEntity.status(HttpStatus.OK)
@@ -81,6 +103,10 @@ public class ProductManagementController {
     @PatchMapping("/setOnSale")
     public ResponseEntity<ApiResponse> setOnSale(@RequestBody List<Long> saleList) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             productManagementService.setOnSale(saleList);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "판매중으로 변경 완료", null));
@@ -97,6 +123,10 @@ public class ProductManagementController {
     @PatchMapping("/setSoldOut")
     public ResponseEntity<ApiResponse> setSoldOut(@RequestBody List<Long> soldOutList) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             productManagementService.setSoldOut(soldOutList);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "sold out 처리 완료", null));
@@ -111,6 +141,10 @@ public class ProductManagementController {
     @PatchMapping("/setDiscontinued")
     public ResponseEntity<ApiResponse> setDiscontinued(@RequestBody List<Long> discontinuedList) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             productManagementService.setDiscontinued(discontinuedList);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "숨김 처리 완료", null));
@@ -125,6 +159,10 @@ public class ProductManagementController {
     @DeleteMapping("/delete")
     public ResponseEntity<ApiResponse> deleteProducts(@RequestBody List<Long> deleteList) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             productManagementService.deleteProducts(deleteList);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "상품 삭제 완료", null));
@@ -139,6 +177,10 @@ public class ProductManagementController {
     @GetMapping("/modify/{productId}")
     public ResponseEntity<ApiResponse> getProduct(@PathVariable Long productId) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             ProductsDto productsDto = productManagementService.getProduct(productId);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "상품 정보 가져오기 성공", productsDto));
@@ -152,6 +194,10 @@ public class ProductManagementController {
     @PutMapping("/modify")
     public ResponseEntity<ApiResponse> modifyProduct(@ModelAttribute ProductsDto productsDto) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             productManagementService.modifyProduct(productsDto);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "상품을 성공적으로 수정하였습니다.", null));
@@ -165,6 +211,10 @@ public class ProductManagementController {
     @DeleteMapping("/deleteColors")
     public ResponseEntity<ApiResponse> deleteColors(@RequestBody List<Long> deleteList) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             productManagementService.deleteColors(deleteList);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "컬러 삭제 완료.", null));
@@ -178,6 +228,10 @@ public class ProductManagementController {
     @DeleteMapping("/deleteSizes")
     public ResponseEntity<ApiResponse> deleteSizes(@RequestBody List<Long> deleteList) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             productManagementService.deleteSizes(deleteList);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "사이즈 삭제 완료.", null));
@@ -194,6 +248,10 @@ public class ProductManagementController {
     @GetMapping("/shippingReturns")
     public ResponseEntity<ApiResponse> getShippingInfo() {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             ShippingReturnsVo shippingReturnsVo = productManagementService.getShippingReturnsVo();
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "데이터 불러오기 성공", shippingReturnsVo));
@@ -208,6 +266,10 @@ public class ProductManagementController {
     @PatchMapping("/updateShippingReturns")
     public ResponseEntity<ApiResponse> updateShippingInfo(@RequestBody ShippingReturnsDto shippingReturnsDto) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             productManagementService.updateShippingReturns(shippingReturnsDto);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "shipping & returns (택배사 및 번호, 배송관련 유의사항) 수정 완료", null));
@@ -222,6 +284,10 @@ public class ProductManagementController {
     @PatchMapping("/updateShippingPolicy")
     public ResponseEntity<ApiResponse> updateShippingPolicy(@RequestBody ShippingReturnsDto shippingReturnsDto) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             productManagementService.updateShippingPolicy(shippingReturnsDto);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "shipping & returns 세부 약관 수정 완료", null));
@@ -241,6 +307,10 @@ public class ProductManagementController {
             @RequestParam(name = "searchText", required = false) String searchText
     ) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             Map<String, Object> response = productManagementService.getCoordinatedList(page, sortOrder, dateRange, searchRange, searchText);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "코디 상품 리스트 불러오기 성공", response));
@@ -256,6 +326,10 @@ public class ProductManagementController {
             @RequestParam(name = "productColorId") Long productColorId
     ) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             MainProductDto mainProductDto = productManagementService.getCoordinatedProduct(productColorId);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "코디 상품 불러오기 성공", mainProductDto));
@@ -271,6 +345,10 @@ public class ProductManagementController {
             @RequestParam(name = "productName", defaultValue = "") String productName
     ) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             List<CoordinatedProductDto> response = productManagementService.searchCoordinatedProduct(productName);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "코디 상품 검색 성공", response));
@@ -284,6 +362,10 @@ public class ProductManagementController {
     @PostMapping("/createCoordinate")
     public ResponseEntity<ApiResponse> createCoordinate(@RequestBody List<CoordinateDto> coordinateDtoList) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             productManagementService.createCoordinate(coordinateDtoList);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "코디 상품 등록 성공", null));
@@ -297,6 +379,10 @@ public class ProductManagementController {
     @DeleteMapping("/deleteCoordinate")
     public ResponseEntity<ApiResponse> deleteCoordinate(@RequestBody List<CoordinateDto> deleteList) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             productManagementService.deleteCoordinate(deleteList);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "코디 상품 삭제 성공", null));

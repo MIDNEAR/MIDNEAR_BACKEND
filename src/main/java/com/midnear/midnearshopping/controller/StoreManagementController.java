@@ -8,8 +8,11 @@ import com.midnear.midnearshopping.domain.dto.storeImages.StoreImagesDto;
 import com.midnear.midnearshopping.exception.ApiResponse;
 import com.midnear.midnearshopping.service.StoreManagementService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,8 +22,15 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/storeManagement")
+@Slf4j
 public class StoreManagementController {
     private final StoreManagementService storeManagementService;
+
+    private boolean isAdmin() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info(authentication.getName());
+        return authentication != null && "admin".equals(authentication.getName());
+    }
 
     // 메인 이미지 불러오기
     @GetMapping("/getMainImage")
@@ -58,6 +68,10 @@ public class StoreManagementController {
                     .body(new ApiResponse(false, "파일이 없습니다.", null));
         }
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             storeManagementService.modifyMainImage(file);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "메인 이미지를 수정하였습니다.", null));
@@ -77,6 +91,10 @@ public class StoreManagementController {
                     .body(new ApiResponse(false, "파일이 없습니다.", null));
         }
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             storeManagementService.modifyLogoImage(file);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "로고 이미지를 수정하였습니다.", null));
@@ -91,6 +109,10 @@ public class StoreManagementController {
     @PostMapping("/createNewCategory")
     public ResponseEntity<ApiResponse> createNewCategory(@RequestBody List<CreateCategoryDto> createCategoryDtoList) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             storeManagementService.createNewCategory(createCategoryDtoList);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "카테고리 생성 완료", null));
@@ -105,6 +127,10 @@ public class StoreManagementController {
     @DeleteMapping("/deleteCategories")
     public ResponseEntity<ApiResponse> deleteCategory(@RequestBody List<Long> deleteList) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             storeManagementService.deleteCategory(deleteList);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "카테고리 삭제 완료", null));
@@ -119,6 +145,10 @@ public class StoreManagementController {
     @GetMapping("/getPrivacyPolicy")
     public ResponseEntity<ApiResponse> getPrivacyPolicy() {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             String text = storeManagementService.getPrivacyPolicy();
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "데이터 불러오기 성공", text));
@@ -133,6 +163,10 @@ public class StoreManagementController {
     @GetMapping("/getTermsOfService")
     public ResponseEntity<ApiResponse> getTermsOfService() {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             String text = storeManagementService.getTermsOfService();
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "데이터 불러오기 성공", text));
@@ -147,6 +181,10 @@ public class StoreManagementController {
     @GetMapping("/getBusinessInfo")
     public ResponseEntity<ApiResponse> getBusinessInfo() {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             String text = storeManagementService.getBusinessInfo();
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "데이터 불러오기 성공", text));
@@ -161,6 +199,10 @@ public class StoreManagementController {
     @GetMapping("/getDataUsage")
     public ResponseEntity<ApiResponse> getDataUsage() {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             String text = storeManagementService.getDataUsage();
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "데이터 불러오기 성공", text));
@@ -175,6 +217,10 @@ public class StoreManagementController {
     @PostMapping("/updatePrivacyPolicy")
     public ResponseEntity<ApiResponse> updatePrivacyPolicy(@RequestBody PolicyDto policyDto) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             String text = policyDto.getContent();
             PoliciesAndInfoDto policiesAndInfoDto = PoliciesAndInfoDto.builder()
                     .text(text)
@@ -194,6 +240,10 @@ public class StoreManagementController {
     @PostMapping("/updateTermsOfService")
     public ResponseEntity<ApiResponse> updateTermsOfService(@RequestBody PolicyDto policyDto) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             String text = policyDto.getContent();
             PoliciesAndInfoDto policiesAndInfoDto = PoliciesAndInfoDto.builder()
                     .text(text)
@@ -213,6 +263,10 @@ public class StoreManagementController {
     @PostMapping("/updateBusinessInfo")
     public ResponseEntity<ApiResponse> updateBusinessInfo(@RequestBody PolicyDto policyDto) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             String text = policyDto.getContent();
             PoliciesAndInfoDto policiesAndInfoDto = PoliciesAndInfoDto.builder()
                     .text(text)
@@ -232,6 +286,10 @@ public class StoreManagementController {
     @PostMapping("/updateDataUsage")
     public ResponseEntity<ApiResponse> updateDataUsage(@RequestBody PolicyDto policyDto) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             String text = policyDto.getContent();
             PoliciesAndInfoDto policiesAndInfoDto = PoliciesAndInfoDto.builder()
                     .text(text)
@@ -252,6 +310,10 @@ public class StoreManagementController {
     @GetMapping("/getDailySales")
     public ResponseEntity<ApiResponse> getDailySales(@RequestParam(value = "startDate") Date startDate) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             // startDate yyyy-MM-dd
             List<StatisticsDto> statisticsDtos = storeManagementService.getDailySales(startDate);
             return ResponseEntity.status(HttpStatus.OK)
@@ -268,6 +330,10 @@ public class StoreManagementController {
     @GetMapping("/getWeeklySales")
     public ResponseEntity<ApiResponse> getWeeklySales(@RequestParam(value = "startDate") Date startDate) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             // startDate yyyy-MM-01
             List<StatisticsDto> statisticsDtos = storeManagementService.getWeeklySales(startDate);
             return ResponseEntity.status(HttpStatus.OK)
@@ -284,6 +350,10 @@ public class StoreManagementController {
     @GetMapping("/getMonthlySales")
     public ResponseEntity<ApiResponse> getMonthlySales(@RequestParam(value = "startDate") Date startDate) {
         try {
+            if (!isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
+            }
             // startDate yyyy-MM-01
             List<StatisticsDto> statisticsDtos = storeManagementService.getMonthlySales(startDate);
             return ResponseEntity.status(HttpStatus.OK)
