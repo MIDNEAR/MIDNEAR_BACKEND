@@ -15,4 +15,5 @@ public interface ReviewImagesMapper {
     );
 
     Boolean isPhotoReview(Long reviewId);
+    List<String> getReviewImagesById(@Param("reviewId") Long reviewId);
 }
