@@ -38,10 +38,6 @@ public class ProductManagementController {
     @GetMapping("/categories")
     public ResponseEntity<ApiResponse> getCategories() {
         try {
-            if (!isAdmin()) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
-            }
             List<CategoryDto> categories = productManagementService.getCategories();
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "데이터 불러오기 성공", categories));
