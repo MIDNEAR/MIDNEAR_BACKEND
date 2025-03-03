@@ -32,7 +32,6 @@ public class ReviewController {
     @PostMapping("/nonUserCreate")
     public ResponseEntity<?> nonUserCreateReview(@ModelAttribute ReviewRequestDto reviewRequestDto) {
         try{
-            System.out.println("🔥 [Controller] /nonUserCreate 요청 도착!");
             reviewsService.nonUserCreateReview(reviewRequestDto);
             return ResponseEntity.ok().body(new ApiResponse(true, "리뷰 작성 성공", null));
         } catch (Exception e) {
