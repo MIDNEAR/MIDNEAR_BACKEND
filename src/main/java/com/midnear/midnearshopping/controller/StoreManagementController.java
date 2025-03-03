@@ -145,10 +145,6 @@ public class StoreManagementController {
     @GetMapping("/getPrivacyPolicy")
     public ResponseEntity<ApiResponse> getPrivacyPolicy() {
         try {
-            if (!isAdmin()) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
-            }
             String text = storeManagementService.getPrivacyPolicy();
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "데이터 불러오기 성공", text));
@@ -163,10 +159,6 @@ public class StoreManagementController {
     @GetMapping("/getTermsOfService")
     public ResponseEntity<ApiResponse> getTermsOfService() {
         try {
-            if (!isAdmin()) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
-            }
             String text = storeManagementService.getTermsOfService();
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "데이터 불러오기 성공", text));
@@ -181,10 +173,6 @@ public class StoreManagementController {
     @GetMapping("/getBusinessInfo")
     public ResponseEntity<ApiResponse> getBusinessInfo() {
         try {
-            if (!isAdmin()) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
-            }
             String text = storeManagementService.getBusinessInfo();
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "데이터 불러오기 성공", text));
@@ -199,10 +187,6 @@ public class StoreManagementController {
     @GetMapping("/getDataUsage")
     public ResponseEntity<ApiResponse> getDataUsage() {
         try {
-            if (!isAdmin()) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
-            }
             String text = storeManagementService.getDataUsage();
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "데이터 불러오기 성공", text));
