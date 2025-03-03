@@ -12,13 +12,13 @@
         ORDER BY
         <choose>
             <when test="sort == 'latest'">
-                o.order_date DESC
+                o.order_number DESC
             </when>
             <when test="sort == 'oldest'">
-                o.order_date ASC
+                o.order_number ASC
             </when>
             <otherwise>
-                o.order_date DESC
+                o.order_number DESC
             </otherwise>
         </choose>
         LIMIT #{pageSize} OFFSET #{offset}

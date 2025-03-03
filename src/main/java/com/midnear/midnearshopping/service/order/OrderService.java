@@ -157,6 +157,7 @@ public class OrderService {
         if (userId == null) {
             throw new UsernameNotFoundException("존재하지 않는 유저입니다.");
         }
+        System.out.println("offset: " + offset + " pageSize: "+pageSize);
         List<UserOrderCheckDto> orderCheckDtos = orderMapper.getOrdersByUserId(userId, sort, offset, pageSize);
 
         // 각 주문에 대해 주문 상품 목록 조회 및 payPrice 계산
