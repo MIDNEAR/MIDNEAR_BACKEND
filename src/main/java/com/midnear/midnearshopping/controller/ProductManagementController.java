@@ -244,10 +244,6 @@ public class ProductManagementController {
     @GetMapping("/shippingReturns")
     public ResponseEntity<ApiResponse> getShippingInfo() {
         try {
-            if (!isAdmin()) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body(new ApiResponse(false, "관리자만 접근 가능합니다.", null));
-            }
             ShippingReturnsVo shippingReturnsVo = productManagementService.getShippingReturnsVo();
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse(true, "데이터 불러오기 성공", shippingReturnsVo));
@@ -294,6 +290,7 @@ public class ProductManagementController {
         }
     }
 
+    // 코디상품 리스트 조회
     @GetMapping("/getCoordinatedList")
     public ResponseEntity<ApiResponse> getCoordinatedList(
             @RequestParam(name = "page", defaultValue = "1") int page,
@@ -317,6 +314,7 @@ public class ProductManagementController {
         }
     }
 
+    // 코디 상품 정보 조회
     @GetMapping("/getCoordinatedProduct")
     public ResponseEntity<ApiResponse> getCoordinatedProduct(
             @RequestParam(name = "productColorId") Long productColorId
@@ -336,6 +334,7 @@ public class ProductManagementController {
         }
     }
 
+    // 코디 상품 검색
     @GetMapping("/searchCoordinatedProduct")
     public ResponseEntity<ApiResponse> searchCoordinatedProduct(
             @RequestParam(name = "productName", defaultValue = "") String productName
@@ -355,6 +354,7 @@ public class ProductManagementController {
         }
     }
 
+    // 코디 상품으로 등록
     @PostMapping("/createCoordinate")
     public ResponseEntity<ApiResponse> createCoordinate(@RequestBody List<CoordinateDto> coordinateDtoList) {
         try {
@@ -372,6 +372,7 @@ public class ProductManagementController {
         }
     }
 
+    // 코디 상품 해제
     @DeleteMapping("/deleteCoordinate")
     public ResponseEntity<ApiResponse> deleteCoordinate(@RequestBody List<CoordinateDto> deleteList) {
         try {
